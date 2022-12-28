@@ -16,3 +16,4 @@ rootProject.name = "Planner"
 include ':app'
 include ':core:data'
 include ':core:ui'
+include ':feature:trips'

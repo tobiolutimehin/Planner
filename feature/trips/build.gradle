@@ -1,10 +1,11 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
 }
 
 android {
-    namespace 'com.planner.core.ui'
+    namespace 'com.planner.feature.trips'
     compileSdk 33
 
     defaultConfig {
@@ -28,6 +29,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+        dataBinding true
+    }
 }
 
 dependencies {
@@ -39,10 +44,22 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
 
+    // Room
+    implementation "androidx.room:room-runtime:2.4.3"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "androidx.room:room-ktx:2.4.3"
+    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    kapt "androidx.room:room-compiler:2.4.3"
+
     // Androidx
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
+    implementation "androidx.activity:activity-ktx:1.6.1"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
-    // Project Module Dependencies
+    // Project module dependencies
+    implementation project(path: ':core:ui')
     implementation project(path: ':core:data')
 }
