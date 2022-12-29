@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
-import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.FormatDateUseCase
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
@@ -87,12 +86,10 @@ class AddTripFragment : Fragment() {
 
     fun save() {
         tripViewModel.insert(
-            TripEntity(
-                tripImageUrl = imageUri?.toString(),
-                departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
-                destination = binding.destinationEditText.text.toString(),
-                title = binding.tripTitleEditText.text.toString()
-            )
+            tripImageUrl = imageUri?.toString(),
+            departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
+            destination = binding.destinationEditText.text.toString(),
+            title = binding.tripTitleEditText.text.toString()
         )
     }
 

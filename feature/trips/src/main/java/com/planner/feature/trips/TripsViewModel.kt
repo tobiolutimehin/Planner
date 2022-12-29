@@ -12,8 +12,20 @@ import kotlinx.coroutines.launch
 class TripsViewModel(private val dao: TripDao) : ViewModel() {
     val trips: LiveData<List<TripEntity>> = dao.getTrips().asLiveData()
 
-    fun insert(tripEntity: TripEntity) = viewModelScope.launch {
-        dao.insert(tripEntity)
+    fun insert(
+        tripImageUrl: String?,
+        departureTime: Long,
+        destination: String,
+        title: String
+    ) = viewModelScope.launch {
+        dao.insert(
+            TripEntity(
+                tripImageUrl = tripImageUrl,
+                departureTime = departureTime,
+                destination = destination,
+                title = title
+            )
+        )
     }
 }
 
