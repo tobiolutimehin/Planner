@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/trips_nav_graph"
+    app:startDestination="@id/addTripFragment">
+
+    <fragment
+        android:id="@+id/addTripFragment"
+        android:name="com.planner.feature.trips.fragment.AddTripFragment"
+        android:label="@string/add_a_trip"
+        tools:layout="@layout/fragment_add_trip" />
+</navigation>
