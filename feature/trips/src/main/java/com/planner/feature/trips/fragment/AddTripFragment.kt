@@ -14,15 +14,12 @@ import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.planner.core.data.entity.TripEntity
+import com.planner.core.domain.FormatDateUseCase
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
 import com.planner.feature.trips.TripsViewModel
 import com.planner.feature.trips.TripsViewModelFactory
 import com.planner.feature.trips.databinding.FragmentAddTripBinding
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
 
 class AddTripFragment : Fragment() {
 
@@ -33,6 +30,7 @@ class AddTripFragment : Fragment() {
     private var _binding: FragmentAddTripBinding? = null
     private val binding get() = _binding!!
     private var imageUri: Uri? = null
+    private val formatDateUseCase = FormatDateUseCase()
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -67,14 +65,14 @@ class AddTripFragment : Fragment() {
             MaterialDatePicker.Builder.datePicker()
                 .setTitleText(context?.getString(R.string.select_date))
                 .setSelection(
-                    getTimeLong(binding.departureDateEditText.text?.toString())
+                    formatDateUseCase.getTimeLong(binding.departureDateEditText.text?.toString())
                         ?: MaterialDatePicker.todayInUtcMilliseconds()
                 )
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
 
         datePicker.addOnPositiveButtonClickListener {
-            binding.departureDate.editText?.setText(outputDateFormat.format(it))
+            binding.departureDate.editText?.setText(formatDateUseCase.format(it))
         }
         datePicker.show(requireActivity().supportFragmentManager, TAG)
     }
@@ -91,7 +89,7 @@ class AddTripFragment : Fragment() {
         tripViewModel.insert(
             TripEntity(
                 tripImageUrl = imageUri?.toString(),
-                departureTime = getTimeLong(binding.departureDateEditText.text.toString())!!,
+                departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
                 destination = binding.destinationEditText.text.toString(),
                 title = binding.tripTitleEditText.text.toString()
             )
@@ -101,24 +99,6 @@ class AddTripFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
-    }
-
-    // TODO: Move this to domain layer
-    private fun getTimeLong(time: String?): Long? {
-        return try {
-            if (time != null) {
-                outputDateFormat.parse(time)?.time
-            } else {
-                null
-            }
-        } catch (_: ParseException) {
-            return null
-        }
-    }
-
-    // TODO: Move this to domain layer
-    private val outputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
-        timeZone = TimeZone.getTimeZone("UTC")
     }
 
     companion object {
