@@ -2,7 +2,6 @@ package com.planner.feature.trips.fragment
 
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,7 +88,6 @@ class AddTripFragment : Fragment() {
     }
 
     fun save() {
-        Log.d("Tobi", null.toString())
         tripViewModel.insert(
             TripEntity(
                 tripImageUrl = imageUri?.toString(),
