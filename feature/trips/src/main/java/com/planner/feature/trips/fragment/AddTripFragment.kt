@@ -2,6 +2,8 @@ package com.planner.feature.trips.fragment
 
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +55,8 @@ class AddTripFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
             viewModel = tripViewModel
             fragment = this@AddTripFragment
+            tripTitleEditText.addTextChangedListener(textWatcher)
+            departureDateEditText.addTextChangedListener(textWatcher)
         }
     }
 
@@ -93,9 +97,29 @@ class AddTripFragment : Fragment() {
         )
     }
 
+    private fun updateSaveButton() {
+        binding.saveButton.isEnabled = isButtonEnabled()
+    }
+
+    fun isButtonEnabled(): Boolean {
+        return with(binding) {
+            !tripTitleEditText.text.isNullOrBlank() && !departureDateEditText.text.isNullOrBlank() && !destinationEditText.text.isNullOrBlank()
+        }
+    }
+
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+
+    private val textWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun afterTextChanged(s: Editable?) {}
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            updateSaveButton()
+        }
     }
 
     companion object {
