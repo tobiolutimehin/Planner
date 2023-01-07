@@ -23,7 +23,7 @@ import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 class TripDetailFragment : Fragment() {
 
     private val arguments: TripDetailFragmentArgs by navArgs()
-    lateinit var trip: TripEntity
+    private lateinit var trip: TripEntity
 
     private val tripViewModel: TripsViewModel by activityViewModels {
         TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
@@ -70,6 +70,11 @@ class TripDetailFragment : Fragment() {
     }
 
     fun editTrip() {
+        val action = TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
+            title = getString(R.string.edit_trip),
+            tripId = trip.tripId
+        )
+        findNavController().navigate(action)
     }
 
     private fun confirmDelete() {
@@ -80,9 +85,9 @@ class TripDetailFragment : Fragment() {
 
     private fun showConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(android.R.string.dialog_alert_title))
+            .setTitle(getString(com.planner.core.ui.R.string.delete_sure))
             .setMessage(getString(R.string.delete_question))
-            .setCancelable(false)
+            .setCancelable(true)
             .setNegativeButton(getString(com.planner.core.ui.R.string.no)) { _, _ -> }
             .setPositiveButton(getString(com.planner.core.ui.R.string.yes)) { _, _ ->
                 confirmDelete()
