@@ -39,7 +39,10 @@ class AddTripFragment : Fragment() {
                 val bitmap = tripViewModel.getBitmapFromUri(requireContext(), uri)
                 storageUri =
                     bitmap?.let { tripViewModel.saveBitmapToInternalStorage(it, requireContext()) }
-                binding.tripImage.setImageURI(storageUri?.toUri())
+                binding.tripImage.apply {
+                    setImageURI(storageUri?.toUri())
+                    contentDescription = context.getString(R.string.image_description)
+                }
             }
         }
 

@@ -11,6 +11,7 @@ import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
 import com.planner.feature.trips.TripsViewModel
 import com.planner.feature.trips.TripsViewModelFactory
+import com.planner.feature.trips.adapter.TripRecyclerViewAdapter
 import com.planner.feature.trips.databinding.FragmentItemListTripBinding
 
 /** A fragment representing a list of Items. */
@@ -34,7 +35,7 @@ class ListTripFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = TripRecyclerViewAdapter()
+        val adapter = TripRecyclerViewAdapter(requireContext())
 
         tripViewModel.trips.observe(viewLifecycleOwner) { adapter.submitList(it) }
 

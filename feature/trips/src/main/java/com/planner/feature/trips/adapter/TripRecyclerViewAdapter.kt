@@ -1,5 +1,6 @@
-package com.planner.feature.trips.fragment
+package com.planner.feature.trips.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.net.toUri
@@ -10,9 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.DatePattern
 import com.planner.core.domain.FormatDateUseCase
+import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentItemTripBinding
 
-class TripRecyclerViewAdapter :
+class TripRecyclerViewAdapter(private var context: Context) :
     ListAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -21,7 +23,8 @@ class TripRecyclerViewAdapter :
                 LayoutInflater.from(parent.context),
                 parent,
                 false
-            )
+            ),
+            context
         )
     }
 
@@ -30,13 +33,15 @@ class TripRecyclerViewAdapter :
         holder.bind(trip)
     }
 
-    class ViewHolder(private var binding: FragmentItemTripBinding) :
+    class ViewHolder(private var binding: FragmentItemTripBinding, private var context: Context) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: TripEntity) {
             binding.apply {
                 trip.tripImageUrl?.let {
                     tripsCardImage.isVisible = true
                     tripsCardImage.setImageURI(it.toUri())
+                    tripsCardImage.contentDescription =
+                        context.getString(R.string.image_description, trip.title)
                 }
                 tripsCardDate.text =
                     trip.departureTime.let { FormatDateUseCase(DatePattern.LITERAL).format(it) }

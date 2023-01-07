@@ -10,4 +10,6 @@
     <string name="select_date">Select Date</string>
     <string name="trips">Trips</string>
     <string name="add_trip">Add a trip</string>
+    <string name="add">Add new trip</string>
+    <string name="image_description">%s trip\'s image</string>
 </resources>
