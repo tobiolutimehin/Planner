@@ -1,6 +1,5 @@
 package com.planner.feature.trips.fragment
 
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,14 +30,16 @@ class AddTripFragment : Fragment() {
 
     private var _binding: FragmentAddTripBinding? = null
     private val binding get() = _binding!!
-    private var imageUri: Uri? = null
+    private var storageUri: String? = null
     private val formatDateUseCase = FormatDateUseCase()
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                imageUri = uri
-                binding.tripImage.setImageURI(imageUri)
+                val bitmap = tripViewModel.getBitmapFromUri(requireContext(), uri)
+                storageUri =
+                    bitmap?.let { tripViewModel.saveBitmapToInternalStorage(it, requireContext()) }
+                binding.tripImage.setImageURI(storageUri?.toUri())
             }
         }
 
@@ -90,11 +92,12 @@ class AddTripFragment : Fragment() {
 
     fun save() {
         tripViewModel.insert(
-            tripImageUrl = imageUri?.toString(),
+            tripImageUrl = storageUri,
             departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
             destination = binding.destinationEditText.text.toString(),
             title = binding.tripTitleEditText.text.toString()
         )
+        findNavController().navigate(R.id.action_addTripFragment_to_listTripFragment)
     }
 
     private fun updateSaveButton() {

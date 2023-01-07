@@ -5,9 +5,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-class FormatDateUseCase {
+class FormatDateUseCase(pattern: DatePattern = DatePattern.NUMERICAL_SLASH) {
 
-    private val outputDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).apply {
+    private val datePattern = when (pattern) {
+        DatePattern.NUMERICAL_SLASH -> "dd/MM/yyyy"
+        DatePattern.LITERAL -> "d, MMMM yyyy"
+    }
+
+    private val outputDateFormat = SimpleDateFormat(datePattern, Locale.getDefault()).apply {
         timeZone = TimeZone.getDefault()
     }
 
@@ -24,4 +29,8 @@ class FormatDateUseCase {
     }
 
     fun format(time: Long): String = outputDateFormat.format(time)
+}
+
+enum class DatePattern {
+    NUMERICAL_SLASH, LITERAL
 }
