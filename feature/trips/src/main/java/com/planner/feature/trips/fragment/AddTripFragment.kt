@@ -32,12 +32,11 @@ class AddTripFragment : Fragment() {
         TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
     }
 
-    private lateinit var trip: TripEntity
-
     private var _binding: FragmentAddTripBinding? = null
     private val binding get() = _binding!!
     private var storageUri: String? = null
     private val formatDateUseCase = FormatDateUseCase()
+    private lateinit var trip: TripEntity
 
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -116,9 +115,8 @@ class AddTripFragment : Fragment() {
         datePicker.show(requireActivity().supportFragmentManager, TAG)
     }
 
-    fun openPhotoPicker() {
+    fun openPhotoPicker() =
         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-    }
 
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()

@@ -22,15 +22,14 @@ import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
 class TripDetailFragment : Fragment() {
 
-    private val arguments: TripDetailFragmentArgs by navArgs()
-    private lateinit var trip: TripEntity
-
     private val tripViewModel: TripsViewModel by activityViewModels {
         TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
     }
 
     private var _binding: FragmentTripDetailBinding? = null
     private val binding get() = _binding!!
+    private val arguments: TripDetailFragmentArgs by navArgs()
+    private lateinit var trip: TripEntity
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,7 +52,6 @@ class TripDetailFragment : Fragment() {
     private fun bind(trip: TripEntity) {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            viewModel = tripViewModel
             fragment = this@TripDetailFragment
             tripModel = trip
             tripDetailDate.text = FormatDateUseCase(DatePattern.LITERAL).format(trip.departureTime)
@@ -65,9 +63,7 @@ class TripDetailFragment : Fragment() {
         }
     }
 
-    fun deleteTrip() {
-        showConfirmationDialog()
-    }
+    fun deleteTrip() = showConfirmationDialog()
 
     fun editTrip() {
         val action = TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
@@ -93,5 +89,10 @@ class TripDetailFragment : Fragment() {
                 confirmDelete()
             }
             .show()
+    }
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
     }
 }

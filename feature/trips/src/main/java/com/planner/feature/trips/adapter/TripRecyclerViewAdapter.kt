@@ -17,8 +17,7 @@ import com.planner.feature.trips.databinding.FragmentItemTripBinding
 class TripRecyclerViewAdapter(
     private var context: Context,
     private val onTripClicked: (TripEntity) -> Unit
-) :
-    ListAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
+) : ListAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -41,8 +40,7 @@ class TripRecyclerViewAdapter(
         private var binding: FragmentItemTripBinding,
         private var context: Context,
         private var onTripClicked: (TripEntity) -> Unit
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: TripEntity) {
             binding.apply {
                 trip.tripImageUrl?.let {
