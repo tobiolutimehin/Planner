@@ -14,7 +14,10 @@ import com.planner.core.domain.FormatDateUseCase
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentItemTripBinding
 
-class TripRecyclerViewAdapter(private var context: Context) :
+class TripRecyclerViewAdapter(
+    private var context: Context,
+    private val onTripClicked: (TripEntity) -> Unit
+) :
     ListAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,7 +27,8 @@ class TripRecyclerViewAdapter(private var context: Context) :
                 parent,
                 false
             ),
-            context
+            context,
+            onTripClicked
         )
     }
 
@@ -33,7 +37,11 @@ class TripRecyclerViewAdapter(private var context: Context) :
         holder.bind(trip)
     }
 
-    class ViewHolder(private var binding: FragmentItemTripBinding, private var context: Context) :
+    class ViewHolder(
+        private var binding: FragmentItemTripBinding,
+        private var context: Context,
+        private var onTripClicked: (TripEntity) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: TripEntity) {
             binding.apply {
@@ -46,6 +54,7 @@ class TripRecyclerViewAdapter(private var context: Context) :
                 tripsCardDate.text =
                     trip.departureTime.let { FormatDateUseCase(DatePattern.LITERAL).format(it) }
                 tripsCardDestination.text = trip.destination
+                tripsCardView.setOnClickListener { onTripClicked(trip) }
             }
         }
     }

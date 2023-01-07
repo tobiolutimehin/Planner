@@ -38,6 +38,8 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         )
     }
 
+    fun getTrip(id: Int): LiveData<TripEntity> = dao.getTrip(id).asLiveData()
+
     internal fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
         val parcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
         val fileDescriptor = parcelFileDescriptor?.fileDescriptor
@@ -66,6 +68,10 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
 
         // Return the saved image path to uri
         return file.absolutePath
+    }
+
+    fun delete(trip: TripEntity) = viewModelScope.launch {
+        dao.delete(trip)
     }
 }
 
