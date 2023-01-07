@@ -18,9 +18,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.planner.core.domain.FormatDateUseCase
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
-import com.planner.feature.trips.TripsViewModel
-import com.planner.feature.trips.TripsViewModelFactory
 import com.planner.feature.trips.databinding.FragmentAddTripBinding
+import com.planner.feature.trips.viewmodel.TripsViewModel
+import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
 class AddTripFragment : Fragment() {
 
@@ -47,7 +47,8 @@ class AddTripFragment : Fragment() {
         }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAddTripBinding.inflate(inflater, container, false)
@@ -117,7 +118,6 @@ class AddTripFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
-
 
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

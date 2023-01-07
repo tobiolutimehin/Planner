@@ -9,10 +9,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
-import com.planner.feature.trips.TripsViewModel
-import com.planner.feature.trips.TripsViewModelFactory
 import com.planner.feature.trips.adapter.TripRecyclerViewAdapter
 import com.planner.feature.trips.databinding.FragmentItemListTripBinding
+import com.planner.feature.trips.viewmodel.TripsViewModel
+import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
 /** A fragment representing a list of Items. */
 class ListTripFragment : Fragment() {
@@ -24,9 +24,9 @@ class ListTripFragment : Fragment() {
     private var _binding: FragmentItemListTripBinding? = null
     private val binding get() = _binding!!
 
-
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentItemListTripBinding.inflate(inflater, container, false)

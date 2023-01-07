@@ -2,6 +2,7 @@ package com.planner.feature.trips
 
 import com.planner.core.data.dao.TripDao
 import com.planner.core.data.entity.TripEntity
+import com.planner.feature.trips.viewmodel.TripsViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -32,7 +33,6 @@ class TripsViewModelTest {
     )
     private val testTrips = listOf(testTripObject)
 
-
     @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
@@ -41,9 +41,7 @@ class TripsViewModelTest {
 
         viewModel = TripsViewModel(testTripDao)
         Dispatchers.setMain(mainThreadSurrogate)
-
     }
-
 
     @Test
     fun `test insert`() = runBlocking {
@@ -56,7 +54,6 @@ class TripsViewModelTest {
 
         verifyBlocking(testTripDao) { insert(testTripObject) }
     }
-
 
     @After
     fun tearDown() {

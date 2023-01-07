@@ -1,4 +1,4 @@
-package com.planner.feature.trips
+package com.planner.feature.trips.viewmodel
 
 import android.content.Context
 import android.content.ContextWrapper

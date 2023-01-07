@@ -10,7 +10,7 @@
 
         <variable
             name="viewModel"
-            type="com.planner.feature.trips.TripsViewModel" />
+            type="com.planner.feature.trips.viewmodel.TripsViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView
