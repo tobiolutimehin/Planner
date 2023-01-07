@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="fragment"
+            type="com.planner.feature.trips.fragment.TripDetailFragment" />
+
+        <variable
+            name="viewModel"
+            type="com.planner.feature.trips.viewmodel.TripsViewModel" />
+
+        <variable
+            name="tripModel"
+            type="com.planner.core.data.entity.TripEntity" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".fragment.TripDetailFragment">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/trip_detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/trip_detail_title"
+                style="@style/TextAppearance.Material3.TitleMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@{tripModel.title}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trip_detail_image"
+                tools:text="Vacay!" />
+
+            <TextView
+                android:id="@+id/trip_detail_location"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@{tripModel.destination}"
+                app:layout_constraintStart_toStartOf="@id/trip_detail_title"
+                app:layout_constraintTop_toBottomOf="@id/trip_detail_title"
+                tools:text="Santorini!" />
+
+            <TextView
+                android:id="@+id/trip_detail_date"
+                style="@style/TextAppearance.Material3.BodySmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="@id/trip_detail_title"
+                app:layout_constraintTop_toBottomOf="@id/trip_detail_location"
+                tools:text="28th of December!" />
+
+            <Button
+                android:id="@+id/trip_detail_edit_button"
+                style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:onClick="@{() -> fragment.editTrip()}"
+                android:text="@string/edit"
+                app:layout_constraintEnd_toStartOf="@id/trip_detail_delete_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/trip_detail_date" />
+
+            <Button
+                android:id="@+id/trip_detail_delete_button"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:onClick="@{() -> fragment.deleteTrip()}"
+                android:text="@string/delete"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/trip_detail_edit_button"
+                app:layout_constraintTop_toBottomOf="@id/trip_detail_date" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

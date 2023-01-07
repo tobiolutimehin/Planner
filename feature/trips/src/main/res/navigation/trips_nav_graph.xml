@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/addTripFragment"
         android:name="com.planner.feature.trips.fragment.AddTripFragment"
-        android:label="@string/add_a_trip"
+        android:label="{title}"
         tools:layout="@layout/fragment_add_trip">
         <action
             android:id="@+id/action_addTripFragment_to_listTripFragment"
@@ -19,6 +19,13 @@
             app:popExitAnim="@android:anim/fade_out"
             app:popUpTo="@id/listTripFragment"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="tripId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="title"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/listTripFragment"
@@ -31,5 +38,29 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_listTripFragment_to_tripDetailFragment"
+            app:destination="@id/tripDetailFragment"
+            app:launchSingleTop="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/tripDetailFragment"
+        android:name="com.planner.feature.trips.fragment.TripDetailFragment"
+        android:label="{fragmentTitle}">
+        <action
+            android:id="@+id/action_tripDetailFragment_to_listTripFragment"
+            app:destination="@id/listTripFragment"
+            app:popUpTo="@layout/fragment_item_list_trip"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="tripId"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="fragmentTitle"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_tripDetailFragment_to_addTripFragment"
+            app:destination="@id/addTripFragment" />
     </fragment>
 </navigation>

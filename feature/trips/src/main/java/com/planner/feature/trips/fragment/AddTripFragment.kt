@@ -101,7 +101,8 @@ class AddTripFragment : Fragment() {
             destination = binding.destinationEditText.text.toString(),
             title = binding.tripTitleEditText.text.toString()
         )
-        findNavController().navigate(R.id.action_addTripFragment_to_listTripFragment)
+        val action = AddTripFragmentDirections.actionAddTripFragmentToListTripFragment()
+        findNavController().navigate(action)
     }
 
     private fun updateSaveButton() {

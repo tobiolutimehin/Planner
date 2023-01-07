@@ -35,7 +35,9 @@ class ListTripFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adapter = TripRecyclerViewAdapter(requireContext())
+        val adapter = TripRecyclerViewAdapter(requireContext()) {
+            openTripDetail(it.tripId, it.title)
+        }
 
         tripViewModel.trips.observe(viewLifecycleOwner) { adapter.submitList(it) }
 
@@ -45,6 +47,22 @@ class ListTripFragment : Fragment() {
         }
     }
 
-    private fun openAddTripFragment() =
-        findNavController().navigate(R.id.action_listTripFragment_to_addTripFragment)
+    private fun openTripDetail(tripId: Int, title: String) {
+        val action = ListTripFragmentDirections.actionListTripFragmentToTripDetailFragment(
+            fragmentTitle = title,
+            tripId = tripId
+        )
+        findNavController().navigate(action)
+    }
+
+    private fun openAddTripFragment() {
+        val action =
+            ListTripFragmentDirections.actionListTripFragmentToAddTripFragment(getString(R.string.add_a_trip))
+        findNavController().navigate(action)
+    }
+
+    override fun onDestroy() {
+        _binding = null
+        super.onDestroy()
+    }
 }
