@@ -73,6 +73,22 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
     fun delete(trip: TripEntity) = viewModelScope.launch {
         dao.delete(trip)
     }
+
+    fun update(
+        tripImageUrl: String?,
+        departureTime: Long,
+        destination: String,
+        title: String,
+        trip: TripEntity
+    ) = viewModelScope.launch {
+        val newTrip = trip.copy(
+            tripImageUrl = tripImageUrl,
+            departureTime = departureTime,
+            destination = destination,
+            title = title
+        )
+        dao.update(newTrip)
+    }
 }
 
 class TripsViewModelFactory(private val dao: TripDao) : ViewModelProvider.Factory {

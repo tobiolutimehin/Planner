@@ -10,10 +10,6 @@
             type="com.planner.feature.trips.fragment.TripDetailFragment" />
 
         <variable
-            name="viewModel"
-            type="com.planner.feature.trips.viewmodel.TripsViewModel" />
-
-        <variable
             name="tripModel"
             type="com.planner.core.data.entity.TripEntity" />
     </data>

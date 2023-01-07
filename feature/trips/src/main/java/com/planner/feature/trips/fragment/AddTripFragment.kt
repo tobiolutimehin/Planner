@@ -6,15 +6,18 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.FormatDateUseCase
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
@@ -23,10 +26,13 @@ import com.planner.feature.trips.viewmodel.TripsViewModel
 import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
 class AddTripFragment : Fragment() {
+    private val arguments: AddTripFragmentArgs by navArgs()
 
     private val tripViewModel: TripsViewModel by activityViewModels {
         TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
     }
+
+    private lateinit var trip: TripEntity
 
     private var _binding: FragmentAddTripBinding? = null
     private val binding get() = _binding!!
@@ -57,12 +63,36 @@ class AddTripFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val id = arguments.tripId
+        if (id > 0) {
+            tripViewModel.getTrip(id).observe(this.viewLifecycleOwner) { tripModel ->
+                trip = tripModel
+                bind(trip)
+            }
+        }
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = tripViewModel
             fragment = this@AddTripFragment
             tripTitleEditText.addTextChangedListener(textWatcher)
             departureDateEditText.addTextChangedListener(textWatcher)
+        }
+    }
+
+    private fun bind(trip: TripEntity) {
+        binding.apply {
+            tripTitleEditText.setText(trip.title, TextView.BufferType.SPANNABLE)
+            departureDateEditText.setText(
+                formatDateUseCase.format(trip.departureTime),
+                TextView.BufferType.SPANNABLE
+            )
+            destinationEditText.setText(trip.destination, TextView.BufferType.SPANNABLE)
+            trip.tripImageUrl?.let {
+                storageUri = it
+                tripImage.setImageURI(it.toUri())
+            }
+            updateSaveButton()
+            saveButton.setOnClickListener { update() }
         }
     }
 
@@ -101,6 +131,21 @@ class AddTripFragment : Fragment() {
             destination = binding.destinationEditText.text.toString(),
             title = binding.tripTitleEditText.text.toString()
         )
+        goToListTripFragment()
+    }
+
+    private fun update() {
+        tripViewModel.update(
+            tripImageUrl = storageUri,
+            departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
+            destination = binding.destinationEditText.text.toString(),
+            title = binding.tripTitleEditText.text.toString(),
+            trip = trip
+        )
+        goToListTripFragment()
+    }
+
+    private fun goToListTripFragment() {
         val action = AddTripFragmentDirections.actionAddTripFragmentToListTripFragment()
         findNavController().navigate(action)
     }
