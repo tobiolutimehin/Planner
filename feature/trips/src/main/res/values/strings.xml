@@ -8,4 +8,6 @@
     <string name="choose_image">Choose image</string>
     <string name="add_a_trip">Plan a Trip</string>
     <string name="select_date">Select Date</string>
+    <string name="trips">Trips</string>
+    <string name="add_trip">Add a trip</string>
 </resources>
