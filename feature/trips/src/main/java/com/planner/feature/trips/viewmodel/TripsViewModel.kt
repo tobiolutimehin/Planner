@@ -70,6 +70,21 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         return file.absolutePath
     }
 
+    fun deleteBitmapFromInternalStorage(context: Context, fileName: String) {
+        // Get the context wrapper
+        val wrapper = ContextWrapper(context)
+
+        // TODO work to be done
+
+        // Initialize a new file instance
+        val file = File(wrapper.getDir("Images", Context.MODE_PRIVATE), fileName)
+
+        // Delete the file
+        if (file.exists()) {
+            file.delete()
+        }
+    }
+
     fun delete(trip: TripEntity) = viewModelScope.launch {
         dao.delete(trip)
     }

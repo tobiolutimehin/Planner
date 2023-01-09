@@ -74,7 +74,13 @@ class TripDetailFragment : Fragment() {
     }
 
     private fun confirmDelete() {
+        val tripImage = trip.tripImageUrl
+
         tripViewModel.delete(trip)
+        tripImage?.let {
+//            tripViewModel.deleteBitmapFromInternalStorage(requireContext(), it)
+        }
+
         val action = TripDetailFragmentDirections.actionTripDetailFragmentToListTripFragment()
         findNavController().navigate(action)
     }
@@ -85,9 +91,7 @@ class TripDetailFragment : Fragment() {
             .setMessage(getString(R.string.delete_question))
             .setCancelable(true)
             .setNegativeButton(getString(com.planner.core.ui.R.string.no)) { _, _ -> }
-            .setPositiveButton(getString(com.planner.core.ui.R.string.yes)) { _, _ ->
-                confirmDelete()
-            }
+            .setPositiveButton(getString(com.planner.core.ui.R.string.yes)) { _, _ -> confirmDelete() }
             .show()
     }
 

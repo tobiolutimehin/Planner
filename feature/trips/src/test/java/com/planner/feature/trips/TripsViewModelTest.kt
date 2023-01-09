@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyBlocking
 
 @ExperimentalCoroutinesApi
@@ -45,14 +46,49 @@ class TripsViewModelTest {
 
     @Test
     fun `test insert`() = runBlocking {
+        insertTestTrip()
+
+        verifyBlocking(testTripDao) { insert(testTripObject) }
+    }
+
+    @Test
+    fun `test delete`() = runBlocking {
+        insertTestTrip()
+
+        viewModel.delete(testTripObject)
+        verifyBlocking(testTripDao) { delete(testTripObject) }
+    }
+
+    @Test
+    fun `test update`() = runBlocking {
+        insertTestTrip()
+
+        viewModel.update(
+            title = "Trip to the US",
+            destination = "USA",
+            departureTime = 1000L,
+            tripImageUrl = null,
+            trip = testTripObject
+        )
+        verifyBlocking(testTripDao) { update(testTripObject) }
+    }
+
+    @Test
+    fun `test fetch trip`() {
+        insertTestTrip()
+
+        `when`(testTripDao.getTrip(0)).thenReturn(flowOf(testTripObject))
+        viewModel.getTrip(0)
+        verify(testTripDao).getTrip(0)
+    }
+
+    private fun insertTestTrip() {
         viewModel.insert(
             title = "Trip to the US",
             destination = "USA",
             departureTime = 1000L,
             tripImageUrl = null
         )
-
-        verifyBlocking(testTripDao) { insert(testTripObject) }
     }
 
     @After
