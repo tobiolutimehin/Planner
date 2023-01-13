@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace 'com.planner.feature.trips'
+    namespace 'com.planner.feature.tasks'
     compileSdk 33
 
     defaultConfig {
@@ -30,13 +30,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
-    buildFeatures {
-        viewBinding true
-        dataBinding true
-    }
 }
 
 dependencies {
+
     // Core
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
