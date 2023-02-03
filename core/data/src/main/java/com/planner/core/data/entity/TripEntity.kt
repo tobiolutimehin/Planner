@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 data class TripEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val tripId: Int =0,
+    val tripId: Int = 0,
     @ColumnInfo(name = "image_url")
     val tripImageUrl: String? = null,
     val title: String,
