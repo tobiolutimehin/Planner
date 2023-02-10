@@ -33,7 +33,7 @@ class AddTaskManagerFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAddTaskManagerBinding.inflate(inflater, container, false)
         return binding.root
@@ -49,6 +49,7 @@ class AddTaskManagerFragment : Fragment() {
             addTasksViewModel = addTaskViewModel
             fragment = this@AddTaskManagerFragment
             tasksRecyclerView.adapter = adapter
+            lifecycleOwner = viewLifecycleOwner
         }
     }
 
@@ -77,7 +78,7 @@ class AddTaskManagerFragment : Fragment() {
             tasksViewModel.saveTaskManager(
                 title.toString(),
                 it,
-                addTaskViewModel.taskManagerType.value ?: TaskManagerType.TODO_LIST
+                addTaskViewModel.taskManagerType.value ?: TaskManagerType.TODO_LIST,
             )
         }
         close()
@@ -105,9 +106,5 @@ class AddTaskManagerFragment : Fragment() {
 
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()
-    }
-
-    companion object {
-        const val TAG = "AddTaskManagerFragment"
     }
 }
