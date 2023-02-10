@@ -5,4 +5,7 @@
     <string name="add_to_list">Add To List</string>
     <string name="task_list">Task List</string>
     <string name="contributor_name">Contributor name</string>
+    <string name="add_new_task">Add new task</string>
+    <string name="to_do_lists">To-Do Lists</string>
+    <string name="projects">Projects</string>
 </resources>
