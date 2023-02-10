@@ -27,7 +27,7 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
         viewModelScope.launch {
             dao.insertTaskManagerWithTasks(
                 TaskManagerEntity(name = string, type = taskManagerType),
-                tasks
+                tasks,
             )
         }
     }
