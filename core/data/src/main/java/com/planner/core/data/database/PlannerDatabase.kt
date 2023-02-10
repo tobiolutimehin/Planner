@@ -15,7 +15,7 @@ import com.planner.core.data.entity.TripEntity
 @Database(
     entities = [TripEntity::class, TaskManagerEntity::class, TaskEntity::class],
     version = 5,
-    exportSchema = false
+    exportSchema = false,
 )
 @TypeConverters(DataConverters::class)
 abstract class PlannerDatabase : RoomDatabase() {
@@ -31,7 +31,7 @@ abstract class PlannerDatabase : RoomDatabase() {
                     .databaseBuilder(
                         context,
                         PlannerDatabase::class.java,
-                        "planner_database"
+                        "planner_database",
                     )
                     .fallbackToDestructiveMigration()
                     .build()
