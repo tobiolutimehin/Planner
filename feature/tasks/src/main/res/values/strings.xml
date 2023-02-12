@@ -16,4 +16,8 @@
         <item quantity="one">1 Pending Task</item>
         <item quantity="other">%d Pending Tasks</item>
     </plurals>
+    <string name="tasks">Tasks</string>
+    <string name="new_todo">New To-Do List</string>
+    <string name="new_project">New Project</string>
+    <string name="new_task">New Tasks</string>
 </resources>
