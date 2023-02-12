@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.ManagerWithTasks
-import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.R
 import com.planner.feature.tasks.databinding.TaskManagerCardItemBinding
+import com.planner.feature.tasks.utils.Converters.toTitleName
+import com.planner.feature.tasks.utils.Converters.toTypeName
 
 class TaskManagerListAdapter(private val context: Context) :
     ListAdapter<ManagerWithTasks, TaskManagerListAdapter.ViewHolder>(DiffCallback) {
@@ -20,37 +21,18 @@ class TaskManagerListAdapter(private val context: Context) :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(manager: ManagerWithTasks) {
             val toComplete = manager.task.filterNot { it.isDone }.size
+            val type = manager.taskManager.type
+            val name = manager.taskManager.name
+
             binding.apply {
-                taskManagerCardTitle.text =
-                    getTitleName(manager.taskManager.name, manager.taskManager.type)
+                taskManagerCardTitle.text = name.ifBlank { context.getString(type.toTitleName()) }
                 taskManagerStatus.text = context.resources.getQuantityString(
                     R.plurals.pending_tasks,
                     toComplete,
                     toComplete,
                 )
-                taskManagerType.text = manager.taskManager.type.toTypeName(context)
+                taskManagerType.text = context.getString(type.toTypeName())
             }
-        }
-
-        private fun getTitleName(name: String, type: TaskManagerType) =
-            name.ifBlank { type.toTitleName() }
-
-        private fun TaskManagerType.toTitleName(): String {
-            return context.getString(
-                when (this@toTitleName) {
-                    TaskManagerType.TODO_LIST -> R.string.personal_todo_list
-                    TaskManagerType.PROJECT -> R.string.group_project
-                },
-            )
-        }
-
-        private fun TaskManagerType.toTypeName(context: Context): CharSequence {
-            return context.getString(
-                when (this@toTypeName) {
-                    TaskManagerType.TODO_LIST -> R.string.to_do_list
-                    TaskManagerType.PROJECT -> R.string.group_project
-                },
-            )
         }
     }
 

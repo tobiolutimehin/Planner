@@ -12,6 +12,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.adapter.TaskManagerTabsAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerListBinding
+import com.planner.feature.tasks.utils.Converters.toInt
+import com.planner.feature.tasks.utils.Converters.toTaskManagerType
 
 class TaskManagerListFragment : Fragment() {
     private val arguments: TaskManagerListFragmentArgs by navArgs()
@@ -50,7 +52,7 @@ class TaskManagerListFragment : Fragment() {
             object : TabLayout.OnTabSelectedListener {
                 override fun onTabSelected(tab: TabLayout.Tab) {
                     currentPosition = tab.position
-                    selectedManagerType = currentPosition.toSelectedManagerType()
+                    selectedManagerType = currentPosition.toTaskManagerType()
                 }
 
                 override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -68,16 +70,5 @@ class TaskManagerListFragment : Fragment() {
         }
 
         viewPager.setCurrentItem(taskManagerType.toInt(), false)
-    }
-
-    private fun Int.toSelectedManagerType(): TaskManagerType = when (this@toSelectedManagerType) {
-        0 -> TaskManagerType.TODO_LIST
-        1 -> TaskManagerType.PROJECT
-        else -> TaskManagerType.TODO_LIST
-    }
-
-    private fun TaskManagerType.toInt() = when (this@toInt) {
-        TaskManagerType.TODO_LIST -> 0
-        TaskManagerType.PROJECT -> 1
     }
 }
