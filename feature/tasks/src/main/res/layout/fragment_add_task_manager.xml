@@ -45,23 +45,29 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:singleSelection="true">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/todo_list_button"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="@{() -> fragment.setTaskManagementType(TaskManagerType.TODO_LIST)}"
-                    android:text="@string/to_do_list" />
+                    android:text="@string/to_do_list"
+                    app:iconGravity="textStart"
+                    app:managerType="@{TaskManagerType.TODO_LIST}"
+                    app:presentManagerType="@{addTasksViewModel.taskManagerType}" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/project_button"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="@{() -> fragment.setTaskManagementType(TaskManagerType.PROJECT)}"
-                    android:text="@string/project" />
+                    android:text="@string/project"
+                    app:iconGravity="textEnd"
+                    app:managerType="@{TaskManagerType.PROJECT}"
+                    app:presentManagerType="@{addTasksViewModel.taskManagerType}" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -229,7 +235,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{() -> fragment.saveTaskManager()}"
-                    android:text="@string/save" />
+                    android:text="@string/save"
+                    app:enabledWithList="@{addTasksViewModel.taskList}" />
+
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
