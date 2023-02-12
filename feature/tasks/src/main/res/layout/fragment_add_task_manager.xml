@@ -55,6 +55,7 @@
                     android:text="@string/to_do_list"
                     app:iconGravity="textStart"
                     app:managerType="@{TaskManagerType.TODO_LIST}"
+                    android:checked="@{addTasksViewModel.taskManagerType == TaskManagerType.TODO_LIST }"
                     app:presentManagerType="@{addTasksViewModel.taskManagerType}" />
 
                 <com.google.android.material.button.MaterialButton
@@ -67,6 +68,7 @@
                     android:text="@string/project"
                     app:iconGravity="textEnd"
                     app:managerType="@{TaskManagerType.PROJECT}"
+                    android:checked="@{addTasksViewModel.taskManagerType == TaskManagerType.PROJECT }"
                     app:presentManagerType="@{addTasksViewModel.taskManagerType}" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
