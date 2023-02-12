@@ -12,16 +12,16 @@ data class TaskManagerEntity(
     @ColumnInfo(name = "manager_id")
     val managerId: Long = 0,
     val name: String,
-    val type: TaskManagerType = TaskManagerType.TODO_LIST
+    val type: TaskManagerType = TaskManagerType.TODO_LIST,
 )
 
 data class ManagerWithTasks(
     @Embedded val taskManager: TaskManagerEntity,
     @Relation(
         parentColumn = "manager_id",
-        entityColumn = "task_manager_id"
+        entityColumn = "task_manager_id",
     )
-    val task: List<TaskEntity>
+    val task: List<TaskEntity>,
 )
 
 enum class TaskManagerType { TODO_LIST, PROJECT }
