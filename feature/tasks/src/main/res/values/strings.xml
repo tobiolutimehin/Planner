@@ -8,4 +8,12 @@
     <string name="add_new_task">Add new task</string>
     <string name="to_do_lists">To-Do Lists</string>
     <string name="projects">Projects</string>
+    <string name="personal_todo_list">Personal To-Do List</string>
+    <string name="todo_list">To-Do List</string>
+    <string name="group_project">Group project</string>
+    <plurals name="pending_tasks">
+        <item quantity="zero">Complete!</item>
+        <item quantity="one">1 Pending Task</item>
+        <item quantity="other">%d Pending Tasks</item>
+    </plurals>
 </resources>
