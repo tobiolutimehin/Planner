@@ -27,7 +27,7 @@ class ListTripFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentItemListTripBinding.inflate(inflater, container, false)
         return binding.root
@@ -50,7 +50,7 @@ class ListTripFragment : Fragment() {
     private fun openTripDetail(tripId: Int, title: String) {
         val action = ListTripFragmentDirections.actionListTripFragmentToTripDetailFragment(
             fragmentTitle = title,
-            tripId = tripId
+            tripId = tripId,
         )
         findNavController().navigate(action)
     }
