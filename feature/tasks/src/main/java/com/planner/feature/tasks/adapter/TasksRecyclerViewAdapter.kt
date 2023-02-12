@@ -14,7 +14,7 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
 
     class ViewHolder(
         private var binding: TaskItemBinding,
-        val removeTask: (Task) -> Unit
+        val removeTask: (Task) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
             binding.apply {
@@ -43,9 +43,9 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
             TaskItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
+                false,
             ),
-            removeTask
+            removeTask,
         )
     }
 
