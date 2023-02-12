@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.first
 @Dao
 interface TaskManagerDao {
     @Transaction
-    @Query("SELECT * FROM task_manager")
+    @Query("SELECT * FROM task_manager ORDER BY manager_id DESC")
     fun getTaskManagers(): Flow<List<ManagerWithTasks>>
 
     @Transaction

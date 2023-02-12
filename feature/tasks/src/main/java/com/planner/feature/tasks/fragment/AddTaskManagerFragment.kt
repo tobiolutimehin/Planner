@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
@@ -19,6 +20,7 @@ import com.planner.feature.tasks.viewmodel.TasksViewModel
 import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 
 class AddTaskManagerFragment : Fragment() {
+    private val arguments: AddTaskManagerFragmentArgs by navArgs()
 
     private var _binding: FragmentAddTaskManagerBinding? = null
     private val binding get() = _binding!!
@@ -41,6 +43,8 @@ class AddTaskManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val selectedType = arguments.selectedManagerType
+
         adapter = TasksRecyclerViewAdapter(removeTask = { removeTask(it) })
         addTaskViewModel.taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
 
@@ -51,6 +55,7 @@ class AddTaskManagerFragment : Fragment() {
             tasksRecyclerView.adapter = adapter
             lifecycleOwner = viewLifecycleOwner
         }
+        addTaskViewModel.setTaskManagementType(selectedType)
     }
 
     override fun onDestroyView() {
@@ -73,15 +78,20 @@ class AddTaskManagerFragment : Fragment() {
     }
 
     fun saveTaskManager() {
+        val presentManagerType = addTaskViewModel.taskManagerType.value ?: TaskManagerType.TODO_LIST
         addTaskViewModel.taskList.value?.let {
             val title = binding.taskManagerTitleEditText.text
             tasksViewModel.saveTaskManager(
                 title.toString(),
                 it,
-                addTaskViewModel.taskManagerType.value ?: TaskManagerType.TODO_LIST,
+                presentManagerType,
             )
         }
-        close()
+        val action =
+            AddTaskManagerFragmentDirections.actionAddTaskManagerFragmentToTaskManagerListFragment(
+                presentManagerType,
+            )
+        findNavController().navigate(action)
     }
 
     fun addToListClicked() {
