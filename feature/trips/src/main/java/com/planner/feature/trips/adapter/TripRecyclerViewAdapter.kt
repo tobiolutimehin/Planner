@@ -16,7 +16,7 @@ import com.planner.feature.trips.databinding.FragmentItemTripBinding
 
 class TripRecyclerViewAdapter(
     private var context: Context,
-    private val onTripClicked: (TripEntity) -> Unit
+    private val onTripClicked: (TripEntity) -> Unit,
 ) : ListAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,10 +24,10 @@ class TripRecyclerViewAdapter(
             FragmentItemTripBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
-                false
+                false,
             ),
             context,
-            onTripClicked
+            onTripClicked,
         )
     }
 
@@ -39,7 +39,7 @@ class TripRecyclerViewAdapter(
     class ViewHolder(
         private var binding: FragmentItemTripBinding,
         private var context: Context,
-        private var onTripClicked: (TripEntity) -> Unit
+        private var onTripClicked: (TripEntity) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(trip: TripEntity) {
             binding.apply {

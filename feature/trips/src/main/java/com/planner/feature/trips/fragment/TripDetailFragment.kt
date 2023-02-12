@@ -34,7 +34,7 @@ class TripDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentTripDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
@@ -68,7 +68,7 @@ class TripDetailFragment : Fragment() {
     fun editTrip() {
         val action = TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
             title = getString(R.string.edit_trip),
-            tripId = trip.tripId
+            tripId = trip.tripId,
         )
         findNavController().navigate(action)
     }

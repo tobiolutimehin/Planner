@@ -54,7 +54,7 @@ class AddTripFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAddTripBinding.inflate(inflater, container, false)
         return binding.root
@@ -83,7 +83,7 @@ class AddTripFragment : Fragment() {
             tripTitleEditText.setText(trip.title, TextView.BufferType.SPANNABLE)
             departureDateEditText.setText(
                 formatDateUseCase.format(trip.departureTime),
-                TextView.BufferType.SPANNABLE
+                TextView.BufferType.SPANNABLE,
             )
             destinationEditText.setText(trip.destination, TextView.BufferType.SPANNABLE)
             trip.tripImageUrl?.let {
@@ -104,7 +104,7 @@ class AddTripFragment : Fragment() {
                 .setTitleText(context?.getString(R.string.select_date))
                 .setSelection(
                     formatDateUseCase.getTimeLong(binding.departureDateEditText.text?.toString())
-                        ?: MaterialDatePicker.todayInUtcMilliseconds()
+                        ?: MaterialDatePicker.todayInUtcMilliseconds(),
                 )
                 .setCalendarConstraints(constraintsBuilder.build())
                 .build()
@@ -127,7 +127,7 @@ class AddTripFragment : Fragment() {
             tripImageUrl = storageUri,
             departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
             destination = binding.destinationEditText.text.toString(),
-            title = binding.tripTitleEditText.text.toString()
+            title = binding.tripTitleEditText.text.toString(),
         )
         goToListTripFragment()
     }
@@ -138,7 +138,7 @@ class AddTripFragment : Fragment() {
             departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
             destination = binding.destinationEditText.text.toString(),
             title = binding.tripTitleEditText.text.toString(),
-            trip = trip
+            trip = trip,
         )
         goToListTripFragment()
     }

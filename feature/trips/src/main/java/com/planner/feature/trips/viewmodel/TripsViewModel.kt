@@ -26,15 +26,15 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         tripImageUrl: String?,
         departureTime: Long,
         destination: String,
-        title: String
+        title: String,
     ) = viewModelScope.launch {
         dao.insert(
             TripEntity(
                 tripImageUrl = tripImageUrl,
                 departureTime = departureTime,
                 destination = destination,
-                title = title
-            )
+                title = title,
+            ),
         )
     }
 
@@ -94,13 +94,13 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         departureTime: Long,
         destination: String,
         title: String,
-        trip: TripEntity
+        trip: TripEntity,
     ) = viewModelScope.launch {
         val newTrip = trip.copy(
             tripImageUrl = tripImageUrl,
             departureTime = departureTime,
             destination = destination,
-            title = title
+            title = title,
         )
         dao.update(newTrip)
     }
