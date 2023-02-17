@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
@@ -54,6 +55,14 @@ class AddTaskManagerFragment : Fragment() {
             fragment = this@AddTaskManagerFragment
             tasksRecyclerView.adapter = adapter
             lifecycleOwner = viewLifecycleOwner
+            context?.let {
+                tasksRecyclerView.addItemDecoration(
+                    androidx.recyclerview.widget.DividerItemDecoration(
+                        requireContext(),
+                        LinearLayoutManager.VERTICAL,
+                    ),
+                )
+            }
         }
         addTaskViewModel.setTaskManagementType(selectedType)
     }
