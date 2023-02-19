@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -112,7 +113,7 @@ class AddTaskManagerFragment : Fragment() {
         binding.apply {
             taskTitleInputLayout.isVisible = true
             taskButtonRow.isVisible = true
-            addToListButton.isVisible = false
+            addToListButton.isInvisible = true
         }
     }
 
@@ -120,7 +121,7 @@ class AddTaskManagerFragment : Fragment() {
         binding.apply {
             taskTitleInputLayout.isVisible = false
             taskButtonRow.isVisible = false
-            addToListButton.isVisible = true
+            addToListButton.isInvisible = false
         }
     }
 

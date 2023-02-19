@@ -113,6 +113,7 @@
                 android:orientation="vertical"
                 android:paddingVertical="8dp"
                 app:layout_constraintStart_toStartOf="parent"
+                android:background="?attr/colorPrimaryContainer"
                 app:layout_constraintTop_toBottomOf="@id/task_manager_title">
 
                 <LinearLayout
@@ -120,11 +121,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:paddingHorizontal="16dp"
+                    android:paddingVertical="4dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/top_button_toggle">
 
                     <TextView
-                        style="@style/TextAppearance.Material3.BodyLarge"
+                        style="@style/TextAppearance.Material3.TitleMedium"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -163,6 +165,7 @@
                     android:layout_marginHorizontal="16dp"
                     android:hint="@string/task_title"
                     android:visibility="gone"
+                    android:layout_marginTop="4dp"
                     tools:visibility="visible">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -182,6 +185,7 @@
                     android:gravity="right"
                     android:orientation="horizontal"
                     android:visibility="gone"
+                    android:layout_marginTop="4dp"
                     tools:visibility="visible">
 
                     <Button
@@ -205,7 +209,7 @@
                 android:id="@+id/tasks_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:paddingHorizontal="16dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -218,7 +222,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:gravity="right"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -230,7 +234,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:onClick="@{() -> fragment.close()}"
-                    android:text="@string/close" />
+                    android:text="@string/go_back" />
 
                 <Button
                     android:id="@+id/save_button"

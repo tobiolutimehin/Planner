@@ -18,11 +18,11 @@
 
     <color name="blue_grey_50">#EDF9FD</color>
     <color name="blue_grey_100">#CFD8DC</color>
-    <color name="blue_grey_200">#C5C6D0</color>
-    <color name="blue_grey_300">#C5C6D0</color>
+    <color name="blue_grey_200">#B0BEC5</color>
+    <color name="blue_grey_300">#90A4AE</color>
     <color name="blue_grey_500">#757680</color>
     <color name="blue_grey_600">#8F909A</color>
-    <color name="blue_grey_700">#45464f</color>
+    <color name="blue_grey_700">#455A64</color>
     <color name="blue_grey_800">#45464F</color>
     <color name="blue_grey_850">#455C73</color>
     <color name="blue_grey_900">#001F25</color>
