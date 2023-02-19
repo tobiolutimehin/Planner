@@ -9,13 +9,13 @@ import androidx.fragment.app.activityViewModels
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
-import com.planner.feature.tasks.databinding.FragmentTaskManagerListContentBinding
+import com.planner.feature.tasks.databinding.FragmentTaskManagerListBinding
 import com.planner.feature.tasks.viewmodel.TasksViewModel
 import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 
-class TaskManagerListContentFragment : Fragment() {
+class TaskManagerListFragment : Fragment() {
     private var taskManagerType: TaskManagerType? = null
-    private var _binding: FragmentTaskManagerListContentBinding? = null
+    private var _binding: FragmentTaskManagerListBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var adapter: TaskManagerListAdapter
@@ -36,7 +36,7 @@ class TaskManagerListContentFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentTaskManagerListContentBinding.inflate(inflater, container, false)
+        _binding = FragmentTaskManagerListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -61,7 +61,7 @@ class TaskManagerListContentFragment : Fragment() {
 
         @JvmStatic
         fun newInstance(taskManagerType: TaskManagerType) =
-            TaskManagerListContentFragment().apply {
+            TaskManagerListFragment().apply {
                 arguments = Bundle().apply {
                     putSerializable(TASK_MANAGER_TYPE, taskManagerType)
                 }

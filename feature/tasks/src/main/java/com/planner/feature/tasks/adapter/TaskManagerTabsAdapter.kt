@@ -4,15 +4,15 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.R
-import com.planner.feature.tasks.fragment.TaskManagerListContentFragment
+import com.planner.feature.tasks.fragment.TaskManagerListFragment
 
 class TaskManagerTabsAdapter(private val fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount() = 2
 
     override fun createFragment(position: Int): Fragment {
         return when (position) {
-            0 -> TaskManagerListContentFragment.newInstance(TaskManagerType.TODO_LIST)
-            1 -> TaskManagerListContentFragment.newInstance(TaskManagerType.PROJECT)
+            0 -> TaskManagerListFragment.newInstance(TaskManagerType.TODO_LIST)
+            1 -> TaskManagerListFragment.newInstance(TaskManagerType.PROJECT)
             else -> throw IllegalStateException("Invalid position: $position")
         }
     }
