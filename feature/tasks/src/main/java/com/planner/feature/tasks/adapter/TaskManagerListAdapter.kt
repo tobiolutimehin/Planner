@@ -26,11 +26,15 @@ class TaskManagerListAdapter(private val context: Context) :
 
             binding.apply {
                 taskManagerCardTitle.text = name.ifBlank { context.getString(type.toTitleName()) }
-                taskManagerStatus.text = context.resources.getQuantityString(
-                    R.plurals.pending_tasks,
-                    toComplete,
-                    toComplete,
-                )
+
+                taskManagerStatus.text = context.resources.let {
+                    if (toComplete == 0) {
+                        it.getString(R.string.no_pending_tasks)
+                    } else {
+                        it.getQuantityString(R.plurals.pending_tasks, toComplete, toComplete)
+                    }
+                }
+
                 taskManagerType.text = context.getString(type.toTypeName())
             }
         }

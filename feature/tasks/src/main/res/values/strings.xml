@@ -11,8 +11,8 @@
     <string name="personal_todo_list">Personal To-Do List</string>
     <string name="todo_list">To-Do List</string>
     <string name="group_project">Group project</string>
+    <string name="no_pending_tasks">Complete!</string>
     <plurals name="pending_tasks">
-        <item quantity="zero">Complete!</item>
         <item quantity="one">1 Pending Task</item>
         <item quantity="other">%d Pending Tasks</item>
     </plurals>
