@@ -40,10 +40,7 @@ class TaskManagerListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         taskManagerType = arguments.managerType
         tabsAdapter = TaskManagerTabsAdapter(this@TaskManagerListFragment)
-        bind()
-    }
 
-    private fun bind() {
         binding.apply {
             viewPager.adapter = tabsAdapter
             fab.setOnClickListener { openAddTaskFragment() }

@@ -45,10 +45,12 @@ class AddTaskManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val selectedType = arguments.selectedManagerType
-
         adapter = TasksRecyclerViewAdapter(removeTask = { removeTask(it) })
-        addTaskViewModel.taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
-        addTaskViewModel.setTaskManagementType(selectedType)
+
+        addTaskViewModel.apply {
+            taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
+            setTaskManagementType(selectedType)
+        }
 
         binding.apply {
             tasksViewModel = tasksViewModel
@@ -56,14 +58,12 @@ class AddTaskManagerFragment : Fragment() {
             fragment = this@AddTaskManagerFragment
             tasksRecyclerView.adapter = adapter
             lifecycleOwner = viewLifecycleOwner
-            context?.let {
-                tasksRecyclerView.addItemDecoration(
-                    androidx.recyclerview.widget.DividerItemDecoration(
-                        requireContext(),
-                        LinearLayoutManager.VERTICAL,
-                    ),
-                )
-            }
+            tasksRecyclerView.addItemDecoration(
+                androidx.recyclerview.widget.DividerItemDecoration(
+                    requireContext(),
+                    LinearLayoutManager.VERTICAL,
+                ),
+            )
         }
     }
 

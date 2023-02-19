@@ -14,7 +14,7 @@ data class TaskEntity(
     val isDone: Boolean = false,
     val contributor: String? = null,
     @ColumnInfo(name = "task_manager_id")
-    val taskManagerId: Long
+    val taskManagerId: Long,
 ) {
     fun toTask() =
         Task(description = this.description, contributor = this.contributor, isDone = this.isDone)
@@ -24,12 +24,12 @@ data class Task(
     val id: Long? = null,
     val description: String,
     val contributor: String? = null,
-    val isDone: Boolean = false
+    val isDone: Boolean = false,
 ) {
     fun toTaskEntity(taskManagerId: Long) = TaskEntity(
         description = this.description,
         isDone = this.isDone,
         contributor = this.contributor,
-        taskManagerId = taskManagerId
+        taskManagerId = taskManagerId,
     )
 }
