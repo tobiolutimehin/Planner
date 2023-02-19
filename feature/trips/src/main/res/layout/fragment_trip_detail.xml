@@ -73,10 +73,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:onClick="@{() -> fragment.editTrip()}"
                 android:text="@string/edit"
                 app:layout_constraintEnd_toStartOf="@id/trip_detail_delete_button"
                 app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginEnd="4dp"
                 app:layout_constraintTop_toBottomOf="@id/trip_detail_date" />
 
             <Button
@@ -89,7 +91,8 @@
                 android:text="@string/delete"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/trip_detail_edit_button"
-                app:layout_constraintTop_toBottomOf="@id/trip_detail_date" />
+                android:layout_marginStart="4dp"
+                app:layout_constraintTop_toTopOf="@id/trip_detail_edit_button" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 </layout>
