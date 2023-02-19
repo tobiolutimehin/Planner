@@ -48,6 +48,7 @@ class AddTaskManagerFragment : Fragment() {
 
         adapter = TasksRecyclerViewAdapter(removeTask = { removeTask(it) })
         addTaskViewModel.taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
+        addTaskViewModel.setTaskManagementType(selectedType)
 
         binding.apply {
             tasksViewModel = tasksViewModel
@@ -64,7 +65,6 @@ class AddTaskManagerFragment : Fragment() {
                 )
             }
         }
-        addTaskViewModel.setTaskManagementType(selectedType)
     }
 
     override fun onDestroyView() {
@@ -96,6 +96,11 @@ class AddTaskManagerFragment : Fragment() {
                 presentManagerType,
             )
         }
+
+        goToTaskManagerList(presentManagerType)
+    }
+
+    private fun goToTaskManagerList(presentManagerType: TaskManagerType) {
         val action =
             AddTaskManagerFragmentDirections.actionAddTaskManagerFragmentToTaskManagerListFragment(
                 presentManagerType,
@@ -119,9 +124,8 @@ class AddTaskManagerFragment : Fragment() {
         }
     }
 
-    fun setTaskManagementType(taskManagerType: TaskManagerType) {
+    fun setTaskManagementType(taskManagerType: TaskManagerType) =
         addTaskViewModel.setTaskManagementType(taskManagerType)
-    }
 
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()

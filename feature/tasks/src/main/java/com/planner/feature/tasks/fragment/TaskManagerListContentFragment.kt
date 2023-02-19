@@ -51,6 +51,11 @@ class TaskManagerListContentFragment : Fragment() {
         binding.tasksRecyclerView.adapter = adapter
     }
 
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
+
     companion object {
         private const val TASK_MANAGER_TYPE = "task_manager_type"
 

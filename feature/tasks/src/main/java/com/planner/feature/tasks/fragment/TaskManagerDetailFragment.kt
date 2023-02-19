@@ -36,4 +36,9 @@ class TaskManagerDetailFragment : Fragment() {
         val taskManagerId = arguments.taskManagerId
         tasksViewModel.getTaskManager(taskManagerId)
     }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 }

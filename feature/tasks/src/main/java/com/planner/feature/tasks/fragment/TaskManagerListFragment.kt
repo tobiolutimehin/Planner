@@ -71,4 +71,9 @@ class TaskManagerListFragment : Fragment() {
 
         viewPager.setCurrentItem(taskManagerType.toInt(), false)
     }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
+    }
 }
