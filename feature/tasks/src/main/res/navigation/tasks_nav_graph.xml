@@ -30,9 +30,9 @@
     </fragment>
     <fragment
         android:id="@+id/taskManagerListFragment"
-        android:name="com.planner.feature.tasks.fragment.TaskManagerListFragment"
+        android:name="com.planner.feature.tasks.fragment.TaskManagerPageFragment"
         android:label="@string/tasks"
-        tools:layout="@layout/fragment_task_manager_list">
+        tools:layout="@layout/fragment_task_manager_page">
         <action
             android:id="@+id/action_taskManagerListFragment_to_addTaskManagerFragment"
             app:destination="@id/addTaskManagerFragment" />

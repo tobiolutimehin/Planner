@@ -11,14 +11,14 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.adapter.TaskManagerTabsAdapter
-import com.planner.feature.tasks.databinding.FragmentTaskManagerListBinding
+import com.planner.feature.tasks.databinding.FragmentTaskManagerPageBinding
 import com.planner.feature.tasks.utils.Converters.toInt
 import com.planner.feature.tasks.utils.Converters.toTaskManagerType
 
-class TaskManagerListFragment : Fragment() {
-    private val arguments: TaskManagerListFragmentArgs by navArgs()
+class TaskManagerPageFragment : Fragment() {
+    private val arguments: TaskManagerPageFragmentArgs by navArgs()
 
-    private var _binding: FragmentTaskManagerListBinding? = null
+    private var _binding: FragmentTaskManagerPageBinding? = null
     private val binding
         get() = _binding!!
 
@@ -32,14 +32,14 @@ class TaskManagerListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentTaskManagerListBinding.inflate(inflater, container, false)
+        _binding = FragmentTaskManagerPageBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         taskManagerType = arguments.managerType
-        tabsAdapter = TaskManagerTabsAdapter(this@TaskManagerListFragment)
+        tabsAdapter = TaskManagerTabsAdapter(this@TaskManagerPageFragment)
 
         binding.apply {
             viewPager.adapter = tabsAdapter
@@ -72,7 +72,7 @@ class TaskManagerListFragment : Fragment() {
 
     private fun openAddTaskFragment() {
         val action =
-            TaskManagerListFragmentDirections.actionTaskManagerListFragmentToAddTaskManagerFragment(
+            TaskManagerPageFragmentDirections.actionTaskManagerListFragmentToAddTaskManagerFragment(
                 selectedManagerType = selectedManagerType,
             )
         findNavController().navigate(action)
