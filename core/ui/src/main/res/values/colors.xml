@@ -1,11 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="alice_blue">#EDF9FD</color>
+    <!-- White and Black -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="black_100">#1b1b1f</color>
+
+    <!-- Blues -->
+    <color name="light_blue_0">#F8FDFF</color>
+    <color name="light_blue_50">#DFF5FB</color>
+    <color name="light_blue_100">#c5e7ff</color>
+    <color name="light_blue_150">#D6F2FA</color>
+    <color name="light_blue_200">#A6EEFF</color>
+
+    <color name="blue_50">#DBE1FF</color>
+    <color name="blue_700">#003FA5</color>
+    <color name="blue_900">#102E4A</color>
+
+    <color name="blue_grey_50">#EDF9FD</color>
+    <color name="blue_grey_100">#CFD8DC</color>
+    <color name="blue_grey_200">#C5C6D0</color>
+    <color name="blue_grey_300">#C5C6D0</color>
+    <color name="blue_grey_500">#757680</color>
+    <color name="blue_grey_600">#8F909A</color>
+    <color name="blue_grey_700">#45464f</color>
+    <color name="blue_grey_800">#45464F</color>
+    <color name="blue_grey_850">#455C73</color>
+    <color name="blue_grey_900">#001F25</color>
+
+    <color name="cyan_200">#53D7F1</color>
+    <color name="cyan_300">#54D7F2</color>
+
+    <color name="deep_blue_800">#1A56CC</color>
+    <color name="deep_blue_900">#002B76</color>
+    <color name="deep_blue_1000">#001849</color>
+
+    <color name="teal_700">#006878</color>
+    <color name="teal_750">#006879</color>
+    <color name="teal_800">#004E5B</color>
+    <color name="teal_850">#00363F</color>
+    <color name="teal_900">#00363F</color>
+
+    <!-- Reds -->
+    <color name="red_50">#FFDAD6</color>
+    <color name="red_100">#FFB4AB</color>
+    <color name="red_600">#BA1A1A</color>
+    <color name="red_800">#690005</color>
+    <color name="red_900">#93000A</color>
+    <color name="red_1000">#410002</color>
+
+    <!-- Other -->
+    <color name="seed">#5887ff</color>
 </resources>
