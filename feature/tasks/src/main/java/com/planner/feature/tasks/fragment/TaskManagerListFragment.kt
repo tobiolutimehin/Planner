@@ -27,7 +27,7 @@ class TaskManagerListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            taskManagerType = it.getSerializable(TASK_MANAGER_TYPE) as TaskManagerType
+            taskManagerType = it.getSerializable(TASK_MANAGER_TYPE, TaskManagerType::class.java)
         }
     }
 
