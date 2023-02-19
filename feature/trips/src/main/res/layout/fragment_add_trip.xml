@@ -34,7 +34,7 @@
                     android:id="@+id/trip_image"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
-                    android:background="?android:attr/colorAccent"
+                    android:background="?attr/colorSurfaceVariant"
                     android:scaleType="centerCrop"
                     app:layout_constraintDimensionRatio="H,16:9"
                     app:layout_constraintStart_toStartOf="parent"
