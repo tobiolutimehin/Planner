@@ -18,6 +18,15 @@
             android:name="selectedManagerType"
             android:defaultValue="TODO_LIST"
             app:argType="com.planner.core.data.entity.TaskManagerType" />
+        <action
+            android:id="@+id/action_addTaskManagerFragment_to_taskManagerDetailFragment"
+            app:destination="@id/taskManagerDetailFragment"
+            app:popUpTo="@id/taskManagerDetailFragment"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="taskManagerId"
+            android:defaultValue="-1"
+            app:argType="float" />
     </fragment>
     <fragment
         android:id="@+id/taskManagerListFragment"
@@ -31,5 +40,26 @@
             android:name="managerType"
             android:defaultValue="TODO_LIST"
             app:argType="com.planner.core.data.entity.TaskManagerType" />
+        <action
+            android:id="@+id/action_taskManagerListFragment_to_taskManagerDetailFragment"
+            app:destination="@id/taskManagerDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/taskManagerDetailFragment"
+        android:name="com.planner.feature.tasks.fragment.TaskManagerDetailFragment"
+        android:label="fragment_task_manager_detail"
+        tools:layout="@layout/fragment_task_manager_detail">
+        <action
+            android:id="@+id/action_taskManagerDetailFragment_to_taskManagerListFragment"
+            app:destination="@id/taskManagerListFragment"
+            app:popUpTo="@id/taskManagerListFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_taskManagerDetailFragment_to_addTaskManagerFragment"
+            app:destination="@id/addTaskManagerFragment" />
+        <argument
+            android:name="taskManagerId"
+            android:defaultValue="-1L"
+            app:argType="long" />
     </fragment>
 </navigation>
