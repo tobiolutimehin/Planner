@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.Task
-import com.planner.feature.tasks.databinding.TaskItemBinding
+import com.planner.feature.tasks.databinding.CreateTasksItemBinding
 
 class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
     ListAdapter<Task, TasksRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(
-        private var binding: TaskItemBinding,
+        private var binding: CreateTasksItemBinding,
         val removeTask: (Task) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
@@ -40,7 +40,7 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            TaskItemBinding.inflate(
+            CreateTasksItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,
