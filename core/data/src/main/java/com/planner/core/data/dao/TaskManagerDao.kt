@@ -48,7 +48,7 @@ interface TaskManagerDao {
     suspend fun updateTaskManagerWithTask(taskManagerEntity: TaskManagerEntity, tasks: List<Task>) {
         val mWithTasks = getTaskManager(taskManagerEntity.managerId)
 
-        deleteTasks(mWithTasks.first().task)
+        deleteTasks(mWithTasks.first().tasks)
 
         updateTaskManager(taskManagerEntity)
         insertTasks(tasks.toTaskEntities(taskManagerEntity.managerId))

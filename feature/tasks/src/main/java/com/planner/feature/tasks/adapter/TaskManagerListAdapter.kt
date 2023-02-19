@@ -20,7 +20,7 @@ class TaskManagerListAdapter(private val context: Context) :
         private val context: Context,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(manager: ManagerWithTasks) {
-            val toComplete = manager.task.filterNot { it.isDone }.size
+            val toComplete = manager.tasks.filterNot { it.isDone }.size
             val type = manager.taskManager.type
             val name = manager.taskManager.name
 

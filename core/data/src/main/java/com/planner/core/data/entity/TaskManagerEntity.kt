@@ -21,7 +21,7 @@ data class ManagerWithTasks(
         parentColumn = "manager_id",
         entityColumn = "task_manager_id",
     )
-    val task: List<TaskEntity>,
+    val tasks: List<TaskEntity>,
 )
 
 enum class TaskManagerType { TODO_LIST, PROJECT }
