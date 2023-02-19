@@ -24,6 +24,8 @@ class TaskManagerListFragment : Fragment() {
 
     private var currentPosition = 0
     private var selectedManagerType = TaskManagerType.TODO_LIST
+    private lateinit var taskManagerType: TaskManagerType
+    private lateinit var tabsAdapter: TaskManagerTabsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,44 +38,46 @@ class TaskManagerListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val taskManagerType = arguments.managerType
+        taskManagerType = arguments.managerType
+        tabsAdapter = TaskManagerTabsAdapter(this@TaskManagerListFragment)
+        bind()
+    }
 
-        val tabLayout = binding.tabLayout
-        val viewPager = binding.viewPager
+    private fun bind() {
+        binding.apply {
+            viewPager.adapter = tabsAdapter
+            fab.setOnClickListener { openAddTaskFragment() }
+            viewPager.setCurrentItem(taskManagerType.toInt(), false)
 
-        val adapter = TaskManagerTabsAdapter(this@TaskManagerListFragment)
-        viewPager.adapter = adapter
+            TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+                tab.text = tabsAdapter.getPageTitle(position)
+            }.attach()
 
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = adapter.getPageTitle(position)
-        }.attach()
+            tabLayout.addOnTabSelectedListener(
+                object : TabLayout.OnTabSelectedListener {
+                    override fun onTabSelected(tab: TabLayout.Tab) {
+                        currentPosition = tab.position
+                        selectedManagerType = currentPosition.toTaskManagerType()
+                    }
 
-        tabLayout.addOnTabSelectedListener(
-            object : TabLayout.OnTabSelectedListener {
-                override fun onTabSelected(tab: TabLayout.Tab) {
-                    currentPosition = tab.position
-                    selectedManagerType = currentPosition.toTaskManagerType()
-                }
+                    override fun onTabUnselected(tab: TabLayout.Tab) {}
 
-                override fun onTabUnselected(tab: TabLayout.Tab) {}
-
-                override fun onTabReselected(tab: TabLayout.Tab) {}
-            },
-        )
-
-        binding.fab.setOnClickListener {
-            val action =
-                TaskManagerListFragmentDirections.actionTaskManagerListFragmentToAddTaskManagerFragment(
-                    selectedManagerType = selectedManagerType,
-                )
-            findNavController().navigate(action)
+                    override fun onTabReselected(tab: TabLayout.Tab) {}
+                },
+            )
         }
-
-        viewPager.setCurrentItem(taskManagerType.toInt(), false)
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    private fun openAddTaskFragment() {
+        val action =
+            TaskManagerListFragmentDirections.actionTaskManagerListFragmentToAddTaskManagerFragment(
+                selectedManagerType = selectedManagerType,
+            )
+        findNavController().navigate(action)
     }
 }
