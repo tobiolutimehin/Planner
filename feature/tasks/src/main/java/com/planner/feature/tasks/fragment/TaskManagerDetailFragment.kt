@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.adapter.ManagerDetailRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerDetailBinding
@@ -55,6 +57,12 @@ class TaskManagerDetailFragment : Fragment() {
                 recyclerView.adapter = adapter
                 taskTitleDetail.text =
                     it.taskManager.name.ifBlank { context?.getString(it.taskManager.type.toTitleName()) }
+
+                detailEditListButton.setOnClickListener { _ ->
+                    it.taskManager.apply {
+                        openEditTaskManager(managerId, type)
+                    }
+                }
             }
         }
 
@@ -64,6 +72,15 @@ class TaskManagerDetailFragment : Fragment() {
                 LinearLayoutManager.VERTICAL,
             ),
         )
+    }
+
+    private fun openEditTaskManager(managerId: Long, type: TaskManagerType) {
+        val action = TaskManagerDetailFragmentDirections
+            .actionTaskManagerDetailFragmentToAddTaskManagerFragment(
+                selectedManagerType = type,
+                taskManagerId = managerId,
+            )
+        findNavController().navigate(action)
     }
 
     override fun onDestroyView() {

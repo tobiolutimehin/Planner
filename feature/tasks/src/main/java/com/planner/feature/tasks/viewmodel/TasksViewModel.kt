@@ -18,11 +18,6 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
 
     fun getTaskManager(id: Long): LiveData<ManagerWithTasks> = dao.getTaskManager(id).asLiveData()
 
-    fun insertTask(tasks: List<TaskEntity>) =
-        viewModelScope.launch {
-            dao.insertTasks(tasks)
-        }
-
     fun saveTaskManager(string: String, tasks: List<Task>, taskManagerType: TaskManagerType) {
         viewModelScope.launch {
             dao.insertTaskManagerWithTasks(
@@ -30,14 +25,6 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
                 tasks,
             )
         }
-    }
-
-    fun insertTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
-        dao.insertTaskManager(taskManagerEntity)
-    }
-
-    fun deleteTask(taskEntity: TaskEntity) = viewModelScope.launch {
-        dao.deleteTask(taskEntity)
     }
 
     fun deleteTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
@@ -48,9 +35,10 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
         dao.updateTask(taskEntity)
     }
 
-    fun updateTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
-        dao.updateTaskManager(taskManagerEntity)
-    }
+    fun updateTaskManager(taskManagerEntity: TaskManagerEntity, tasks: List<Task>) =
+        viewModelScope.launch {
+            dao.updateTaskManagerWithTasks(taskManagerEntity, tasks)
+        }
 }
 
 class TasksViewModelFactory(private val dao: TaskManagerDao) : ViewModelProvider.Factory {

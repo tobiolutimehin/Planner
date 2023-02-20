@@ -12,22 +12,25 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
+import com.planner.feature.tasks.R
 import com.planner.feature.tasks.adapter.TasksRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentAddTaskManagerBinding
+import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.AddTaskViewModel
 import com.planner.feature.tasks.viewmodel.TasksViewModel
 import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 
 class AddTaskManagerFragment : Fragment() {
     private val arguments: AddTaskManagerFragmentArgs by navArgs()
+    private lateinit var taskManager: ManagerWithTasks
+    private lateinit var adapter: TasksRecyclerViewAdapter
 
     private var _binding: FragmentAddTaskManagerBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var adapter: TasksRecyclerViewAdapter
 
     private val addTaskViewModel: AddTaskViewModel by viewModels()
     private val tasksViewModel: TasksViewModel by activityViewModels {
@@ -46,6 +49,16 @@ class AddTaskManagerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val selectedType = arguments.selectedManagerType
+        val managerId = arguments.taskManagerId
+
+        if (managerId > 0) {
+            tasksViewModel.getTaskManager(managerId).observe(viewLifecycleOwner) { manager ->
+                taskManager = manager
+                addTaskViewModel.addTasks(manager.tasks.map { it.toTask() })
+                bindForEdit()
+            }
+        }
+
         adapter = TasksRecyclerViewAdapter(removeTask = { removeTask(it) })
 
         addTaskViewModel.apply {
@@ -65,6 +78,17 @@ class AddTaskManagerFragment : Fragment() {
                     LinearLayoutManager.VERTICAL,
                 ),
             )
+        }
+    }
+
+    private fun bindForEdit() {
+        val manager = taskManager.taskManager
+        val typeString = requireContext().getString(manager.type.toTitleName())
+        binding.apply {
+            taskManagerTitleEditText.setText(manager.name)
+            title.text = context?.getString(R.string.editing_task_manager, typeString)
+            topButtonToggle.isVisible = false
+            saveButton.setOnClickListener { updateTaskManager() }
         }
     }
 
@@ -109,6 +133,14 @@ class AddTaskManagerFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    private fun goToTaskManagerDetail() {
+        val action =
+            AddTaskManagerFragmentDirections.actionAddTaskManagerFragmentToTaskManagerDetailFragment(
+                taskManager.taskManager.managerId,
+            )
+        findNavController().navigate(action)
+    }
+
     fun addToListClicked() {
         binding.apply {
             taskTitleInputLayout.isVisible = true
@@ -130,5 +162,12 @@ class AddTaskManagerFragment : Fragment() {
 
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()
+    }
+
+    private fun updateTaskManager() {
+        addTaskViewModel.taskList.value?.let {
+            tasksViewModel.updateTaskManager(taskManager.taskManager, it)
+            goToTaskManagerDetail()
+        }
     }
 }
