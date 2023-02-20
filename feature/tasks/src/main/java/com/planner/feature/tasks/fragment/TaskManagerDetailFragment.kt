@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.adapter.ManagerDetailRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerDetailBinding
@@ -39,7 +40,12 @@ class TaskManagerDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val taskManagerId = arguments.taskManagerId
 
-        adapter = ManagerDetailRecyclerViewAdapter()
+        adapter = ManagerDetailRecyclerViewAdapter(
+            onCheckChangeListener = { isChecked, task ->
+                tasksViewModel.updateTask(task.copy(isDone = isChecked))
+            },
+        )
+
         tasksViewModel.getTaskManager(taskManagerId).observe(viewLifecycleOwner) {
             adapter.submitList(it.tasks)
             (activity as AppCompatActivity).supportActionBar?.title =
@@ -51,6 +57,13 @@ class TaskManagerDetailFragment : Fragment() {
                     it.taskManager.name.ifBlank { context?.getString(it.taskManager.type.toTitleName()) }
             }
         }
+
+        binding.recyclerView.addItemDecoration(
+            androidx.recyclerview.widget.DividerItemDecoration(
+                requireContext(),
+                LinearLayoutManager.VERTICAL,
+            ),
+        )
     }
 
     override fun onDestroyView() {

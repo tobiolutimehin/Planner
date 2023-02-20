@@ -9,42 +9,33 @@ import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.TaskEntity
 import com.planner.feature.tasks.databinding.TaskChecklistItemBinding
 
-class ManagerDetailRecyclerViewAdapter :
+class ManagerDetailRecyclerViewAdapter(private val onCheckChangeListener: (Boolean, TaskEntity) -> Unit) :
     ListAdapter<TaskEntity, ManagerDetailRecyclerViewAdapter.DetailViewHolder>(DiffCallback) {
 
     class DetailViewHolder(private var binding: TaskChecklistItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(task: TaskEntity) {
+        fun bind(task: TaskEntity, onCheckChangeListener: (Boolean, TaskEntity) -> Unit) {
             binding.apply {
                 checkbox.isChecked = task.isDone
                 taskText.text = task.description
-                taskText.paintFlags = shouldHaveStrikeThrough(task.isDone)
+                taskText.paintFlags = if (task.isDone) {
+                    Paint.STRIKE_THRU_TEXT_FLAG
+                } else {
+                    0
+                }
 
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    taskText.paintFlags = shouldHaveStrikeThrough(isChecked)
+                    onCheckChangeListener(isChecked, task)
                 }
             }
         }
-
-        private fun shouldHaveStrikeThrough(isDone: Boolean) =
-            if (isDone) {
-                Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                0
-            }
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<TaskEntity>() {
-        override fun areItemsTheSame(
-            oldItem: TaskEntity,
-            newItem: TaskEntity,
-        ): Boolean =
+        override fun areItemsTheSame(oldItem: TaskEntity, newItem: TaskEntity): Boolean =
             oldItem.taskId == newItem.taskId
 
-        override fun areContentsTheSame(
-            oldItem: TaskEntity,
-            newItem: TaskEntity,
-        ): Boolean =
+        override fun areContentsTheSame(oldItem: TaskEntity, newItem: TaskEntity): Boolean =
             oldItem == newItem
     }
 
@@ -60,6 +51,6 @@ class ManagerDetailRecyclerViewAdapter :
 
     override fun onBindViewHolder(holder: DetailViewHolder, position: Int) {
         val manager = getItem(position)
-        holder.bind(manager)
+        holder.bind(manager, onCheckChangeListener)
     }
 }
