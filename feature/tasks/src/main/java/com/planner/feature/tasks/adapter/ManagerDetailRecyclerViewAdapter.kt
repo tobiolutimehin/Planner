@@ -1,6 +1,5 @@
 package com.planner.feature.tasks.adapter
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -18,11 +17,7 @@ class ManagerDetailRecyclerViewAdapter(private val onCheckChangeListener: (Boole
             binding.apply {
                 checkbox.isChecked = task.isDone
                 taskText.text = task.description
-                taskText.paintFlags = if (task.isDone) {
-                    Paint.STRIKE_THRU_TEXT_FLAG
-                } else {
-                    0
-                }
+                taskText.paintFlags = task.strikeThrough
 
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
                     onCheckChangeListener(isChecked, task)

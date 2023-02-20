@@ -20,6 +20,12 @@ class AddTaskViewModel : ViewModel() {
         _taskList.value = updatedTaskList
     }
 
+    fun addTasks(tasks: List<Task>) {
+        val updatedTaskList = _taskList.value?.toMutableList() ?: mutableListOf()
+        updatedTaskList.addAll(tasks)
+        _taskList.value = updatedTaskList
+    }
+
     fun removeTask(task: Task) {
         val updatedTaskList = _taskList.value?.toMutableList() ?: mutableListOf()
         updatedTaskList.remove(task)

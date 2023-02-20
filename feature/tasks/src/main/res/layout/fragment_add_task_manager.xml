@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
         <variable
             name="fragment"
             type="com.planner.feature.tasks.fragment.AddTaskManagerFragment" />
@@ -22,7 +21,6 @@
             type="com.planner.core.data.entity.TaskManagerType" />
 
         <import type="com.planner.core.data.entity.TaskManagerType" />
-
     </data>
 
     <androidx.core.widget.NestedScrollView

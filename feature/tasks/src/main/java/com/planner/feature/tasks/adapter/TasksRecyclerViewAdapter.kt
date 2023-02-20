@@ -26,6 +26,7 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
                 button.setOnClickListener {
                     removeTask(task)
                 }
+                taskListItem.paintFlags = task.strikeThrough
             }
         }
     }
