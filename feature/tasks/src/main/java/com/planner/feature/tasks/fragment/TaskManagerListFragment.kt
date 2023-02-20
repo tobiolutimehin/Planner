@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
@@ -42,18 +43,28 @@ class TaskManagerListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = TaskManagerListAdapter(requireContext())
+        adapter = TaskManagerListAdapter(
+            context = context,
+            openDetail = { id -> openTaskManagerDetail(id) },
+        )
+        binding.tasksRecyclerView.adapter = adapter
 
         tasksViewModel.tasks.observe(viewLifecycleOwner) { managerWithTasks ->
             adapter.submitList(managerWithTasks.filter { it.taskManager.type == taskManagerType })
         }
-
-        binding.tasksRecyclerView.adapter = adapter
     }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    private fun openTaskManagerDetail(id: Long) {
+        val action =
+            TaskManagerPageFragmentDirections.actionTaskManagerListFragmentToTaskManagerDetailFragment(
+                id,
+            )
+        findNavController().navigate(action)
     }
 
     companion object {
