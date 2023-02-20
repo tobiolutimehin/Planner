@@ -12,30 +12,32 @@ import com.planner.feature.tasks.databinding.TaskManagerCardItemBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.utils.Converters.toTypeName
 
-class TaskManagerListAdapter(private val context: Context) :
-    ListAdapter<ManagerWithTasks, TaskManagerListAdapter.ViewHolder>(DiffCallback) {
+class TaskManagerListAdapter(
+    private val context: Context?,
+    private val openDetail: (Long) -> Unit,
+) : ListAdapter<ManagerWithTasks, TaskManagerListAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(
         private var binding: TaskManagerCardItemBinding,
-        private val context: Context,
+        private val context: Context?,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(manager: ManagerWithTasks) {
+        fun bind(manager: ManagerWithTasks, openDetail: (Long) -> Unit) {
             val toComplete = manager.tasks.filterNot { it.isDone }.size
             val type = manager.taskManager.type
             val name = manager.taskManager.name
 
             binding.apply {
-                taskManagerCardTitle.text = name.ifBlank { context.getString(type.toTitleName()) }
-
-                taskManagerStatus.text = context.resources.let {
+                taskManagerStatus.text = context?.resources.let {
                     if (toComplete == 0) {
-                        it.getString(R.string.no_pending_tasks)
+                        it?.getString(R.string.no_pending_tasks)
                     } else {
-                        it.getQuantityString(R.plurals.pending_tasks, toComplete, toComplete)
+                        it?.getQuantityString(R.plurals.pending_tasks, toComplete, toComplete)
                     }
                 }
 
-                taskManagerType.text = context.getString(type.toTypeName())
+                taskManagerCardTitle.text = name.ifBlank { context?.getString(type.toTitleName()) }
+                taskManagerType.text = context?.getString(type.toTypeName())
+                root.setOnClickListener { openDetail(manager.taskManager.managerId) }
             }
         }
     }
@@ -67,6 +69,6 @@ class TaskManagerListAdapter(private val context: Context) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val manager = getItem(position)
-        holder.bind(manager)
+        holder.bind(manager = manager, openDetail = openDetail)
     }
 }

@@ -32,22 +32,23 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
         }
     }
 
-    suspend fun insertTaskManager(taskManagerEntity: TaskManagerEntity) =
+    fun insertTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
         dao.insertTaskManager(taskManagerEntity)
+    }
 
-    suspend fun deleteTask(taskEntity: TaskEntity) = viewModelScope.launch {
+    fun deleteTask(taskEntity: TaskEntity) = viewModelScope.launch {
         dao.deleteTask(taskEntity)
     }
 
-    suspend fun deleteTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
+    fun deleteTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
         dao.deleteTaskManager(taskManagerEntity)
     }
 
-    suspend fun updateTask(taskEntity: TaskEntity) = viewModelScope.launch {
+    fun updateTask(taskEntity: TaskEntity) = viewModelScope.launch {
         dao.updateTask(taskEntity)
     }
 
-    suspend fun updateTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
+    fun updateTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
         dao.updateTaskManager(taskManagerEntity)
     }
 }
