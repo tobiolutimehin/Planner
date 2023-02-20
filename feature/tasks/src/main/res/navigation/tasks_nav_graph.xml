@@ -25,8 +25,8 @@
             app:popUpToInclusive="true" />
         <argument
             android:name="taskManagerId"
-            android:defaultValue="-1"
-            app:argType="float" />
+            android:defaultValue="-1L"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/taskManagerListFragment"

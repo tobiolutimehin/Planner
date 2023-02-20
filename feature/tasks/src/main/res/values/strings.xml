@@ -22,4 +22,5 @@
     <string name="new_task">New Tasks</string>
     <string name="go_back">Go back</string>
     <string name="edit_list">Edit list</string>
+    <string name="editing_task_manager">Editing %s</string>
 </resources>
