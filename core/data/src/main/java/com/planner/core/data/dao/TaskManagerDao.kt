@@ -50,21 +50,25 @@ interface TaskManagerDao {
         tasks: List<Task>,
     ) {
         val mWithTasks = getTaskManager(taskManagerEntity.managerId)
-
         deleteTasks(mWithTasks.first().tasks)
-
         updateTaskManager(taskManagerEntity)
         insertTasks(tasks.toTaskEntities(taskManagerEntity.managerId))
     }
-
-    @Delete
-    suspend fun deleteTask(taskEntity: TaskEntity)
 
     @Delete
     suspend fun deleteTaskManager(taskManagerEntity: TaskManagerEntity)
 
     @Delete
     suspend fun deleteTasks(taskEntities: List<TaskEntity>)
+
+    @Transaction
+    suspend fun deleteTaskManagerWithTasks(taskManager: TaskManagerEntity) {
+        deleteTasksByManagerId(taskManager.managerId)
+        deleteTaskManager(taskManager)
+    }
+
+    @Query("DELETE FROM task WHERE task_manager_id = :managerId")
+    suspend fun deleteTasksByManagerId(managerId: Long)
 }
 
 private fun List<Task>.toTaskEntities(managerId: Long): List<TaskEntity> =

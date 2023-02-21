@@ -1,48 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp"
-    tools:context=".fragment.TaskManagerDetailFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <data>
+
+        <variable
+            name="fragment"
+            type="com.planner.feature.tasks.fragment.TaskManagerDetailFragment" />
+
+    </data>
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        tools:context=".fragment.TaskManagerDetailFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/task_title_detail"
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    tools:text="Personal To-Do List lddl dldl dl dl dl dl dl dl l dldl d ddkkd  dk dkk dkkdk dk dk  dkdk dkdk dk dkdkdkdk dk" />
+
+                <Button
+                    android:id="@+id/detail_edit_list_button"
+                    style="@style/Widget.Material3.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:onClick="@{() -> fragment.openEditTaskManager() }"
+                    android:text="@string/edit_list"
+                    app:icon="@drawable/ic_add" />
+
+                <Button
+                    android:id="@+id/delete_list"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"
+                    android:contentDescription="@string/delete_list"
+                    android:onClick="@{() -> fragment.showConfirmationDialog() }"
+                    app:icon="@drawable/ic_delete"
+                    app:iconTint="@color/red_600" />
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
-                android:id="@+id/task_title_detail"
-                style="@style/TextAppearance.Material3.TitleMedium"
-                tools:text="Personal To-Do List" />
-
-            <Button
-                style="@style/Widget.Material3.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/detail_edit_list_button"
-                android:text="@string/edit_list"
-                app:icon="@drawable/ic_add" />
+                android:scrollbars="vertical"
+                app:layoutManager="LinearLayoutManager"
+                tools:listitem="@layout/task_checklist_item" />
         </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            app:layoutManager="LinearLayoutManager"
-            tools:listitem="@layout/task_checklist_item" />
-    </LinearLayout>
-
-
-</androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
+</layout>

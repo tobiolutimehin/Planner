@@ -3,6 +3,7 @@ package com.planner.core.data.entity
 import android.graphics.Paint
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "task")
@@ -17,6 +18,7 @@ data class TaskEntity(
     @ColumnInfo(name = "task_manager_id")
     val taskManagerId: Long,
 ) {
+    @Ignore
     val strikeThrough = this.isDone.strikeThrough()
 
     fun toTask() =

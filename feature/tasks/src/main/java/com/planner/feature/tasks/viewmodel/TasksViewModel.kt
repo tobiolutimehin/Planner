@@ -28,7 +28,7 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
     }
 
     fun deleteTaskManager(taskManagerEntity: TaskManagerEntity) = viewModelScope.launch {
-        dao.deleteTaskManager(taskManagerEntity)
+        dao.deleteTaskManagerWithTasks(taskManagerEntity)
     }
 
     fun updateTask(taskEntity: TaskEntity) = viewModelScope.launch {
