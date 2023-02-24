@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
+        android:id="@+id/add_trip_fragment"
         tools:context=".fragment.AddTripFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
