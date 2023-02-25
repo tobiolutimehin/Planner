@@ -25,7 +25,9 @@
             app:argType="integer" />
         <argument
             android:name="title"
+            android:defaultValue="Plan a trip"
             app:argType="string" />
+        <deepLink app:uri="android-app://com.planner.trips/addTripFragment" />
     </fragment>
     <fragment
         android:id="@+id/listTripFragment"

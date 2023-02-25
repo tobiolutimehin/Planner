@@ -23,6 +23,7 @@
             app:destination="@id/taskManagerDetailFragment"
             app:popUpTo="@id/taskManagerDetailFragment"
             app:popUpToInclusive="true" />
+        <deepLink app:uri="android-app://com.planner.tasks/addTaskManagerFragment" />
         <argument
             android:name="taskManagerId"
             android:defaultValue="-1L"

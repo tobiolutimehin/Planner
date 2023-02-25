@@ -57,7 +57,7 @@ class ListTripFragment : Fragment() {
 
     private fun openAddTripFragment() {
         val action =
-            ListTripFragmentDirections.actionListTripFragmentToAddTripFragment(getString(R.string.add_a_trip))
+            ListTripFragmentDirections.actionListTripFragmentToAddTripFragment(title = getString(R.string.add_a_trip))
         findNavController().navigate(action)
     }
 
