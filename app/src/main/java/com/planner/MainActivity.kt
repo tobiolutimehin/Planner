@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             .Builder(
                 com.planner.feature.tasks.R.id.taskManagerListFragment,
                 com.planner.feature.trips.R.id.listTripFragment,
+                R.id.homeFragment,
             )
             .build()
 
@@ -62,7 +63,10 @@ class MainActivity : AppCompatActivity() {
     private fun showBottomNav() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                com.planner.feature.trips.R.id.listTripFragment, com.planner.feature.tasks.R.id.taskManagerListFragment -> {
+                com.planner.feature.trips.R.id.listTripFragment,
+                com.planner.feature.tasks.R.id.taskManagerListFragment,
+                R.id.homeFragment,
+                -> {
                     binding.bottomMenu.isVisible = true
                 }
 

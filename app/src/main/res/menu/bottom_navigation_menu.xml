@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@id/homeFragment"
+        android:icon="@drawable/ic_home_outline"
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@id/tasks_nav_graph"
         android:icon="@drawable/ic_list_outline"
         android:title="@string/tasks"
