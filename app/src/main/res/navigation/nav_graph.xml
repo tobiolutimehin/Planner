@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/tasks_nav_graph">
+    app:startDestination="@id/homeFragment">
 
     <include app:graph="@navigation/trips_nav_graph" />
     <include app:graph="@navigation/tasks_nav_graph" />
+
+
+    <dialog
+        android:id="@+id/planListDialogFragment"
+        android:name="com.planner.fragment.PlanListDialogFragment"
+        android:label="fragment_plan_list_dialog_list_dialog"
+        tools:layout="@layout/fragment_plan_list_dialog_list_dialog" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.planner.fragment.HomeFragment"
+        android:label="@string/home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_planListDialogFragment"
+            app:destination="@id/planListDialogFragment" />
+    </fragment>
 </navigation>
