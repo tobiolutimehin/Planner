@@ -1,4 +1,4 @@
-package com.planner.fragment
+package com.planner.adapter
 
 import android.content.Context
 import android.view.LayoutInflater

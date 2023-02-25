@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.planner.adapter.PlanAdapter
 import com.planner.databinding.FragmentPlanListDialogListDialogBinding
 
 class PlanListDialogFragment : BottomSheetDialogFragment() {
