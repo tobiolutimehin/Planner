@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/list_item_spacing"
+    android:paddingTop="@dimen/list_item_spacing_half"
+    android:paddingRight="@dimen/list_item_spacing"
+    android:paddingBottom="@dimen/list_item_spacing_half">
+
+    <ImageView
+        android:id="@+id/option_image"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:importantForAccessibility="no"
+        tools:src="@drawable/bottomsheet_folder" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="8dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/option_title"
+            style="@style/TextAppearance.Material3.TitleMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Plan a Trip" />
+
+        <TextView
+            android:id="@+id/option_subtitle"
+            style="@style/TextAppearance.Material3.BodyMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Start planning for a vacation" />
+    </LinearLayout>
+</LinearLayout>
