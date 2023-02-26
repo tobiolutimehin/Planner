@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/addTripFragment"
         android:name="com.planner.feature.trips.fragment.AddTripFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_add_trip">
         <action
             android:id="@+id/action_addTripFragment_to_listTripFragment"
@@ -25,8 +24,8 @@
             app:argType="integer" />
         <argument
             android:name="title"
-            android:defaultValue="Plan a trip"
-            app:argType="string" />
+            android:defaultValue="@string/add_a_trip"
+            app:argType="reference" />
         <deepLink app:uri="android-app://com.planner.trips/addTripFragment" />
     </fragment>
     <fragment

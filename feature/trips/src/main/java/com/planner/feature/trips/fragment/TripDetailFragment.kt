@@ -67,7 +67,7 @@ class TripDetailFragment : Fragment() {
 
     fun editTrip() {
         val action = TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
-            title = getString(R.string.edit_trip),
+            title = R.string.edit_trip,
             tripId = trip.tripId,
         )
         findNavController().navigate(action)

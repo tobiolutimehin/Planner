@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -58,6 +59,11 @@ class AddTripFragment : Fragment() {
     ): View {
         _binding = FragmentAddTripBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
