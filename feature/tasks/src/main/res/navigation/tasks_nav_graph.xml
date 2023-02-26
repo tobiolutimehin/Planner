@@ -12,7 +12,7 @@
         <action
             android:id="@+id/action_addTaskManagerFragment_to_taskManagerListFragment"
             app:destination="@id/taskManagerListFragment"
-            app:popUpTo="@id/taskManagerListFragment"
+            app:popUpTo="@id/tasks_nav_graph"
             app:popUpToInclusive="true" />
         <argument
             android:name="selectedManagerType"

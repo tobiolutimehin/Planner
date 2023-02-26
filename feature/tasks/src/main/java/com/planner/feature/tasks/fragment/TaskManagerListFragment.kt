@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -30,6 +31,15 @@ class TaskManagerListFragment : Fragment() {
         arguments?.let {
             taskManagerType = it.getSerializable(TASK_MANAGER_TYPE, TaskManagerType::class.java)
         }
+
+        activity?.onBackPressedDispatcher?.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    activity?.finish()
+                }
+            },
+        )
     }
 
     override fun onCreateView(
