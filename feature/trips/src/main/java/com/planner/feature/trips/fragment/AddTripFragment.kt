@@ -63,7 +63,6 @@ class AddTripFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,6 +74,7 @@ class AddTripFragment : Fragment() {
                 bind(trip)
             }
         }
+        (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = tripViewModel
