@@ -23,5 +23,8 @@
         <action
             android:id="@+id/action_homeFragment_to_planListDialogFragment"
             app:destination="@id/planListDialogFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_tasks_nav_graph"
+            app:destination="@id/tasks_nav_graph" />
     </fragment>
 </navigation>
