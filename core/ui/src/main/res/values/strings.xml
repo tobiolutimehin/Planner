@@ -9,4 +9,12 @@
     <string name="add">Add</string>
     <string name="title">Title</string>
     <string name="dot_divider">•</string>
+    <plurals name="planning_x_trips">
+        <item quantity="one">Planning 1 Trip</item>
+        <item quantity="other">Planning %d Trips</item>
+    </plurals>
+    <plurals name="pending_x_tasks">
+        <item quantity="one">1 Pending Task</item>
+        <item quantity="other">%d Pending Tasks</item>
+    </plurals>
 </resources>
