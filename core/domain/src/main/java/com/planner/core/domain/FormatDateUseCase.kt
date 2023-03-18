@@ -23,8 +23,8 @@ class FormatDateUseCase(pattern: DatePattern = DatePattern.NUMERICAL_SLASH) {
             } else {
                 null
             }
-        } catch (_: ParseException) {
-            return null
+        } catch (e: ParseException) {
+            null
         }
     }
 
