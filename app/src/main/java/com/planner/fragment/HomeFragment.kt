@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
 import com.planner.core.ui.BaseApplication
 import com.planner.databinding.FragmentHomeBinding
@@ -41,39 +43,50 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.fab.setOnClickListener {
-            val action = HomeFragmentDirections.actionHomeFragmentToPlanListDialogFragment()
-            findNavController().navigate(action)
-        }
-
         adapter = TaskManagerListAdapter(
             context = context,
-            openDetail = {},
+            openDetail = { openPendingTaskManagement(it) },
         )
-        binding.tasksRecyclerView.adapter = adapter
 
-        tasksViewModel.tasks.observe(viewLifecycleOwner) { managerWithTasks ->
-            val pending = managerWithTasks.filter {
-                it.tasks.any { !it.isDone }
+        binding.apply {
+            fab.setOnClickListener {
+                val action = HomeFragmentDirections.actionHomeFragmentToPlanListDialogFragment()
+                findNavController().navigate(action)
             }
-            adapter.submitList(
-                pending,
-            )
-            binding.pendingTasks.text = resources.getQuantityString(
-                com.planner.core.ui.R.plurals.pending_x_tasks,
-                pending.size,
-                pending.size,
-            )
-        }
+            tasksRecyclerView.adapter = adapter
 
-        tripViewModel.trips.observe(viewLifecycleOwner) { trips ->
-            val toGo = trips.filter { it.departureTime > Date().time }.size
+            tasksViewModel.tasks.observe(viewLifecycleOwner) { managerWithTasks ->
+                val pending = managerWithTasks.filter { manager ->
+                    manager.tasks.any { !it.isDone }
+                }
+                adapter.submitList(pending)
+                pendingTasks.text = resources.getQuantityString(
+                    com.planner.core.ui.R.plurals.pending_x_tasks,
+                    pending.size,
+                    pending.size,
+                )
+            }
+            tripViewModel.trips.observe(viewLifecycleOwner) { trips ->
+                val toGo = trips.filter { it.departureTime > Date().time }.size
 
-            binding.planningTrips.text = resources.getQuantityString(
-                com.planner.core.ui.R.plurals.planning_x_trips,
-                toGo,
-                toGo,
-            )
+                planningTrips.text = resources.getQuantityString(
+                    com.planner.core.ui.R.plurals.planning_x_trips,
+                    toGo,
+                    toGo,
+                )
+            }
+
+            seeMore.setOnClickListener {
+                val action = HomeFragmentDirections.actionHomeFragmentToTasksNavGraph()
+                findNavController().navigate(action)
+            }
         }
+    }
+
+    private fun openPendingTaskManagement(id: Long) {
+        val request = NavDeepLinkRequest.Builder
+            .fromUri("android-app://com.planner.tasks/taskManagerDetailFragment?taskManagerId=$id".toUri())
+            .build()
+        findNavController().navigate(request)
     }
 }

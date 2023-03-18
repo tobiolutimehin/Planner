@@ -62,5 +62,6 @@
             android:name="taskManagerId"
             android:defaultValue="-1L"
             app:argType="long" />
+        <deepLink app:uri="android-app://com.planner.tasks/taskManagerDetailFragment?taskManagerId={taskManagerId}" />
     </fragment>
 </navigation>
