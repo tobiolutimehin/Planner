@@ -71,7 +71,7 @@ class TripDaoTest {
         assertEquals(trip.title, "Go to Nigeria")
     }
 
-    /** test nsert conflicting trip */
+    /** test insert conflicting trip */
     @Test
     fun `insert conflicting trip`() = runBlocking {
         tripDao.insert(usaTrip)
