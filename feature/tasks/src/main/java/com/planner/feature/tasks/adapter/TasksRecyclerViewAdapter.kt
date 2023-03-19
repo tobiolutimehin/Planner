@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.Task
+import com.planner.core.data.entity.strikeThrough
 import com.planner.feature.tasks.databinding.CreateTasksItemBinding
 
 class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
@@ -26,7 +27,7 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
                 button.setOnClickListener {
                     removeTask(task)
                 }
-                taskListItem.paintFlags = task.strikeThrough
+                taskListItem.paintFlags = task.isDone.strikeThrough()
             }
         }
     }

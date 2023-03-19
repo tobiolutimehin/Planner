@@ -12,6 +12,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.planner.core.data.entity.ManagerWithTasks
+import com.planner.core.data.entity.TaskEntity
 import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.R
 import com.planner.feature.tasks.adapter.ManagerDetailRecyclerViewAdapter
@@ -32,6 +33,9 @@ class TaskManagerDetailFragment : Fragment() {
         TasksViewModelFactory(((activity?.application as BaseApplication).database).taskManagerDao())
     }
 
+    private val checkedTasks = mutableSetOf<TaskEntity>()
+    private var delete = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -47,13 +51,18 @@ class TaskManagerDetailFragment : Fragment() {
 
         adapter = ManagerDetailRecyclerViewAdapter(
             onCheckChangeListener = { isChecked, task ->
-                tasksViewModel.updateTask(task.copy(isDone = isChecked))
+                if (isChecked) {
+                    checkedTasks.add(task)
+                } else {
+                    checkedTasks.remove(task)
+                }
             },
         )
 
-        tasksViewModel.getTaskManager(taskManagerId).observe(viewLifecycleOwner) {
-            taskManagerWithTasks = it
+        tasksViewModel.getTaskManager(taskManagerId).observe(viewLifecycleOwner) { manager ->
+            taskManagerWithTasks = manager
             adapter.submitList(taskManagerWithTasks.tasks)
+            checkedTasks.addAll(taskManagerWithTasks.tasks.filter { it.isDone })
             (activity as AppCompatActivity).supportActionBar?.title =
                 context?.getString(taskManagerWithTasks.taskManager.type.toTitleName())
 
@@ -86,6 +95,7 @@ class TaskManagerDetailFragment : Fragment() {
 
     private fun deleteTaskManager() {
         tasksViewModel.deleteTaskManager(taskManagerWithTasks.taskManager)
+        delete = true
         goBackToTaskManagerList()
     }
 
@@ -110,5 +120,18 @@ class TaskManagerDetailFragment : Fragment() {
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!delete) {
+            tasksViewModel.updateTaskManagerWithTaskEntity(
+                taskManagerWithTasks.tasks.map {
+                    it.copy(
+                        isDone = it in checkedTasks,
+                    )
+                },
+            )
+        }
     }
 }

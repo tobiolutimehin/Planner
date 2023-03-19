@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.TaskEntity
+import com.planner.core.data.entity.strikeThrough
 import com.planner.feature.tasks.databinding.TaskChecklistItemBinding
 
 class ManagerDetailRecyclerViewAdapter(private val onCheckChangeListener: (Boolean, TaskEntity) -> Unit) :
@@ -17,10 +18,11 @@ class ManagerDetailRecyclerViewAdapter(private val onCheckChangeListener: (Boole
             binding.apply {
                 checkbox.isChecked = task.isDone
                 taskText.text = task.description
-                taskText.paintFlags = task.strikeThrough
+                taskText.paintFlags = task.isDone.strikeThrough()
 
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
                     onCheckChangeListener(isChecked, task)
+                    taskText.paintFlags = isChecked.strikeThrough()
                 }
             }
         }
