@@ -31,13 +31,18 @@ class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
         dao.deleteTaskManagerWithTasks(taskManagerEntity)
     }
 
-    fun updateTask(taskEntity: TaskEntity) = viewModelScope.launch {
+    private fun updateTask(taskEntity: TaskEntity) = viewModelScope.launch {
         dao.updateTask(taskEntity)
     }
 
     fun updateTaskManager(taskManagerEntity: TaskManagerEntity, tasks: List<Task>) =
         viewModelScope.launch {
             dao.updateTaskManagerWithTasks(taskManagerEntity, tasks)
+        }
+
+    fun updateTaskManagerWithTaskEntity(tasks: List<TaskEntity>) =
+        viewModelScope.launch {
+            tasks.forEach { updateTask(it) }
         }
 }
 

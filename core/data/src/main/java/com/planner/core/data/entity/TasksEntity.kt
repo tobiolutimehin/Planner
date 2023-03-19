@@ -3,7 +3,6 @@ package com.planner.core.data.entity
 import android.graphics.Paint
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "task")
@@ -18,11 +17,13 @@ data class TaskEntity(
     @ColumnInfo(name = "task_manager_id")
     val taskManagerId: Long,
 ) {
-    @Ignore
-    val strikeThrough = this.isDone.strikeThrough()
-
     fun toTask() =
-        Task(description = this.description, contributor = this.contributor, isDone = this.isDone)
+        Task(
+            description = this.description,
+            contributor = this.contributor,
+            isDone = this.isDone,
+            id = taskId.toLong(),
+        )
 }
 
 data class Task(
@@ -37,11 +38,9 @@ data class Task(
         contributor = this.contributor,
         taskManagerId = taskManagerId,
     )
-
-    val strikeThrough = this.isDone.strikeThrough()
 }
 
-private fun Boolean.strikeThrough() = if (this@strikeThrough) {
+fun Boolean.strikeThrough() = if (this@strikeThrough) {
     Paint.STRIKE_THRU_TEXT_FLAG
 } else {
     0
