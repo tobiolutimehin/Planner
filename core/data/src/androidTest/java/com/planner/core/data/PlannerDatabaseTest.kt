@@ -31,7 +31,7 @@ class PlannerDatabaseTest {
         destination = "Maryland",
         departureTime = 100000L,
         arrivalTime = null,
-        notes = null
+        notes = null,
     )
 
     private val nigeriaTrip = TripEntity(
@@ -41,16 +41,16 @@ class PlannerDatabaseTest {
         destination = "Maryland",
         departureTime = 100000L,
         arrivalTime = null,
-        notes = null
+        notes = null,
     )
-
 
     /** Create the [PlannerDatabase] before each test is run */
     @Before
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(
-            context, PlannerDatabase::class.java
+            context,
+            PlannerDatabase::class.java,
         ).build()
         tripDao = db.tripDao()
     }
@@ -104,9 +104,9 @@ class PlannerDatabaseTest {
     @Test
     fun `fetch a new trip`() = runBlocking {
         tripDao.insert(usaTrip)
-        
+
         val trips = tripDao.getTrips().first()
-        
+
         assertEquals(trips.first().tripId, 1)
     }
 
@@ -119,7 +119,6 @@ class PlannerDatabaseTest {
         val nigerianTrip = tripDao.getTrip(2).first()
 
         assertEquals(nigerianTrip.title, "Go to Nigeria")
-
     }
 
     /** Test fetch unavailable trip to the [PlannerDatabase.tripDao] */
@@ -135,7 +134,7 @@ class PlannerDatabaseTest {
     fun `delete trip`() = runBlocking {
         tripDao.insert(usaTrip)
         tripDao.delete(usaTrip)
-        
+
         assertTrue(tripDao.getTrips().first().isEmpty())
     }
 
@@ -158,12 +157,12 @@ class PlannerDatabaseTest {
             destination = "Maryland",
             departureTime = 100000L,
             arrivalTime = null,
-            notes = null
+            notes = null,
         )
-        
+
         tripDao.insert(usaTrip)
         tripDao.update(updatedUsaTrip)
-        
+
         assertEquals(tripDao.getTrip(1).first().title, "Go to Nigeria")
     }
 
@@ -177,7 +176,7 @@ class PlannerDatabaseTest {
             destination = "Maryland",
             departureTime = 100000L,
             arrivalTime = null,
-            notes = null
+            notes = null,
         )
 
         tripDao.insert(usaTrip)

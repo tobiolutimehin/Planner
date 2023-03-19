@@ -23,7 +23,7 @@ class TripDaoTest {
         destination = "Maryland",
         departureTime = 100000L,
         arrivalTime = null,
-        notes = null
+        notes = null,
     )
 
     private val usaTrip = TripEntity(
@@ -33,9 +33,8 @@ class TripDaoTest {
         destination = "Maryland",
         departureTime = 100000L,
         arrivalTime = null,
-        notes = null
+        notes = null,
     )
-
 
     /** create dao */
     @Before
@@ -109,7 +108,7 @@ class TripDaoTest {
             destination = "Maryland",
             departureTime = 100000L,
             arrivalTime = null,
-            notes = null
+            notes = null,
         )
 
         tripDao.update(updatedUsaTrip)
@@ -127,7 +126,7 @@ class TripDaoTest {
             destination = "Maryland",
             departureTime = 100000L,
             arrivalTime = null,
-            notes = null
+            notes = null,
         )
 
         tripDao.update(unavailableTrip)

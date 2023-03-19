@@ -12,6 +12,12 @@ import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
 import com.planner.core.data.entity.TripEntity
 
+/**
+ * The Room database for the Planner app.
+ *
+ * @property tripDao The Data Access Object for managing [TripEntity] instances.
+ * @property taskManagerDao The Data Access Object for managing [TaskManagerEntity] instances.
+ */
 @Database(
     entities = [TripEntity::class, TaskManagerEntity::class, TaskEntity::class],
     version = 5,
@@ -23,8 +29,15 @@ abstract class PlannerDatabase : RoomDatabase() {
     abstract fun taskManagerDao(): TaskManagerDao
 
     companion object {
+        @Volatile
         private var INSTANCE: PlannerDatabase? = null
 
+        /**
+         * Returns the singleton instance of [PlannerDatabase].
+         *
+         * @param context The application context.
+         * @return The singleton instance of [PlannerDatabase].
+         */
         fun getDatabase(context: Context): PlannerDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room

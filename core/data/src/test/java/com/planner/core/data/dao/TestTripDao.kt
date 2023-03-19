@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 
-class TestTripDao: TripDao {
+class TestTripDao : TripDao {
 
     private var entitiesStateFlow = MutableStateFlow(
         listOf(
@@ -17,9 +17,9 @@ class TestTripDao: TripDao {
                 destination = "Maryland",
                 departureTime = 100000L,
                 arrivalTime = null,
-                notes = null
-            )
-        )
+                notes = null,
+            ),
+        ),
     )
     override suspend fun insert(trip: TripEntity) {
         entitiesStateFlow.update { entities ->
