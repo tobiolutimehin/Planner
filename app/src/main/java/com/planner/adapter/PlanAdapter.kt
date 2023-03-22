@@ -4,13 +4,18 @@ import android.content.Context
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.databinding.FragmentPlanListDialogListDialogItemBinding
 import com.planner.feature.tasks.R
+import com.planner.model.BottomSheetItem
 
+/**
+ * Adapter for the bottom sheet list in the PlanListDialogFragment.
+ *
+ * @param onClick Lambda function to handle item click events.
+ * @property options List of options to display in the bottom sheet.
+ */
 class PlanAdapter(private val onClick: (Uri) -> Unit) :
     RecyclerView.Adapter<PlanAdapter.ViewHolder>() {
 
@@ -29,11 +34,24 @@ class PlanAdapter(private val onClick: (Uri) -> Unit) :
         ),
     )
 
+    /**
+     * View holder for a bottom sheet item.
+     *
+     * @param binding View binding for the item layout.
+     * @param context The context used to retrieve string resources.
+     * @param clickOption Lambda function to handle item click events.
+     */
     class ViewHolder(
         private var binding: FragmentPlanListDialogListDialogItemBinding,
         private val context: Context?,
         private val clickOption: (Uri) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
+
+        /**
+         * Binds a bottom sheet item to the view holder.
+         *
+         * @param option The bottom sheet item to bind.
+         */
         fun bind(option: BottomSheetItem) {
             binding.apply {
                 optionImage.setImageResource(option.imgSrc)
@@ -63,10 +81,3 @@ class PlanAdapter(private val onClick: (Uri) -> Unit) :
 
     override fun getItemCount(): Int = options.size
 }
-
-data class BottomSheetItem(
-    @DrawableRes val imgSrc: Int,
-    @StringRes val title: Int,
-    @StringRes val subtitle: Int,
-    val uri: String,
-)
