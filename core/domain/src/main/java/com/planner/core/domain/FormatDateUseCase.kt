@@ -9,8 +9,6 @@ import java.util.TimeZone
  * A use case for formatting dates and converting them to a time long value.
  *
  * @param pattern The pattern to use for formatting dates.
- * @property datePattern The date pattern string used for formatting dates
- * @property outputDateFormat The date format to use for outputting formatted dates.
  */
 class FormatDateUseCase(pattern: DatePattern = DatePattern.NUMERICAL_SLASH) {
 
