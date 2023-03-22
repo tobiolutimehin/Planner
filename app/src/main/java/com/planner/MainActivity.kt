@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         return super.onSupportNavigateUp() || navController.navigateUp()
     }
 
+    /** Setup bottom action bar for bottom navigation support */
     private fun setUpBottomNav() {
         with(binding) {
             setSupportActionBar(this@with.toolbar)
@@ -60,6 +61,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * Sets up a listener to show or hide the bottom navigation menu based on the current destination.
+     * When the user navigates to certain destinations (e.g. listTripFragment, taskManagerListFragment, or homeFragment),
+     * the bottom navigation menu will be shown. For all other destinations, the bottom navigation menu will be hidden.
+     */
     private fun showBottomNav() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {

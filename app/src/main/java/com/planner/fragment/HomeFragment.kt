@@ -18,6 +18,9 @@ import com.planner.feature.trips.viewmodel.TripsViewModel
 import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 import java.util.Date
 
+/**
+ * This fragment displays a summary of pending tasks and upcoming trips.
+ */
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -49,44 +52,58 @@ class HomeFragment : Fragment() {
         )
 
         binding.apply {
-            fab.setOnClickListener {
-                val action = HomeFragmentDirections.actionHomeFragmentToPlanListDialogFragment()
-                findNavController().navigate(action)
-            }
+            fab.setOnClickListener { openPlanListDialog() }
+            seeMore.setOnClickListener { openTasksFragment() }
             tasksRecyclerView.adapter = adapter
 
             tasksViewModel.tasks.observe(viewLifecycleOwner) { managerWithTasks ->
-                val pending = managerWithTasks.filter { manager ->
+                val pendingTasks = managerWithTasks.filter { manager ->
                     manager.tasks.any { !it.isDone }
                 }
-                adapter.submitList(pending)
-                pendingTasks.text = resources.getQuantityString(
+                adapter.submitList(pendingTasks)
+                this.pendingTasks.text = resources.getQuantityString(
                     com.planner.core.ui.R.plurals.pending_x_tasks,
-                    pending.size,
-                    pending.size,
+                    pendingTasks.size,
+                    pendingTasks.size,
                 )
             }
             tripViewModel.trips.observe(viewLifecycleOwner) { trips ->
-                val toGo = trips.filter { it.departureTime > Date().time }.size
-
+                val upcomingTrips = trips.filter { it.departureTime > Date().time }.size
                 planningTrips.text = resources.getQuantityString(
                     com.planner.core.ui.R.plurals.planning_x_trips,
-                    toGo,
-                    toGo,
+                    upcomingTrips,
+                    upcomingTrips,
                 )
-            }
-
-            seeMore.setOnClickListener {
-                val action = HomeFragmentDirections.actionHomeFragmentToTasksNavGraph()
-                findNavController().navigate(action)
             }
         }
     }
 
+    /** Navigates to the Tasks List */
+    private fun openTasksFragment() {
+        val action = HomeFragmentDirections.actionHomeFragmentToTasksNavGraph()
+        findNavController().navigate(action)
+    }
+
+    /**
+     * Navigates to the PlanListDialogFragment dialog.
+     */
+    private fun openPlanListDialog() {
+        val action = HomeFragmentDirections.actionHomeFragmentToPlanListDialogFragment()
+        findNavController().navigate(action)
+    }
+
+    /**
+     * Opens the task details screen for the given task manager [id].
+     */
     private fun openPendingTaskManagement(id: Long) {
         val request = NavDeepLinkRequest.Builder
             .fromUri("android-app://com.planner.tasks/taskManagerDetailFragment?taskManagerId=$id".toUri())
             .build()
         findNavController().navigate(request)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
