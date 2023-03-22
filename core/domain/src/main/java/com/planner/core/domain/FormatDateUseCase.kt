@@ -5,6 +5,13 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
+/**
+ * A use case for formatting dates and converting them to a time long value.
+ *
+ * @param pattern The pattern to use for formatting dates.
+ * @property datePattern The date pattern string used for formatting dates
+ * @property outputDateFormat The date format to use for outputting formatted dates.
+ */
 class FormatDateUseCase(pattern: DatePattern = DatePattern.NUMERICAL_SLASH) {
 
     private val datePattern = when (pattern) {
@@ -16,6 +23,12 @@ class FormatDateUseCase(pattern: DatePattern = DatePattern.NUMERICAL_SLASH) {
         timeZone = TimeZone.getDefault()
     }
 
+    /**
+     * Gets the time long value for a given date string.
+     *
+     * @param time The date string to convert to a time long value.
+     * @return The time long value for the given date string, or null if the string is invalid.
+     */
     fun getTimeLong(time: String?): Long? {
         return try {
             if (time != null) {
@@ -28,9 +41,18 @@ class FormatDateUseCase(pattern: DatePattern = DatePattern.NUMERICAL_SLASH) {
         }
     }
 
+    /**
+     * Formats a time long value as a date string.
+     *
+     * @param time The time long value to format.
+     * @return The formatted date string.
+     */
     fun format(time: Long): String = outputDateFormat.format(time)
 }
 
+/**
+ * An enumeration of date patterns that can be used for formatting dates.
+ */
 enum class DatePattern {
     NUMERICAL_SLASH, LITERAL
 }
