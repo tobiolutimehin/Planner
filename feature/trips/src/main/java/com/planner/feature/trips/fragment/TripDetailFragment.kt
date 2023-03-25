@@ -20,6 +20,9 @@ import com.planner.feature.trips.databinding.FragmentTripDetailBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
 import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
+/**
+ * A [Fragment] subclass to display the details of a selected trip.
+ */
 class TripDetailFragment : Fragment() {
 
     private val tripViewModel: TripsViewModel by activityViewModels {
@@ -28,7 +31,12 @@ class TripDetailFragment : Fragment() {
 
     private var _binding: FragmentTripDetailBinding? = null
     private val binding get() = _binding!!
+
     private val arguments: TripDetailFragmentArgs by navArgs()
+
+    /**
+     * The [TripEntity] to be displayed.
+     */
     private lateinit var trip: TripEntity
 
     override fun onCreateView(
@@ -49,6 +57,11 @@ class TripDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Binds the [TripEntity] data to the UI.
+     *
+     * @param trip the [TripEntity] to bind
+     */
     private fun bind(trip: TripEntity) {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
@@ -63,8 +76,14 @@ class TripDetailFragment : Fragment() {
         }
     }
 
+    /**
+     * Deletes the [TripEntity].
+     */
     fun deleteTrip() = showConfirmationDialog()
 
+    /**
+     * Edits the [TripEntity].
+     */
     fun editTrip() {
         val action = TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
             title = R.string.edit_trip,
@@ -73,6 +92,9 @@ class TripDetailFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    /**
+     * Deletes the [TripEntity] after confirmation from the user.
+     */
     private fun confirmDelete() {
         val tripImage = trip.tripImageUrl
 
@@ -85,6 +107,9 @@ class TripDetailFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    /**
+     * Shows the delete confirmation dialog.
+     */
     private fun showConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(com.planner.core.ui.R.string.delete_sure))

@@ -39,6 +39,12 @@ class AddTripFragment : Fragment() {
     private val formatDateUseCase = FormatDateUseCase()
     private lateinit var trip: TripEntity
 
+    /**
+     * This value registers an activity result launcher to pick an image from the device's gallery.
+     * It sets the selected image to the tripImage view in the binding, and saves the image to
+     * internal storage using the tripViewModel. The URI of the saved image is stored in the
+     * storageUri variable.
+     */
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
@@ -61,10 +67,6 @@ class AddTripFragment : Fragment() {
         return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments.tripId
@@ -84,6 +86,9 @@ class AddTripFragment : Fragment() {
         }
     }
 
+    /**
+     * Binds [trip] data to the views in this fragment.
+     */
     private fun bind(trip: TripEntity) {
         binding.apply {
             tripTitleEditText.setText(trip.title, TextView.BufferType.SPANNABLE)
@@ -101,6 +106,9 @@ class AddTripFragment : Fragment() {
         }
     }
 
+    /**
+     * Opens a date picker dialog to select a departure date for the trip.
+     */
     fun openDatePicker() {
         val constraintsBuilder = CalendarConstraints.Builder()
             .setValidator(DateValidatorPointForward.now())
@@ -121,13 +129,22 @@ class AddTripFragment : Fragment() {
         datePicker.show(requireActivity().supportFragmentManager, TAG)
     }
 
+    /**
+     * Opens a photo picker dialog to select an image for the trip.
+     */
     fun openPhotoPicker() =
         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
+    /**
+     * Closes the fragment, either by popping it off the navigation stack or finishing the activity if it's the only one.
+     */
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()
     }
 
+    /**
+     * Saves the trip data to the database and navigates to the list of trips fragment.
+     */
     fun save() {
         tripViewModel.insert(
             tripImageUrl = storageUri,
@@ -138,6 +155,9 @@ class AddTripFragment : Fragment() {
         goToListTripFragment()
     }
 
+    /**
+     * Updates the trip data in the database and navigates to the list of trips fragment.
+     */
     private fun update() {
         tripViewModel.update(
             tripImageUrl = storageUri,
@@ -149,15 +169,25 @@ class AddTripFragment : Fragment() {
         goToListTripFragment()
     }
 
+    /**
+     * Navigates to the list of trips fragment.
+     */
     private fun goToListTripFragment() {
         val action = AddTripFragmentDirections.actionAddTripFragmentToListTripFragment()
         findNavController().navigate(action)
     }
 
+    /**
+     * Updates the state of the save button based on whether all required fields are filled in.
+     * The button is enabled if all fields are filled in, and disabled otherwise.
+     */
     private fun updateSaveButton() {
         binding.saveButton.isEnabled = isButtonEnabled()
     }
 
+    /**
+     * Returns true if all required fields are filled in.
+     */
     fun isButtonEnabled(): Boolean {
         return with(binding) {
             !tripTitleEditText.text.isNullOrBlank() && !departureDateEditText.text.isNullOrBlank() && !destinationEditText.text.isNullOrBlank()
@@ -169,6 +199,10 @@ class AddTripFragment : Fragment() {
         super.onDestroyView()
     }
 
+    /**
+     * A [TextWatcher] that listens for changes in the text of the input fields in the UI,
+     * and updates the state of the save button accordingly.
+     */
     private val textWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun afterTextChanged(s: Editable?) {}

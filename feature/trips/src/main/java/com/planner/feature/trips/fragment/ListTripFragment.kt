@@ -15,7 +15,9 @@ import com.planner.feature.trips.databinding.FragmentItemListTripBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
 import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
-/** A fragment representing a list of Items. */
+/**
+ * A [Fragment] subclass for displaying a list of trips.
+ */
 class ListTripFragment : Fragment() {
 
     private val tripViewModel: TripsViewModel by activityViewModels {
@@ -48,6 +50,11 @@ class ListTripFragment : Fragment() {
         }
     }
 
+    /**
+     * Navigates to the [TripDetailFragment] for the specified trip.
+     * @param tripId The ID of the trip to display.
+     * @param title The title of the fragment.
+     */
     private fun openTripDetail(tripId: Int, title: String) {
         val action = ListTripFragmentDirections.actionListTripFragmentToTripDetailFragment(
             fragmentTitle = title,
@@ -56,6 +63,9 @@ class ListTripFragment : Fragment() {
         findNavController().navigate(action)
     }
 
+    /**
+     * Navigates to the [AddTripFragment].
+     */
     private fun openAddTripFragment() {
         val action =
             ListTripFragmentDirections.actionListTripFragmentToAddTripFragment(title = R.string.add_a_trip)
@@ -69,6 +79,7 @@ class ListTripFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         activity?.onBackPressedDispatcher?.addCallback(
             this,
             object : OnBackPressedCallback(true) {

@@ -19,9 +19,26 @@ import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
 
+/**
+ * View model for [TripEntity] and [TripDao] interaction.
+ *
+ * @param dao the data access object for trips
+ */
 class TripsViewModel(private val dao: TripDao) : ViewModel() {
+
+    /**
+     * LiveData object for observing a list of all trips from the DAO.
+     */
     val trips: LiveData<List<TripEntity>> = dao.getTrips().asLiveData()
 
+    /**
+     * Inserts a new trip into the DAO.
+     *
+     * @param tripImageUrl the URL of the trip image, if any
+     * @param departureTime the departure time of the trip in milliseconds
+     * @param destination the destination of the trip
+     * @param title the title of the trip
+     */
     fun insert(
         tripImageUrl: String?,
         departureTime: Long,
@@ -38,8 +55,21 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         )
     }
 
+    /**
+     * Retrieves a single trip with the given ID from the DAO.
+     *
+     * @param id the ID of the trip to retrieve
+     * @return a LiveData object for observing the retrieved trip
+     */
     fun getTrip(id: Int): LiveData<TripEntity> = dao.getTrip(id).asLiveData()
 
+    /**
+     * Decodes a bitmap from the given URI.
+     *
+     * @param context the context in which to perform the operation
+     * @param uri the URI from which to decode the bitmap
+     * @return the decoded bitmap, or null if decoding failed
+     */
     internal fun getBitmapFromUri(context: Context, uri: Uri): Bitmap? {
         val parcelFileDescriptor = context.contentResolver.openFileDescriptor(uri, "r")
         val fileDescriptor = parcelFileDescriptor?.fileDescriptor
@@ -48,6 +78,13 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         return image
     }
 
+    /**
+     * Saves the given bitmap to internal storage and returns the file path.
+     *
+     * @param bitmap the bitmap to save
+     * @param context the context in which to perform the operation
+     * @return the file path of the saved bitmap
+     */
     internal fun saveBitmapToInternalStorage(bitmap: Bitmap, context: Context): String {
         // Get the context wrapper
         val wrapper = ContextWrapper(context)
@@ -70,6 +107,12 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         return file.absolutePath
     }
 
+    /**
+     * Deletes the bitmap with the given file name from internal storage.
+     *
+     * @param context the context in which to perform the operation
+     * @param fileName the file name of the bitmap to delete
+     */
     fun deleteBitmapFromInternalStorage(context: Context, fileName: String) {
         // Get the context wrapper
         val wrapper = ContextWrapper(context)
@@ -85,10 +128,24 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
         }
     }
 
+    /**
+     * Deletes a [TripEntity] from the database asynchronously using the [viewModelScope].
+     *
+     * @param trip The [TripEntity] to be deleted.
+     */
     fun delete(trip: TripEntity) = viewModelScope.launch {
         dao.delete(trip)
     }
 
+    /**
+     * Updates a [TripEntity] in the database asynchronously using the [viewModelScope].
+     *
+     * @param tripImageUrl The URL of the image for the [TripEntity], or null if there is no image.
+     * @param departureTime The departure time of the [TripEntity].
+     * @param destination The destination of the [TripEntity].
+     * @param title The title of the [TripEntity].
+     * @param trip The [TripEntity] to be updated.
+     */
     fun update(
         tripImageUrl: String?,
         departureTime: Long,
@@ -106,6 +163,10 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
     }
 }
 
+/**
+ * Factory class that creates [TripsViewModel] instances.
+ * @property dao the [TripDao] instance used by the [TripsViewModel] to access data.
+ */
 class TripsViewModelFactory(private val dao: TripDao) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(TripsViewModel::class.java)) {
