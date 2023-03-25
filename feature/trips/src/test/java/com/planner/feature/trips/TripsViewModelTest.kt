@@ -30,7 +30,7 @@ class TripsViewModelTest {
     private val testTripObject = TripEntity(
         title = "Trip to the US",
         destination = "USA",
-        departureTime = 1000L
+        departureTime = 1000L,
     )
     private val testTrips = listOf(testTripObject)
 
@@ -68,7 +68,7 @@ class TripsViewModelTest {
             destination = "USA",
             departureTime = 1000L,
             tripImageUrl = null,
-            trip = testTripObject
+            trip = testTripObject,
         )
         verifyBlocking(testTripDao) { update(testTripObject) }
     }
@@ -87,7 +87,7 @@ class TripsViewModelTest {
             title = "Trip to the US",
             destination = "USA",
             departureTime = 1000L,
-            tripImageUrl = null
+            tripImageUrl = null,
         )
     }
 
