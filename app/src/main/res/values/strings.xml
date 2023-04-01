@@ -7,4 +7,5 @@
     <string name="start_new_project_subtitle">Start planning your new project!</string>
     <string name="see_more">See more</string>
     <string name="pending_tasks">Pending Tasks</string>
+    <string name="hi_there_you_have_no_pending_tasks">Hi there! You have no pending tasks!</string>
 </resources>

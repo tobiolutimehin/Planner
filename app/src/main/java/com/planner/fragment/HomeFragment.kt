@@ -52,10 +52,11 @@ class HomeFragment : Fragment() {
         )
 
         binding.apply {
-            fab.setOnClickListener { openPlanListDialog() }
-            seeMore.setOnClickListener { openTasksFragment() }
-            tasksRecyclerView.adapter = adapter
+            viewModel = tasksViewModel
+            lifecycleOwner = viewLifecycleOwner
+            fragment = this@HomeFragment
 
+            tasksRecyclerView.adapter = adapter
             tasksViewModel.tasks.observe(viewLifecycleOwner) { managerWithTasks ->
                 val pendingTasks = managerWithTasks.filter { manager ->
                     manager.tasks.any { !it.isDone }
@@ -79,7 +80,7 @@ class HomeFragment : Fragment() {
     }
 
     /** Navigates to the Tasks List */
-    private fun openTasksFragment() {
+    fun openTasksFragment() {
         val action = HomeFragmentDirections.actionHomeFragmentToTasksNavGraph()
         findNavController().navigate(action)
     }
@@ -87,7 +88,7 @@ class HomeFragment : Fragment() {
     /**
      * Navigates to the PlanListDialogFragment dialog.
      */
-    private fun openPlanListDialog() {
+    fun openPlanListDialog() {
         val action = HomeFragmentDirections.actionHomeFragmentToPlanListDialogFragment()
         findNavController().navigate(action)
     }
