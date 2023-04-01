@@ -100,7 +100,7 @@ class TripDetailFragment : Fragment() {
 
         tripViewModel.delete(trip)
         tripImage?.let {
-//            tripViewModel.deleteBitmapFromInternalStorage(requireContext(), it)
+            tripViewModel.deleteBitmapUsingAbsolutePath(tripImage)
         }
 
         val action = TripDetailFragmentDirections.actionTripDetailFragmentToListTripFragment()

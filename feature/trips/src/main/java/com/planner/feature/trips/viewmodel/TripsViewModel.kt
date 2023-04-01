@@ -108,24 +108,13 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
     }
 
     /**
-     * Deletes the bitmap with the given file name from internal storage.
+     * Deletes the bitmap file at the specified absolute path.
      *
-     * @param context the context in which to perform the operation
-     * @param fileName the file name of the bitmap to delete
+     * @param path the absolute path of the bitmap file to delete
      */
-    fun deleteBitmapFromInternalStorage(context: Context, fileName: String) {
-        // Get the context wrapper
-        val wrapper = ContextWrapper(context)
-
-        // TODO work to be done
-
-        // Initialize a new file instance
-        val file = File(wrapper.getDir("Images", Context.MODE_PRIVATE), fileName)
-
-        // Delete the file
-        if (file.exists()) {
-            file.delete()
-        }
+    fun deleteBitmapUsingAbsolutePath(path: String) {
+        val file = File(path)
+        file.delete()
     }
 
     /**
