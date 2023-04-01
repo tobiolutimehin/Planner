@@ -50,6 +50,15 @@ class TaskManagerListFragment : Fragment() {
         binding.tasksRecyclerView.adapter = adapter
 
         tasksViewModel.tasks.observe(viewLifecycleOwner) { managerWithTasks ->
+            if (managerWithTasks.none { it.taskManager.type == taskManagerType }) {
+                binding.tasksRecyclerView.visibility = View.GONE
+                binding.noTasksImage.visibility = View.VISIBLE
+                binding.noTasksText.visibility = View.VISIBLE
+            } else {
+                binding.tasksRecyclerView.visibility = View.VISIBLE
+                binding.noTasksImage.visibility = View.GONE
+                binding.noTasksText.visibility = View.GONE
+            }
             adapter.submitList(managerWithTasks.filter { it.taskManager.type == taskManagerType })
         }
     }

@@ -41,7 +41,17 @@ class ListTripFragment : Fragment() {
             openTripDetail(it.tripId, it.title)
         }
 
-        tripViewModel.trips.observe(viewLifecycleOwner) { adapter.submitList(it) }
+        tripViewModel.trips.observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                binding.recyclerView.visibility = View.GONE
+                binding.noTripsText.visibility = View.VISIBLE
+            } else {
+                binding.recyclerView.visibility = View.VISIBLE
+                binding.noTripsText.visibility = View.GONE
+            }
+
+            adapter.submitList(it)
+        }
 
         binding.apply {
             recyclerView.adapter = adapter

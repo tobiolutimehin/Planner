@@ -11,4 +11,5 @@
     <string name="delete_question">Are you sure you want to delete this trip?</string>
     <string name="edit_trip">"Edit Trip"</string>
     <string name="add_new_trip">Add new trip</string>
+    <string name="no_trips_planned_yet">No trips planned… yet!</string>
 </resources>

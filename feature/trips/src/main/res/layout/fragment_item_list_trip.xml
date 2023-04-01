@@ -22,8 +22,23 @@
             android:scrollbars="vertical"
             app:layoutManager="LinearLayoutManager"
             tools:context=".fragment.ListTripFragment"
+            android:visibility="gone"
             tools:listitem="@layout/fragment_item_trip" />
     </androidx.core.widget.NestedScrollView>
+
+    <TextView
+        android:id="@+id/no_trips_text"
+        style="@style/TextAppearance.Material3.TitleMedium"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:gravity="center_horizontal"
+        android:text="@string/no_trips_planned_yet"
+        app:drawableTint="?attr/colorPrimary"
+        app:drawableTopCompat="@drawable/larry_map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
