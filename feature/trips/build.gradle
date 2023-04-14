@@ -47,13 +47,12 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
 
-    // Room
-    implementation "androidx.room:room-runtime:2.5.1"
+    implementation "androidx.room:room-runtime:2.5.0"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation "androidx.room:room-ktx:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
-    kapt "androidx.room:room-compiler:2.5.1"
+    implementation "androidx.room:room-ktx:2.5.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.5.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
+    kapt "androidx.room:room-compiler:2.5.0"
 
     // Androidx
     implementation "androidx.fragment:fragment-ktx:1.5.5"
