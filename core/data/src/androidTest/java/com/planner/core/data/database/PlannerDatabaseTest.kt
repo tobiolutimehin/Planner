@@ -1,11 +1,10 @@
-package com.planner.core.data
+package com.planner.core.data.database
 
 import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.planner.core.data.dao.TripDao
-import com.planner.core.data.database.PlannerDatabase
 import com.planner.core.data.entity.TripEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
