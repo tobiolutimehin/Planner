@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -55,7 +56,7 @@ dependencies {
     implementation "androidx.room:room-ktx:2.5.0"
     implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    kapt "androidx.room:room-compiler:2.5.0"
+    ksp "androidx.room:room-compiler:2.5.0"
 
     // Androidx
     implementation "androidx.fragment:fragment-ktx:1.5.5"
