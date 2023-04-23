@@ -1,6 +1,5 @@
-package com.planner.core.data
+package com.planner.core.data.dao
 
-import com.planner.core.data.dao.TestTripDao
 import com.planner.core.data.entity.TripEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking

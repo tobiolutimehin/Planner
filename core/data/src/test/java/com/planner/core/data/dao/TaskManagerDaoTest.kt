@@ -1,6 +1,5 @@
-package com.planner.core.data
+package com.planner.core.data.dao
 
-import com.planner.core.data.dao.TestTaskManagerDao
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerEntity
 import kotlinx.coroutines.flow.first
