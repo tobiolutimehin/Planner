@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.planner.core.ui.BaseApplication
-import com.planner.feature.trips.R
 import com.planner.feature.trips.adapter.TripRecyclerViewAdapter
 import com.planner.feature.trips.databinding.FragmentItemListTripBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
@@ -77,7 +76,7 @@ class ListTripFragment : Fragment() {
      */
     private fun openAddTripFragment() {
         val action =
-            ListTripFragmentDirections.actionListTripFragmentToAddTripFragment(title = R.string.add_a_trip)
+            ListTripFragmentDirections.actionListTripFragmentToContactListFragment()
         findNavController().navigate(action)
     }
 

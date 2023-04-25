@@ -27,6 +27,9 @@
             android:defaultValue="@string/add_a_trip"
             app:argType="reference" />
         <deepLink app:uri="android-app://com.planner.trips/addTripFragment" />
+        <action
+            android:id="@+id/action_addTripFragment_to_contactListFragment"
+            app:destination="@id/contactListFragment" />
     </fragment>
     <fragment
         android:id="@+id/listTripFragment"
@@ -43,6 +46,9 @@
             android:id="@+id/action_listTripFragment_to_tripDetailFragment"
             app:destination="@id/tripDetailFragment"
             app:launchSingleTop="false" />
+        <action
+            android:id="@+id/action_listTripFragment_to_contactListFragment"
+            app:destination="@id/contactListFragment" />
     </fragment>
     <fragment
         android:id="@+id/tripDetailFragment"
@@ -64,4 +70,9 @@
             android:id="@+id/action_tripDetailFragment_to_addTripFragment"
             app:destination="@id/addTripFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/contactListFragment"
+        android:name="com.planner.feature.trips.fragment.ContactListFragment"
+        android:label="Contacts"
+        tools:layout="@layout/fragment_contact_list" />
 </navigation>

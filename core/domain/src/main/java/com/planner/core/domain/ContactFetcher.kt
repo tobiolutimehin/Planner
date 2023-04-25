@@ -8,16 +8,18 @@ import android.provider.ContactsContract
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.planner.core.data.entity.Contact
 
 interface ContactFetcher {
-    fun fetchContactList()
+    fun fetchContactList(): Set<Contact>
 }
 
 class ContactFetcherImpl(
     private val context: Context,
     private val activity: Activity,
 ) : ContactFetcher {
-    override fun fetchContactList() {
+    override fun fetchContactList(): Set<Contact> {
+        val contactList = mutableListOf<Contact>()
         if (ContextCompat.checkSelfPermission(
                 context,
                 Manifest.permission.READ_CONTACTS,
@@ -67,10 +69,7 @@ class ContactFetcherImpl(
                                                         ContactsContract.CommonDataKinds.Phone.NUMBER,
                                                     ),
                                                 )
-                                            Log.d(
-                                                "tobistuff",
-                                                "name: $name, number: $number, id: $id",
-                                            )
+                                            contactList.add(Contact(id.toInt(), name, number))
                                         }
                                     }
                                 }
@@ -86,6 +85,7 @@ class ContactFetcherImpl(
                 Log.e(TAG, "exception: $exception")
             }
         }
+        return contactList.distinctBy { it.id }.toSet()
     }
 
     companion object {
