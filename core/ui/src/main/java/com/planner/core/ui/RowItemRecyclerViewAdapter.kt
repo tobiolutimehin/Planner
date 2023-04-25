@@ -1,4 +1,4 @@
-package com.planner.feature.tasks.adapter
+package com.planner.core.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.strikeThrough
-import com.planner.feature.tasks.databinding.CreateTasksItemBinding
+import com.planner.core.ui.databinding.RowItemBinding
 
-class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
-    ListAdapter<Task, TasksRecyclerViewAdapter.ViewHolder>(DiffCallback) {
+class RowItemRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
+    ListAdapter<Task, RowItemRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(
-        private var binding: CreateTasksItemBinding,
+        private var binding: RowItemBinding,
         val removeTask: (Task) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
@@ -42,7 +42,7 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            CreateTasksItemBinding.inflate(
+            RowItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,

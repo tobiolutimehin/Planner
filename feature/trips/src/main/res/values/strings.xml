@@ -12,4 +12,6 @@
     <string name="edit_trip">"Edit Trip"</string>
     <string name="add_new_trip">Add new trip</string>
     <string name="no_trips_planned_yet">No trips planned… yet!</string>
+    <string name="going">Going</string>
+    <string name="add_people">Add people</string>
 </resources>
