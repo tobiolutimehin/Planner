@@ -17,8 +17,9 @@ import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
-import com.planner.core.ui.RowItemRecyclerViewAdapter
+import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.tasks.R
+import com.planner.feature.tasks.adapter.CreateTasksRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentAddTaskManagerBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.AddTaskViewModel
@@ -28,7 +29,8 @@ import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 class AddTaskManagerFragment : Fragment() {
     private val arguments: AddTaskManagerFragmentArgs by navArgs()
     private lateinit var taskManager: ManagerWithTasks
-    private lateinit var adapter: RowItemRecyclerViewAdapter
+    private lateinit var adapter: CreateTasksRecyclerViewAdapter
+    private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
     private var _binding: FragmentAddTaskManagerBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +62,8 @@ class AddTaskManagerFragment : Fragment() {
             }
         }
 
-        adapter = RowItemRecyclerViewAdapter(removeTask = { removeTask(it) })
+        adapter = CreateTasksRecyclerViewAdapter(removeTask = { removeTask(it) })
+        contactsAdapter = ContactListRecyclerAdapter {}
 
         addTaskViewModel.apply {
             taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }

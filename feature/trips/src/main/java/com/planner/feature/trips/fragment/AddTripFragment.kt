@@ -21,6 +21,7 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.FormatDateUseCase
 import com.planner.core.ui.BaseApplication
+import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentAddTripBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
@@ -32,6 +33,8 @@ class AddTripFragment : Fragment() {
     private val tripViewModel: TripsViewModel by activityViewModels {
         TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
     }
+
+    private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
     private var _binding: FragmentAddTripBinding? = null
     private val binding get() = _binding!!
@@ -76,6 +79,8 @@ class AddTripFragment : Fragment() {
                 bind(trip)
             }
         }
+        contactsAdapter = ContactListRecyclerAdapter { }
+
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
