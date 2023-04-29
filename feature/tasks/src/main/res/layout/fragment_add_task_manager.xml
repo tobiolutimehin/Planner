@@ -257,7 +257,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/task_row"
                 android:orientation="vertical"
-                tools:listitem="@layout/row_item" />
+                tools:listitem="@layout/contact_list_item" />
 
             <LinearLayout
                 android:layout_width="match_parent"
