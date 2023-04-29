@@ -8,13 +8,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.strikeThrough
-import com.planner.feature.tasks.databinding.CreateTasksItemBinding
+import com.planner.feature.tasks.databinding.CreateTaskItemBinding
 
-class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
-    ListAdapter<Task, TasksRecyclerViewAdapter.ViewHolder>(DiffCallback) {
+class CreateTasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
+    ListAdapter<Task, CreateTasksRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(
-        private var binding: CreateTasksItemBinding,
+        private var binding: CreateTaskItemBinding,
         val removeTask: (Task) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(task: Task) {
@@ -42,7 +42,7 @@ class TasksRecyclerViewAdapter(val removeTask: (Task) -> Unit) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            CreateTasksItemBinding.inflate(
+            CreateTaskItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false,

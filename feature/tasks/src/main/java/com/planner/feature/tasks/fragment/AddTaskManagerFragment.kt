@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -16,8 +17,9 @@ import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.core.ui.BaseApplication
+import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.tasks.R
-import com.planner.feature.tasks.adapter.TasksRecyclerViewAdapter
+import com.planner.feature.tasks.adapter.CreateTasksRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentAddTaskManagerBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.AddTaskViewModel
@@ -27,7 +29,8 @@ import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 class AddTaskManagerFragment : Fragment() {
     private val arguments: AddTaskManagerFragmentArgs by navArgs()
     private lateinit var taskManager: ManagerWithTasks
-    private lateinit var adapter: TasksRecyclerViewAdapter
+    private lateinit var adapter: CreateTasksRecyclerViewAdapter
+    private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
     private var _binding: FragmentAddTaskManagerBinding? = null
     private val binding get() = _binding!!
@@ -59,7 +62,8 @@ class AddTaskManagerFragment : Fragment() {
             }
         }
 
-        adapter = TasksRecyclerViewAdapter(removeTask = { removeTask(it) })
+        adapter = CreateTasksRecyclerViewAdapter(removeTask = { removeTask(it) })
+        contactsAdapter = ContactListRecyclerAdapter {}
 
         addTaskViewModel.apply {
             taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
@@ -67,6 +71,7 @@ class AddTaskManagerFragment : Fragment() {
         }
 
         binding.apply {
+            contactLayout.isGone = true
             tasksViewModel = tasksViewModel
             addTasksViewModel = addTaskViewModel
             fragment = this@AddTaskManagerFragment
