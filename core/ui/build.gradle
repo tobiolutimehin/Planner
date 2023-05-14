@@ -50,4 +50,5 @@ dependencies {
 
     // Project Module Dependencies
     implementation project(path: ':core:data')
+    implementation project(path: ':core:domain')
 }

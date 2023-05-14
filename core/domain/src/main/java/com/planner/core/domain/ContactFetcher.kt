@@ -10,15 +10,26 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.planner.core.data.entity.Contact
 
+/**
+ * The interface for fetching contacts.
+ */
 interface ContactFetcher {
-    fun fetchContactList(): Set<Contact>
+    /**
+     * Fetches the contact list.
+     *
+     * @return the contact list.
+     */
+    suspend fun fetchContactList(): Set<Contact>
 }
 
+/**
+ * The implementation of the [ContactFetcher].
+ */
 class ContactFetcherImpl(
     private val context: Context,
     private val activity: Activity,
 ) : ContactFetcher {
-    override fun fetchContactList(): Set<Contact> {
+    override suspend fun fetchContactList(): Set<Contact> {
         val contactList = mutableListOf<Contact>()
         if (ContextCompat.checkSelfPermission(
                 context,
@@ -90,5 +101,27 @@ class ContactFetcherImpl(
 
     companion object {
         private const val TAG = "ContactFetcherImpl"
+    }
+}
+
+/**
+ * The contact manager for the contacts list.
+ */
+object ContactManager {
+    private var contactList: Set<Contact>? = null
+
+    /**
+     * Fetches the contacts.
+     *
+     * @param context the context.
+     * @param activity the activity.
+     * @return the set of contacts.
+     */
+    suspend fun fetchContacts(context: Context, activity: Activity): Set<Contact> {
+        if (contactList == null) {
+            val contactFetcher = ContactFetcherImpl(context, activity)
+            contactList = contactFetcher.fetchContactList()
+        }
+        return contactList.orEmpty()
     }
 }
