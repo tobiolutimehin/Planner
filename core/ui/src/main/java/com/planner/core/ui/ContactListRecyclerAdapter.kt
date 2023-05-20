@@ -8,18 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.Contact
 import com.planner.core.ui.databinding.ContactListItemBinding
 
-class ContactListRecyclerAdapter(val removeContact: (Contact) -> Unit) :
+class ContactListRecyclerAdapter(private val chooseContact: (Contact) -> Unit) :
     ListAdapter<Contact, ContactListRecyclerAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(
         private var binding: ContactListItemBinding,
-        val removeContact: (Contact) -> Unit,
+        val chooseContact: (Contact) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: Contact) {
             binding.apply {
                 contactName.text = contact.name
+                contactNumber.text = contact.phone
                 button.setOnClickListener {
-                    removeContact(contact)
+                    chooseContact(contact)
                 }
             }
         }
@@ -40,7 +41,7 @@ class ContactListRecyclerAdapter(val removeContact: (Contact) -> Unit) :
                 parent,
                 false,
             ),
-            removeContact,
+            chooseContact,
         )
     }
 

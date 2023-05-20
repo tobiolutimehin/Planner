@@ -17,4 +17,5 @@
         <item quantity="one">1 Pending Task</item>
         <item quantity="other">%d Pending Tasks</item>
     </plurals>
+    <string name="choose_contacts">Contacts</string>
 </resources>
