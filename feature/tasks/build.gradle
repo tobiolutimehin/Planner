@@ -79,7 +79,7 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:2.2.0"
 
     debugImplementation "androidx.fragment:fragment-testing:1.6.1"
-    kaptAndroidTest 'androidx.databinding:databinding-compiler:8.1.1'
+    kaptAndroidTest 'androidx.databinding:databinding-compiler:8.1.4'
 
 
 }
