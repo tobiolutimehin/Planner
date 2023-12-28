@@ -1,22 +1,13 @@
 package com.planner.core.data.dao
 
-import android.content.Context
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Room
 import androidx.room.Update
-import com.planner.core.data.database.PlannerDatabase
 import com.planner.core.data.entity.TripEntity
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Singleton
 
 /**
  * Data Access Object ([Dao]) for managing [TripEntity] objects in the database.
@@ -58,31 +49,4 @@ interface TripDao {
      */
     @Update
     suspend fun update(trip: TripEntity)
-}
-
-@Module
-@InstallIn(SingletonComponent::class)
-object DatabaseModule {
-    @Provides
-    @Singleton
-    fun providesNiaDatabase(
-        @ApplicationContext context: Context,
-    ): PlannerDatabase = Room
-        .databaseBuilder(
-            context,
-            PlannerDatabase::class.java,
-            "planner_database",
-        )
-        .fallbackToDestructiveMigration()
-        .build()
-
-    @Provides
-    fun providesTripDao(
-        database: PlannerDatabase,
-    ): TripDao = database.tripDao()
-
-    @Provides
-    fun providesTaskManagerDao(
-        database: PlannerDatabase,
-    ): TaskManagerDao = database.taskManagerDao()
 }
