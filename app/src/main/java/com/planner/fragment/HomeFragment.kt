@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
-import com.planner.core.ui.BaseApplication
+import com.planner.BaseApplication
 import com.planner.databinding.FragmentHomeBinding
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
 import com.planner.feature.tasks.viewmodel.TasksViewModel

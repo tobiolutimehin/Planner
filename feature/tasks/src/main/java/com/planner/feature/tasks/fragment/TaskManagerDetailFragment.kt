@@ -13,13 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.TaskEntity
-import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.R
 import com.planner.feature.tasks.adapter.ManagerDetailRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerDetailBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.TasksViewModel
-import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 
 class TaskManagerDetailFragment : Fragment() {
     private val arguments: TaskManagerDetailFragmentArgs by navArgs()
@@ -29,9 +27,7 @@ class TaskManagerDetailFragment : Fragment() {
     private var _binding: FragmentTaskManagerDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val tasksViewModel: TasksViewModel by activityViewModels {
-        TasksViewModelFactory(((activity?.application as BaseApplication).database).taskManagerDao())
-    }
+    private val tasksViewModel: TasksViewModel by activityViewModels()
 
     private val checkedTasks = mutableSetOf<TaskEntity>()
     private var delete = false

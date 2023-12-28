@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -46,4 +47,12 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     ksp "androidx.room:room-compiler:2.5.2"
     implementation "androidx.room:room-ktx:2.5.2"
+
+    implementation "com.google.dagger:hilt-android:2.50"
+    kapt "com.google.dagger:hilt-compiler:2.50"
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }

@@ -12,13 +12,14 @@ import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
 import com.planner.core.data.entity.TaskManagerType
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 /**
  * ViewModel for managing tasks and task managers.
  *
  * @param dao Data Access Object for accessing the TaskManagerEntity and TaskEntity tables in the database.
  */
-class TasksViewModel(private val dao: TaskManagerDao) : ViewModel() {
+class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : ViewModel() {
 
     /**
      * LiveData object containing a list of all task managers and their associated tasks.

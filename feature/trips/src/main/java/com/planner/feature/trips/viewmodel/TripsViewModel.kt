@@ -18,13 +18,16 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * View model for [TripEntity] and [TripDao] interaction.
  *
  * @param dao the data access object for trips
  */
-class TripsViewModel(private val dao: TripDao) : ViewModel() {
+class TripsViewModel @Inject constructor(
+    private val dao: TripDao
+) : ViewModel() {
 
     /**
      * LiveData object for observing a list of all trips from the DAO.
