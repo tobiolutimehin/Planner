@@ -11,6 +11,7 @@ import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
 import com.planner.core.data.entity.TaskManagerType
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -19,6 +20,7 @@ import javax.inject.Inject
  *
  * @param dao Data Access Object for accessing the TaskManagerEntity and TaskEntity tables in the database.
  */
+@HiltViewModel
 class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : ViewModel() {
 
     /**

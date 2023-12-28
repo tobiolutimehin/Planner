@@ -12,6 +12,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.planner.core.data.dao.TripDao
 import com.planner.core.data.entity.TripEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -25,6 +26,7 @@ import javax.inject.Inject
  *
  * @param dao the data access object for trips
  */
+@HiltViewModel
 class TripsViewModel @Inject constructor(
     private val dao: TripDao
 ) : ViewModel() {

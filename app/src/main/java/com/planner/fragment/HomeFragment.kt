@@ -9,16 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
-import com.planner.core.data.database.PlannerDatabase
 import com.planner.databinding.FragmentHomeBinding
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
 import com.planner.feature.tasks.viewmodel.TasksViewModel
-import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 import com.planner.feature.trips.viewmodel.TripsViewModel
-import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
-import javax.inject.Inject
 
 /**
  * This fragment displays a summary of pending tasks and upcoming trips.
@@ -28,15 +24,9 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    @Inject lateinit var database: PlannerDatabase
+    private val tasksViewModel: TasksViewModel by activityViewModels()
 
-    private val tasksViewModel: TasksViewModel by activityViewModels {
-        TasksViewModelFactory(database.taskManagerDao())
-    }
-
-    private val tripViewModel: TripsViewModel by activityViewModels {
-        TripsViewModelFactory(database.tripDao())
-    }
+    private val tripViewModel: TripsViewModel by activityViewModels()
 
     private lateinit var adapter: TaskManagerListAdapter
 
