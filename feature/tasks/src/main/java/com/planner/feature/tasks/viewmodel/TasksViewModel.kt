@@ -2,7 +2,6 @@ package com.planner.feature.tasks.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.planner.core.data.dao.TaskManagerDao
@@ -90,19 +89,4 @@ class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : View
         viewModelScope.launch {
             tasks.forEach { updateTask(it) }
         }
-}
-
-/**
- * Factory for creating TasksViewModel objects.
- *
- * @param dao Data Access Object for accessing the TaskManagerEntity and TaskEntity tables in the database.
- */
-class TasksViewModelFactory(private val dao: TaskManagerDao) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TasksViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return TasksViewModel(dao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
 }

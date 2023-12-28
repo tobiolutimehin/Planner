@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.planner.core.data.dao.TripDao
@@ -154,19 +153,5 @@ class TripsViewModel @Inject constructor(
             title = title,
         )
         dao.update(newTrip)
-    }
-}
-
-/**
- * Factory class that creates [TripsViewModel] instances.
- * @property dao the [TripDao] instance used by the [TripsViewModel] to access data.
- */
-class TripsViewModelFactory(private val dao: TripDao) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TripsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return TripsViewModel(dao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

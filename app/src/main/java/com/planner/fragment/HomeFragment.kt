@@ -13,13 +13,11 @@ import com.planner.databinding.FragmentHomeBinding
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
 import com.planner.feature.tasks.viewmodel.TasksViewModel
 import com.planner.feature.trips.viewmodel.TripsViewModel
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.Date
 
 /**
  * This fragment displays a summary of pending tasks and upcoming trips.
  */
-@AndroidEntryPoint
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
