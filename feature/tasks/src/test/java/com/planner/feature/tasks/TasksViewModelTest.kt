@@ -11,8 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -71,7 +71,7 @@ class TasksViewModelTest {
     }
 
     @Test
-    fun `test save task manager`() = runBlocking {
+    fun `test save task manager`() = runTest {
         viewModel.saveTaskManager(
             string = manager1.name,
             tasks = listOf(task1.toTask(), task2.toTask()),
@@ -90,14 +90,14 @@ class TasksViewModelTest {
     }
 
     @Test
-    fun `test delete task manager`() = runBlocking {
+    fun `test delete task manager`() = runTest {
         viewModel.deleteTaskManager(manager1)
 
         verifyBlocking(taskDao) { deleteTaskManagerWithTasks(manager1) }
     }
 
     @Test
-    fun `test update task manager`() = runBlocking {
+    fun `test update task manager`() = runTest {
         viewModel.updateTaskManager(manager1, listOf(task1.toTask(), task2.toTask()))
 
         verifyBlocking(taskDao) {
@@ -109,7 +109,7 @@ class TasksViewModelTest {
     }
 
     @Test
-    fun `test update task`() = runBlocking {
+    fun `test update task`() = runTest {
         viewModel.updateTaskManagerWithTaskEntity(listOf(task1, task2, task3))
 
         verifyBlocking(taskDao) {
