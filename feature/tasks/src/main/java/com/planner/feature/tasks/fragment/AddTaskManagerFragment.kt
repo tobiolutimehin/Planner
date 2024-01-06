@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
-import com.planner.core.ui.BaseApplication
 import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.tasks.R
 import com.planner.feature.tasks.adapter.CreateTasksRecyclerViewAdapter
@@ -24,7 +23,6 @@ import com.planner.feature.tasks.databinding.FragmentAddTaskManagerBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.AddTaskViewModel
 import com.planner.feature.tasks.viewmodel.TasksViewModel
-import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 
 class AddTaskManagerFragment : Fragment() {
     private val arguments: AddTaskManagerFragmentArgs by navArgs()
@@ -36,9 +34,7 @@ class AddTaskManagerFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val addTaskViewModel: AddTaskViewModel by viewModels()
-    private val tasksViewModel: TasksViewModel by activityViewModels {
-        TasksViewModelFactory(((activity?.application as BaseApplication).database).taskManagerDao())
-    }
+    private val tasksViewModel: TasksViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

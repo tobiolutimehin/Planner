@@ -7,21 +7,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
 import com.planner.feature.trips.adapter.TripRecyclerViewAdapter
 import com.planner.feature.trips.databinding.FragmentItemListTripBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
-import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
 /**
  * A [Fragment] subclass for displaying a list of trips.
  */
 class ListTripFragment : Fragment() {
 
-    private val tripViewModel: TripsViewModel by activityViewModels {
-        TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
-    }
+    private val tripViewModel: TripsViewModel by activityViewModels()
 
     private var _binding: FragmentItemListTripBinding? = null
     private val binding get() = _binding!!

@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
     id 'com.google.devtools.ksp'
+    id 'com.google.dagger.hilt.android'
 }
 
 android {
@@ -81,5 +82,11 @@ dependencies {
     debugImplementation "androidx.fragment:fragment-testing:1.6.1"
     kaptAndroidTest 'androidx.databinding:databinding-compiler:8.1.4'
 
+    implementation "com.google.dagger:hilt-android:2.50"
+    kapt "com.google.dagger:hilt-compiler:2.50"
+}
 
+// Allow references to generated code
+kapt {
+    correctErrorTypes true
 }

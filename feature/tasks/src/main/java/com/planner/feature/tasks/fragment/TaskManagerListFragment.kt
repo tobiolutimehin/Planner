@@ -8,11 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.planner.core.data.entity.TaskManagerType
-import com.planner.core.ui.BaseApplication
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerListBinding
 import com.planner.feature.tasks.viewmodel.TasksViewModel
-import com.planner.feature.tasks.viewmodel.TasksViewModelFactory
 
 class TaskManagerListFragment : Fragment() {
     private var taskManagerType: TaskManagerType? = null
@@ -21,9 +19,7 @@ class TaskManagerListFragment : Fragment() {
 
     private lateinit var adapter: TaskManagerListAdapter
 
-    private val tasksViewModel: TasksViewModel by activityViewModels {
-        TasksViewModelFactory(((activity?.application as BaseApplication).database).taskManagerDao())
-    }
+    private val tasksViewModel: TasksViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
