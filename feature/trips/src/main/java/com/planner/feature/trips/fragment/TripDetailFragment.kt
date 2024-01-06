@@ -14,20 +14,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.DatePattern
 import com.planner.core.domain.FormatDateUseCase
-import com.planner.core.ui.BaseApplication
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentTripDetailBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
-import com.planner.feature.trips.viewmodel.TripsViewModelFactory
 
 /**
  * A [Fragment] subclass to display the details of a selected trip.
  */
 class TripDetailFragment : Fragment() {
 
-    private val tripViewModel: TripsViewModel by activityViewModels {
-        TripsViewModelFactory(((activity?.application as BaseApplication).database).tripDao())
-    }
+    private val tripViewModel: TripsViewModel by activityViewModels()
 
     private var _binding: FragmentTripDetailBinding? = null
     private val binding get() = _binding!!

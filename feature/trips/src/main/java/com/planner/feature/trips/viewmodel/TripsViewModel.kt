@@ -7,24 +7,28 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.planner.core.data.dao.TripDao
 import com.planner.core.data.entity.TripEntity
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.OutputStream
 import java.util.UUID
+import javax.inject.Inject
 
 /**
  * View model for [TripEntity] and [TripDao] interaction.
  *
  * @param dao the data access object for trips
  */
-class TripsViewModel(private val dao: TripDao) : ViewModel() {
+@HiltViewModel
+class TripsViewModel @Inject constructor(
+    private val dao: TripDao
+) : ViewModel() {
 
     /**
      * LiveData object for observing a list of all trips from the DAO.
@@ -149,19 +153,5 @@ class TripsViewModel(private val dao: TripDao) : ViewModel() {
             title = title,
         )
         dao.update(newTrip)
-    }
-}
-
-/**
- * Factory class that creates [TripsViewModel] instances.
- * @property dao the [TripDao] instance used by the [TripsViewModel] to access data.
- */
-class TripsViewModelFactory(private val dao: TripDao) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(TripsViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return TripsViewModel(dao) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

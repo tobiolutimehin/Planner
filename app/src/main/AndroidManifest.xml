@@ -3,7 +3,7 @@
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <application
-        android:name=".core.ui.BaseApplication"
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
