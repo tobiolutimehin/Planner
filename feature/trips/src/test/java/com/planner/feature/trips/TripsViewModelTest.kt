@@ -8,8 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.newSingleThreadContext
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
@@ -27,11 +27,13 @@ class TripsViewModelTest {
     @OptIn(DelicateCoroutinesApi::class)
     private val mainThreadSurrogate = newSingleThreadContext("test thread")
 
-    private val testTripObject = TripEntity(
-        title = "Trip to the US",
-        destination = "USA",
-        departureTime = 1000L,
-    )
+    private val testTripObject =
+        TripEntity(
+            title = "Trip to the US",
+            destination = "USA",
+            departureTime = 1000L,
+        )
+
     private val testTrips = listOf(testTripObject)
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -45,33 +47,36 @@ class TripsViewModelTest {
     }
 
     @Test
-    fun `test insert`() = runBlocking {
-        insertTestTrip()
+    fun `test insert`() =
+        runTest {
+            insertTestTrip()
 
-        verifyBlocking(testTripDao) { insert(testTripObject) }
-    }
-
-    @Test
-    fun `test delete`() = runBlocking {
-        insertTestTrip()
-
-        viewModel.delete(testTripObject)
-        verifyBlocking(testTripDao) { delete(testTripObject) }
-    }
+            verifyBlocking(testTripDao) { insert(testTripObject) }
+        }
 
     @Test
-    fun `test update`() = runBlocking {
-        insertTestTrip()
+    fun `test delete`() =
+        runTest {
+            insertTestTrip()
 
-        viewModel.update(
-            title = "Trip to the US",
-            destination = "USA",
-            departureTime = 1000L,
-            tripImageUrl = null,
-            trip = testTripObject,
-        )
-        verifyBlocking(testTripDao) { update(testTripObject) }
-    }
+            viewModel.delete(testTripObject)
+            verifyBlocking(testTripDao) { delete(testTripObject) }
+        }
+
+    @Test
+    fun `test update`() =
+        runTest {
+            insertTestTrip()
+
+            viewModel.update(
+                title = "Trip to the US",
+                destination = "USA",
+                departureTime = 1000L,
+                tripImageUrl = null,
+                trip = testTripObject,
+            )
+            verifyBlocking(testTripDao) { update(testTripObject) }
+        }
 
     @Test
     fun `test fetch trip`() {
