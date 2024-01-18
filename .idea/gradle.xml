@@ -17,6 +17,8 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/tasks" />
             <option value="$PROJECT_DIR$/feature/trips" />
+            <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/library/contacts-manager" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
