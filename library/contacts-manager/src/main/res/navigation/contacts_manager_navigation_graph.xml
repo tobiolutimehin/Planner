@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contacts_manager_navigation_graph"
+    app:startDestination="@id/chooseContactsFragment">
+
+    <fragment
+        android:id="@+id/chooseContactsFragment"
+        android:name="com.planner.library.contacts_manager.ChooseContactsFragment"
+        android:label="fragment_choose_contacts"
+        tools:layout="@layout/fragment_choose_contacts" />
+</navigation>
