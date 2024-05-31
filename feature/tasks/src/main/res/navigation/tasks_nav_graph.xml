@@ -5,6 +5,8 @@
     android:id="@+id/tasks_nav_graph"
     app:startDestination="@id/taskManagerListFragment">
 
+    <include app:graph="@navigation/contacts_manager_navigation_graph" />
+
     <fragment
         android:id="@+id/addTaskManagerFragment"
         android:name="com.planner.feature.tasks.fragment.AddTaskManagerFragment"
@@ -28,6 +30,9 @@
             android:name="taskManagerId"
             android:defaultValue="-1L"
             app:argType="long" />
+        <action
+            android:id="@+id/action_addTaskManagerFragment_to_contacts_manager_navigation_graph"
+            app:destination="@id/contacts_manager_navigation_graph" />
     </fragment>
     <fragment
         android:id="@+id/taskManagerListFragment"
