@@ -7,21 +7,35 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.library.contacts_manager.databinding.ContactListItemBinding
 
-class ContactListRecyclerAdapter(private val chooseContact: (Contact) -> Unit) :
+val mutableSet: MutableSet<Long> = mutableSetOf()
+
+class ContactListRecyclerAdapter :
     ListAdapter<Contact, ContactListRecyclerAdapter.ViewHolder>(DiffCallback) {
     class ViewHolder(
         private var binding: ContactListItemBinding,
-        val chooseContact: (Contact) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(contact: Contact) {
             binding.apply {
                 contactName.text = contact.name
                 contactNumber.text = contact.phone
+                button.isChecked = mutableSet.contains(contact.id)
                 button.setOnClickListener {
-                    chooseContact(contact)
+                    if (button.isChecked) {
+                        mutableSet.add(contact.id)
+                    } else {
+                        mutableSet.remove(contact.id)
+                    }
                 }
             }
         }
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getItem(position).id
+    }
+
+    override fun setHasStableIds(hasStableIds: Boolean) {
+        super.setHasStableIds(true)
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<Contact>() {
@@ -46,7 +60,6 @@ class ContactListRecyclerAdapter(private val chooseContact: (Contact) -> Unit) :
                 parent,
                 false,
             ),
-            chooseContact,
         )
     }
 

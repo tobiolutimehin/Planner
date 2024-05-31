@@ -7,12 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.planner.library.contacts_manager.databinding.FragmentChooseContactsBinding
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class ChooseContactsFragment : Fragment() {
     private lateinit var _binding: FragmentChooseContactsBinding
-    private val binding get() = _binding
+    val binding get() = _binding
 
     private lateinit var adapter: ContactListRecyclerAdapter
 
@@ -33,12 +35,12 @@ class ChooseContactsFragment : Fragment() {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = ContactListRecyclerAdapter {}
+        adapter = ContactListRecyclerAdapter()
         binding.chooseContactsRecyclerView.adapter = adapter
 
         lifecycleScope.launch {
             adapter.submitList(
-                contactFetcher.fetchContactList().toList()
+                contactFetcher.fetchContactList().toList(),
             )
         }
     }
