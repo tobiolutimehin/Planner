@@ -74,6 +74,7 @@ dependencies {
     implementation project(path: ':feature:trips')
     implementation project(path: ':feature:tasks')
     implementation project(path: ':core:domain')
+    implementation project(path: ':library:contacts-manager')
 
     implementation "com.google.dagger:hilt-android:2.50"
     kapt "com.google.dagger:hilt-compiler:2.50"

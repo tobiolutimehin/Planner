@@ -5,6 +5,8 @@
     android:id="@+id/trips_nav_graph"
     app:startDestination="@id/listTripFragment">
 
+    <include app:graph="@navigation/contacts_manager_navigation_graph" />
+
     <fragment
         android:id="@+id/addTripFragment"
         android:name="com.planner.feature.trips.fragment.AddTripFragment"
@@ -27,6 +29,9 @@
             android:defaultValue="@string/add_a_trip"
             app:argType="reference" />
         <deepLink app:uri="android-app://com.planner.trips/addTripFragment" />
+        <action
+            android:id="@+id/action_addTripFragment_to_contacts_manager_navigation_graph"
+            app:destination="@id/contacts_manager_navigation_graph" />
     </fragment>
     <fragment
         android:id="@+id/listTripFragment"

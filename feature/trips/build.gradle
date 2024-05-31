@@ -68,6 +68,7 @@ dependencies {
     implementation project(path: ':core:data')
     implementation project(path: ':core:domain')
     testImplementation project(path: ':core:data')
+    implementation project(path: ':library:contacts-manager')
 
     //Mockito
     testImplementation 'org.mockito:mockito-core:5.4.0'
