@@ -53,7 +53,7 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
     // Room
-    implementation 'androidx.room:room-runtime:2.5.2'
+    implementation 'androidx.room:room-runtime:2.6.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.room:room-ktx:2.5.2'
     implementation "androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1"
