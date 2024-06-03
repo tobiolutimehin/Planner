@@ -33,7 +33,7 @@ class AddTripFragment : Fragment() {
     private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
     private var _binding: FragmentAddTripBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
     private var storageUri: String? = null
     private val formatDateUseCase = FormatDateUseCase()
     private lateinit var trip: TripEntity
@@ -66,7 +66,10 @@ class AddTripFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments.tripId
         if (id > 0) {
@@ -108,11 +111,20 @@ class AddTripFragment : Fragment() {
     }
 
     /**
+     * Opens the contact manager fragment to select people to go on the trip.
+     */
+    fun openContactManager() {
+        val action = AddTripFragmentDirections.actionAddTripFragmentToContactsManagerNavigationGraph()
+        findNavController().navigate(action)
+    }
+
+    /**
      * Opens a date picker dialog to select a departure date for the trip.
      */
     fun openDatePicker() {
-        val constraintsBuilder = CalendarConstraints.Builder()
-            .setValidator(DateValidatorPointForward.now())
+        val constraintsBuilder =
+            CalendarConstraints.Builder()
+                .setValidator(DateValidatorPointForward.now())
 
         val datePicker =
             MaterialDatePicker.Builder.datePicker()
@@ -133,8 +145,7 @@ class AddTripFragment : Fragment() {
     /**
      * Opens a photo picker dialog to select an image for the trip.
      */
-    fun openPhotoPicker() =
-        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    fun openPhotoPicker() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
     /**
      * Closes the fragment, either by popping it off the navigation stack or finishing the activity if it's the only one.
@@ -191,7 +202,9 @@ class AddTripFragment : Fragment() {
      */
     fun isButtonEnabled(): Boolean {
         return with(binding) {
-            !tripTitleEditText.text.isNullOrBlank() && !departureDateEditText.text.isNullOrBlank() && !destinationEditText.text.isNullOrBlank()
+            !tripTitleEditText.text.isNullOrBlank() &&
+                !departureDateEditText.text.isNullOrBlank() &&
+                !destinationEditText.text.isNullOrBlank()
         }
     }
 
@@ -204,14 +217,26 @@ class AddTripFragment : Fragment() {
      * A [TextWatcher] that listens for changes in the text of the input fields in the UI,
      * and updates the state of the save button accordingly.
      */
-    private val textWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-        override fun afterTextChanged(s: Editable?) {}
+    private val textWatcher =
+        object : TextWatcher {
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int,
+            ) {}
 
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            updateSaveButton()
+            override fun afterTextChanged(s: Editable?) {}
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int,
+            ) {
+                updateSaveButton()
+            }
         }
-    }
 
     companion object {
         const val TAG = "AddTripFragment"
