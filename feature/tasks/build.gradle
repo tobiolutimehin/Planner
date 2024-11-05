@@ -80,7 +80,7 @@ dependencies {
     testImplementation 'org.mockito.kotlin:mockito-kotlin:5.0.0'
     testImplementation "androidx.arch.core:core-testing:2.2.0"
 
-    debugImplementation "androidx.fragment:fragment-testing:1.6.1"
+    debugImplementation "androidx.fragment:fragment-testing:1.8.5"
     kaptAndroidTest 'androidx.databinding:databinding-compiler:8.1.4'
 
     implementation "com.google.dagger:hilt-android:2.50"
