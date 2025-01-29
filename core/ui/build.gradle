@@ -47,7 +47,7 @@ dependencies {
 
     // Androidx
     implementation 'androidx.navigation:navigation-fragment-ktx:2.7.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.6'
 
     // Project Module Dependencies
     implementation project(path: ':core:data')
