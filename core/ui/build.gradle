@@ -46,7 +46,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     // Androidx
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.6'
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.1'
 
     // Project Module Dependencies
