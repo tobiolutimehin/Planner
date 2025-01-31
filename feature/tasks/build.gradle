@@ -84,7 +84,7 @@ dependencies {
     kaptAndroidTest 'androidx.databinding:databinding-compiler:8.8.0'
 
     implementation "com.google.dagger:hilt-android:2.50"
-    kapt "com.google.dagger:hilt-compiler:2.50"
+    kapt "com.google.dagger:hilt-compiler:2.55"
 }
 
 // Allow references to generated code
