@@ -74,7 +74,7 @@ dependencies {
     implementation project(path: ':core:domain')
     implementation project(path: ':library:contacts-manager')
 
-    implementation "com.google.dagger:hilt-android:2.50"
+    implementation "com.google.dagger:hilt-android:2.55"
     kapt "com.google.dagger:hilt-compiler:2.50"
 }
 
