@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
-import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.tasks.R
 import com.planner.feature.tasks.adapter.CreateTasksRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentAddTaskManagerBinding
@@ -28,7 +27,6 @@ class AddTaskManagerFragment : Fragment() {
     private val arguments: AddTaskManagerFragmentArgs by navArgs()
     private lateinit var taskManager: ManagerWithTasks
     private lateinit var adapter: CreateTasksRecyclerViewAdapter
-    private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
     private var _binding: FragmentAddTaskManagerBinding? = null
     private val binding get() = _binding!!
@@ -59,7 +57,6 @@ class AddTaskManagerFragment : Fragment() {
         }
 
         adapter = CreateTasksRecyclerViewAdapter(removeTask = { removeTask(it) })
-        contactsAdapter = ContactListRecyclerAdapter {}
 
         addTaskViewModel.apply {
             taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }

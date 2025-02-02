@@ -9,5 +9,14 @@
         android:id="@+id/chooseContactsFragment"
         android:name="com.planner.library.contacts_manager.ChooseContactsFragment"
         android:label="fragment_choose_contacts"
-        tools:layout="@layout/fragment_choose_contacts" />
+        tools:layout="@layout/fragment_choose_contacts">
+
+        <action
+            android:id="@+id/action_addTripFragment_to_contacts_manager_navigation_graph"
+            app:destination="@+id/chooseContactsFragment" />
+        <argument
+            android:name="selectedContacts"
+            app:argType="com.planner.library.contacts_manager.Contact[]"
+            app:nullable="true" />
+    </fragment>
 </navigation>

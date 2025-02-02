@@ -7,24 +7,26 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.library.contacts_manager.databinding.ContactListItemBinding
 
-val mutableSet: MutableSet<Long> = mutableSetOf()
-
-class ContactListRecyclerAdapter :
+// TODO: Checked button bug. It's showing regardless
+class ContactListRecyclerAdapter(
+    private val selectedContacts: MutableSet<Contact>,
+    private val onContactSelected: (Contact, Boolean) -> Unit
+) :
     ListAdapter<Contact, ContactListRecyclerAdapter.ViewHolder>(DiffCallback) {
+
     class ViewHolder(
         private var binding: ContactListItemBinding,
+        private val onContactSelected: (Contact, Boolean) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(contact: Contact) {
+        fun bind(contact: Contact, selectedContacts: MutableSet<Contact>) {
             binding.apply {
                 contactName.text = contact.name
                 contactNumber.text = contact.phone
-                button.isChecked = mutableSet.contains(contact.id)
+                button.isChecked = selectedContacts.contains(contact)
+
                 button.setOnClickListener {
-                    if (button.isChecked) {
-                        mutableSet.add(contact.id)
-                    } else {
-                        mutableSet.remove(contact.id)
-                    }
+                    val isSelected = button.isChecked
+                    onContactSelected(contact, isSelected)
                 }
             }
         }
@@ -60,6 +62,7 @@ class ContactListRecyclerAdapter :
                 parent,
                 false,
             ),
+            onContactSelected
         )
     }
 
@@ -68,6 +71,6 @@ class ContactListRecyclerAdapter :
         position: Int,
     ) {
         val contact = getItem(position)
-        holder.bind(contact)
+        holder.bind(contact, selectedContacts = selectedContacts)
     }
 }

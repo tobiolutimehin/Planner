@@ -3,6 +3,7 @@ package com.planner.feature.trips.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.CalendarConstraints
@@ -20,17 +23,18 @@ import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.FormatDateUseCase
-import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentAddTripBinding
+import com.planner.feature.trips.viewmodel.TripViewModel
 import com.planner.feature.trips.viewmodel.TripsViewModel
+import com.planner.library.contacts_manager.ChooseContactsFragmentDirections
+import com.planner.library.contacts_manager.Contact
 
 class AddTripFragment : Fragment() {
     private val arguments: AddTripFragmentArgs by navArgs()
 
-    private val tripViewModel: TripsViewModel by activityViewModels()
-
-    private lateinit var contactsAdapter: ContactListRecyclerAdapter
+    private val sharedTripsViewModel: TripsViewModel by activityViewModels()
+    private val tripViewModel: TripViewModel by viewModels()
 
     private var _binding: FragmentAddTripBinding? = null
     val binding get() = _binding!!
@@ -47,9 +51,9 @@ class AddTripFragment : Fragment() {
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
-                val bitmap = tripViewModel.getBitmapFromUri(requireContext(), uri)
+                val bitmap = sharedTripsViewModel.getBitmapFromUri(requireContext(), uri)
                 storageUri =
-                    bitmap?.let { tripViewModel.saveBitmapToInternalStorage(it, requireContext()) }
+                    bitmap?.let { sharedTripsViewModel.saveBitmapToInternalStorage(it, requireContext()) }
                 binding.tripImage.apply {
                     setImageURI(storageUri?.toUri())
                     contentDescription = context.getString(R.string.image_description)
@@ -73,17 +77,27 @@ class AddTripFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val id = arguments.tripId
         if (id > 0) {
-            tripViewModel.getTrip(id).observe(this.viewLifecycleOwner) { tripModel ->
+            sharedTripsViewModel.getTrip(id).observe(this.viewLifecycleOwner) { tripModel ->
                 trip = tripModel
                 bind(trip)
             }
         }
-        contactsAdapter = ContactListRecyclerAdapter { }
+
+        // Listen for contact selection results
+        setFragmentResultListener("contactSelectionResult") { _, bundle ->
+            val selectedContacts = bundle.getParcelableArrayList<Contact>("selected_contacts") ?: emptyList()
+
+            Log.d("tobi", selectedContacts.joinToString("\n") { it.name })
+            tripViewModel.setContacts(selectedContacts)
+
+            // Now, you have the selected contacts and can update your UI
+//            binding.selectedContactsTextView.text = "Selected: ${selectedContacts.size} contacts"
+        }
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
-            viewModel = tripViewModel
+            viewModel = sharedTripsViewModel
             fragment = this@AddTripFragment
             tripTitleEditText.addTextChangedListener(textWatcher)
             departureDateEditText.addTextChangedListener(textWatcher)
@@ -114,8 +128,10 @@ class AddTripFragment : Fragment() {
      * Opens the contact manager fragment to select people to go on the trip.
      */
     fun openContactManager() {
-        val action = AddTripFragmentDirections.actionAddTripFragmentToContactsManagerNavigationGraph()
-        findNavController().navigate(action)
+        val selectedContacts: Array<Contact>? = tripViewModel.contacts.value?.toTypedArray()
+        findNavController().navigate(
+            ChooseContactsFragmentDirections.actionAddTripFragmentToContactsManagerNavigationGraph(selectedContacts)
+        )
     }
 
     /**
@@ -158,7 +174,7 @@ class AddTripFragment : Fragment() {
      * Saves the trip data to the database and navigates to the list of trips fragment.
      */
     fun save() {
-        tripViewModel.insert(
+        sharedTripsViewModel.insert(
             tripImageUrl = storageUri,
             departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
             destination = binding.destinationEditText.text.toString(),
@@ -171,7 +187,7 @@ class AddTripFragment : Fragment() {
      * Updates the trip data in the database and navigates to the list of trips fragment.
      */
     private fun update() {
-        tripViewModel.update(
+        sharedTripsViewModel.update(
             tripImageUrl = storageUri,
             departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
             destination = binding.destinationEditText.text.toString(),

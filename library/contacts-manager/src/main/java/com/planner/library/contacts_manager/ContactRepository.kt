@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.pm.PackageManager
+import android.os.Parcelable
 import android.provider.ContactsContract
 import android.util.Log
 import androidx.core.app.ActivityCompat
@@ -17,13 +18,16 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.withContext
+import kotlinx.parcelize.Parcelize
 import javax.inject.Singleton
 
+
+@Parcelize
 data class Contact(
     val id: Long,
     val name: String,
     val phone: String,
-)
+) : Parcelable
 
 /**
  * The interface for fetching contacts.

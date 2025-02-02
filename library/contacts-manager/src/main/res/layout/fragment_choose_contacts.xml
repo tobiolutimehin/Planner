@@ -14,9 +14,17 @@
         android:layout_height="wrap_content"
         android:text="@string/choose_contacts" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/done"
+        android:id="@+id/choose_contacts_done_button"
+        android:layout_gravity="end"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/choose_contacts_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>
