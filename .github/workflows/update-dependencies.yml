@@ -1,0 +1,53 @@
+name: Weekly Android Dependency Check
+
+on:
+  schedule:
+    - cron: "0 9 * * 1" # Run every Monday at 9 AM UTC
+
+jobs:
+  check-android-dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK and Gradle
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin' # Using Temurin distribution
+      - uses: gradle/gradle-build-action@v2
+
+      - name: Run Gradle Dependency Check
+        run: ./gradlew dependencyUpdates -Drevision=release -DoutputFormatter=html --refresh-dependencies
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          # Check if the report file exists and has changes
+          if [ -f build/dependencyUpdates/report.html ]; then
+            git add build/dependencyUpdates/report.html
+            if ! git diff --staged --quiet; then
+              git commit -m "docs: update Android dependency report"
+            else
+              echo "No dependency report changes to commit."
+            fi
+          else
+            echo "Dependency report not found."
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "docs: update Android dependency report"
+          title: "docs: Weekly Android Dependency Report"
+          body: |
+            Automated weekly Android dependency check.
+            Please review the attached report (`build/dependencyUpdates/report.html`) for available updates.
+          branch: "docs/android-dependency-report"
+          delete-branch: true
+          labels: dependencies, android, automated-report
+          assignees: ''
+          reviewers: ''

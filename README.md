@@ -6,6 +6,7 @@ organized and never miss an important task or flight again.
 [![API](https://img.shields.io/badge/API-31%2B-green)](https://android-arsenal.com/api?level=21)
 [![Kotlin](https://img.shields.io/badge/Kotlin-1.7.xxx-brightgreen)](https://kotlinlang.org)
 ![MVVM](https://img.shields.io/badge/Architecture-MVVM-blueviolet)
+[![Weekly Android Dependency Check](https://github.com/tobiolutimehin/Planner/actions/workflows/update-dependencies.yml/badge.svg)](https://github.com/tobiolutimehin/Planner/actions/workflows/update-dependencies.yml)
 
 ## Summary
 
