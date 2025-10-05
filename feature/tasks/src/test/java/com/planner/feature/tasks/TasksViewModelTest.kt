@@ -9,6 +9,7 @@ import com.planner.feature.tasks.viewmodel.TasksViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.test.resetMain
@@ -71,50 +72,54 @@ class TasksViewModelTest {
     }
 
     @Test
-    fun `test save task manager`() = runTest {
-        viewModel.saveTaskManager(
-            string = manager1.name,
-            tasks = listOf(task1.toTask(), task2.toTask()),
-            taskManagerType = manager1.type,
-        )
-
-        verifyBlocking(taskDao) {
-            insertTaskManagerWithTasks(
-                TaskManagerEntity(
-                    name = manager1.name,
-                    type = manager1.type,
-                ),
-                listOf(task1.toTask(), task2.toTask()),
+    fun `test save task manager`() =
+        runTest {
+            viewModel.saveTaskManager(
+                string = manager1.name,
+                tasks = listOf(task1.toTask(), task2.toTask()),
+                taskManagerType = manager1.type,
             )
+
+            verifyBlocking(taskDao) {
+                insertTaskManagerWithTasks(
+                    TaskManagerEntity(
+                        name = manager1.name,
+                        type = manager1.type,
+                    ),
+                    listOf(task1.toTask(), task2.toTask()),
+                )
+            }
         }
-    }
 
     @Test
-    fun `test delete task manager`() = runTest {
-        viewModel.deleteTaskManager(manager1)
+    fun `test delete task manager`() =
+        runTest {
+            viewModel.deleteTaskManager(manager1)
 
-        verifyBlocking(taskDao) { deleteTaskManagerWithTasks(manager1) }
-    }
+            verifyBlocking(taskDao) { deleteTaskManagerWithTasks(manager1) }
+        }
 
     @Test
-    fun `test update task manager`() = runTest {
-        viewModel.updateTaskManager(manager1, listOf(task1.toTask(), task2.toTask()))
+    fun `test update task manager`() =
+        runTest {
+            viewModel.updateTaskManager(manager1, listOf(task1.toTask(), task2.toTask()))
 
-        verifyBlocking(taskDao) {
-            updateTaskManagerWithTasks(
-                manager1,
-                listOf(task1.toTask(), task2.toTask()),
-            )
+            verifyBlocking(taskDao) {
+                updateTaskManagerWithTasks(
+                    manager1,
+                    listOf(task1.toTask(), task2.toTask()),
+                )
+            }
         }
-    }
 
     @Test
-    fun `test update task`() = runTest {
-        viewModel.updateTaskManagerWithTaskEntity(listOf(task1, task2, task3))
+    fun `test update task`() =
+        runTest {
+            viewModel.updateTaskManagerWithTaskEntity(listOf(task1, task2, task3))
 
-        verifyBlocking(taskDao) {
-            getTaskManagers()
-            updateTask(task1)
+            verifyBlocking(taskDao) {
+                getTaskManagers().first()
+                updateTask(task1)
+            }
         }
-    }
 }

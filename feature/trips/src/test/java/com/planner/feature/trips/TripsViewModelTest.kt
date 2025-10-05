@@ -8,12 +8,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.verify
@@ -23,6 +28,10 @@ import org.mockito.kotlin.verifyBlocking
 class TripsViewModelTest {
     private lateinit var testTripDao: TripDao
     private lateinit var viewModel: TripsViewModel
+
+    @ExperimentalCoroutinesApi
+    @get:Rule
+    val dispatcherRule = MainDispatcherRule() // You must have this rule defined in tests.
 
     @OptIn(DelicateCoroutinesApi::class)
     private val mainThreadSurrogate = newSingleThreadContext("test thread")
@@ -98,6 +107,19 @@ class TripsViewModelTest {
 
     @After
     fun tearDown() {
+        Dispatchers.resetMain()
+    }
+}
+
+@ExperimentalCoroutinesApi
+class MainDispatcherRule(
+    val dispatcher: TestDispatcher = UnconfinedTestDispatcher(),
+) : TestWatcher() {
+    override fun starting(description: Description?) {
+        Dispatchers.setMain(dispatcher)
+    }
+
+    override fun finished(description: Description) {
         Dispatchers.resetMain()
     }
 }
