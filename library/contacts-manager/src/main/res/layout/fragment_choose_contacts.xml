@@ -5,18 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="16dp"
     tools:context=".ChooseContactsFragment">
 
     <TextView
         android:id="@+id/choose_contacts_text"
-        style="@style/TextAppearance.Material3.HeadlineLarge"
+        style="@style/TextAppearance.Material3.HeadlineSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/choose_contacts" />
 
+    <TextView
+        android:id="@+id/empty_state"
+        style="@style/TextAppearance.Material3.BodyMedium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/no_contacts_available"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/choose_contacts_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_weight="1"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <Button
+        android:id="@+id/done_button"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/done" />
+
 </LinearLayout>
