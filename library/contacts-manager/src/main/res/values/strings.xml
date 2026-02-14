@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="choose_contacts">Choose Contacts</string>
+    <string name="done">Done</string>
+    <string name="done_with_count">Done (%1$d)</string>
+    <string name="no_contacts_available">No contacts available or permission not granted.</string>
 </resources>
