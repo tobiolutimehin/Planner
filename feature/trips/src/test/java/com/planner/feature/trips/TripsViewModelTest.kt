@@ -29,9 +29,8 @@ class TripsViewModelTest {
     private lateinit var testTripDao: TripDao
     private lateinit var viewModel: TripsViewModel
 
-    @ExperimentalCoroutinesApi
     @get:Rule
-    val dispatcherRule = MainDispatcherRule() // You must have this rule defined in tests.
+    val dispatcherRule = MainDispatcherRule()
 
     @OptIn(DelicateCoroutinesApi::class)
     private val mainThreadSurrogate = newSingleThreadContext("test thread")
@@ -45,7 +44,6 @@ class TripsViewModelTest {
 
     private val testTrips = listOf(testTripObject)
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
         testTripDao = mock(TripDao::class.java)
@@ -59,8 +57,9 @@ class TripsViewModelTest {
     fun `test insert`() =
         runTest {
             insertTestTrip()
-
-            verifyBlocking(testTripDao) { insert(testTripObject) }
+            verifyBlocking(testTripDao) {
+                insertTripWithMates(testTripObject, emptyList())
+            }
         }
 
     @Test
@@ -83,8 +82,9 @@ class TripsViewModelTest {
                 departureTime = 1000L,
                 tripImageUrl = null,
                 trip = testTripObject,
+                mates = emptyList(),
             )
-            verifyBlocking(testTripDao) { update(testTripObject) }
+            verifyBlocking(testTripDao) { updateTripWithMates(testTripObject, emptyList()) }
         }
 
     @Test
@@ -102,6 +102,7 @@ class TripsViewModelTest {
             destination = "USA",
             departureTime = 1000L,
             tripImageUrl = null,
+            mates = emptyList(),
         )
     }
 

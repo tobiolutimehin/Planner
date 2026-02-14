@@ -11,39 +11,42 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.datepicker.CalendarConstraints
 import com.google.android.material.datepicker.DateValidatorPointForward
 import com.google.android.material.datepicker.MaterialDatePicker
+import com.planner.core.data.entity.SavedContactEntity
 import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.FormatDateUseCase
-import com.planner.core.ui.ContactListRecyclerAdapter
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentAddTripBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
+import com.planner.library.contacts_manager.ContactListRecyclerAdapter
+import com.planner.library.contacts_manager.ContactPickerArgs
+import com.planner.library.contacts_manager.ContactSelectionResult
+import com.planner.library.contacts_manager.PickerContact
 
 class AddTripFragment : Fragment() {
     private val arguments: AddTripFragmentArgs by navArgs()
-
     private val tripViewModel: TripsViewModel by activityViewModels()
 
     private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
     private var _binding: FragmentAddTripBinding? = null
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
+
     private var storageUri: String? = null
     private val formatDateUseCase = FormatDateUseCase()
     private lateinit var trip: TripEntity
 
-    /**
-     * This value registers an activity result launcher to pick an image from the device's gallery.
-     * It sets the selected image to the tripImage view in the binding, and saves the image to
-     * internal storage using the tripViewModel. The URI of the saved image is stored in the
-     * storageUri variable.
-     */
+    private val selectedTripMates = mutableListOf<PickerContact>()
+    private val contactsResultKey = "add_trip_contacts_result"
+
     private val pickMedia =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             if (uri != null) {
@@ -71,28 +74,58 @@ class AddTripFragment : Fragment() {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+
+        observeContactsSelectionResult()
+
         val id = arguments.tripId
         if (id > 0) {
-            tripViewModel.getTrip(id).observe(this.viewLifecycleOwner) { tripModel ->
-                trip = tripModel
+            tripViewModel.getTripWithMates(id).observe(viewLifecycleOwner) { tripWithMates ->
+                trip = tripWithMates.trip
+                selectedTripMates.clear()
+                selectedTripMates.addAll(
+                    tripWithMates.mates.map {
+                        PickerContact(id = it.contactId, name = it.name, phone = it.phone)
+                    },
+                )
                 bind(trip)
+                renderSelectedContacts()
             }
         }
-        contactsAdapter = ContactListRecyclerAdapter { }
+
+        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             viewModel = tripViewModel
             fragment = this@AddTripFragment
+            goingContacts.adapter = contactsAdapter
             tripTitleEditText.addTextChangedListener(textWatcher)
             departureDateEditText.addTextChangedListener(textWatcher)
         }
+
+        renderSelectedContacts()
     }
 
-    /**
-     * Binds [trip] data to the views in this fragment.
-     */
+    private fun observeContactsSelectionResult() {
+        val navBackStackEntry = findNavController().currentBackStackEntry ?: return
+        val observer =
+            Observer<ContactSelectionResult> { result ->
+                selectedTripMates.clear()
+                selectedTripMates.addAll(result.contacts)
+                renderSelectedContacts()
+                navBackStackEntry.savedStateHandle.remove<ContactSelectionResult>(contactsResultKey)
+            }
+
+        navBackStackEntry.savedStateHandle
+            .getLiveData<ContactSelectionResult>(contactsResultKey)
+            .observe(viewLifecycleOwner, observer)
+    }
+
+    private fun renderSelectedContacts() {
+        contactsAdapter.submitList(selectedTripMates.sortedBy { it.name })
+    }
+
     private fun bind(trip: TripEntity) {
         binding.apply {
             tripTitleEditText.setText(trip.title, TextView.BufferType.SPANNABLE)
@@ -110,17 +143,16 @@ class AddTripFragment : Fragment() {
         }
     }
 
-    /**
-     * Opens the contact manager fragment to select people to go on the trip.
-     */
     fun openContactManager() {
-        val action = AddTripFragmentDirections.actionAddTripFragmentToContactsManagerNavigationGraph()
-        findNavController().navigate(action)
+        findNavController().navigate(
+            R.id.action_addTripFragment_to_contacts_manager_navigation_graph,
+            bundleOf(
+                ContactPickerArgs.PRESELECTED_CONTACT_IDS to selectedTripMates.map { it.id }.toLongArray(),
+                ContactPickerArgs.RESULT_KEY to contactsResultKey,
+            ),
+        )
     }
 
-    /**
-     * Opens a date picker dialog to select a departure date for the trip.
-     */
     fun openDatePicker() {
         val constraintsBuilder =
             CalendarConstraints.Builder()
@@ -142,34 +174,24 @@ class AddTripFragment : Fragment() {
         datePicker.show(requireActivity().supportFragmentManager, TAG)
     }
 
-    /**
-     * Opens a photo picker dialog to select an image for the trip.
-     */
-    fun openPhotoPicker() = pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    fun openPhotoPicker() =
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
 
-    /**
-     * Closes the fragment, either by popping it off the navigation stack or finishing the activity if it's the only one.
-     */
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()
     }
 
-    /**
-     * Saves the trip data to the database and navigates to the list of trips fragment.
-     */
     fun save() {
         tripViewModel.insert(
             tripImageUrl = storageUri,
             departureTime = formatDateUseCase.getTimeLong(binding.departureDateEditText.text.toString())!!,
             destination = binding.destinationEditText.text.toString(),
             title = binding.tripTitleEditText.text.toString(),
+            mates = selectedTripMates.toSavedContacts(),
         )
         goToListTripFragment()
     }
 
-    /**
-     * Updates the trip data in the database and navigates to the list of trips fragment.
-     */
     private fun update() {
         tripViewModel.update(
             tripImageUrl = storageUri,
@@ -177,29 +199,20 @@ class AddTripFragment : Fragment() {
             destination = binding.destinationEditText.text.toString(),
             title = binding.tripTitleEditText.text.toString(),
             trip = trip,
+            mates = selectedTripMates.toSavedContacts(),
         )
         goToListTripFragment()
     }
 
-    /**
-     * Navigates to the list of trips fragment.
-     */
     private fun goToListTripFragment() {
         val action = AddTripFragmentDirections.actionAddTripFragmentToListTripFragment()
         findNavController().navigate(action)
     }
 
-    /**
-     * Updates the state of the save button based on whether all required fields are filled in.
-     * The button is enabled if all fields are filled in, and disabled otherwise.
-     */
     private fun updateSaveButton() {
         binding.saveButton.isEnabled = isButtonEnabled()
     }
 
-    /**
-     * Returns true if all required fields are filled in.
-     */
     fun isButtonEnabled(): Boolean {
         return with(binding) {
             !tripTitleEditText.text.isNullOrBlank() &&
@@ -213,10 +226,6 @@ class AddTripFragment : Fragment() {
         super.onDestroyView()
     }
 
-    /**
-     * A [TextWatcher] that listens for changes in the text of the input fields in the UI,
-     * and updates the state of the save button accordingly.
-     */
     private val textWatcher =
         object : TextWatcher {
             override fun beforeTextChanged(
@@ -242,3 +251,12 @@ class AddTripFragment : Fragment() {
         const val TAG = "AddTripFragment"
     }
 }
+
+private fun List<PickerContact>.toSavedContacts(): List<SavedContactEntity> =
+    map {
+        SavedContactEntity(
+            contactId = it.id,
+            name = it.name,
+            phone = it.phone,
+        )
+    }
