@@ -9,5 +9,13 @@
         android:id="@+id/chooseContactsFragment"
         android:name="com.planner.library.contacts_manager.ChooseContactsFragment"
         android:label="fragment_choose_contacts"
-        tools:layout="@layout/fragment_choose_contacts" />
+        tools:layout="@layout/fragment_choose_contacts">
+        <argument
+            android:name="preselectedContactIds"
+            app:argType="long[]"
+            app:nullable="true" />
+        <argument
+            android:name="resultKey"
+            app:argType="string" />
+    </fragment>
 </navigation>
