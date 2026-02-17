@@ -5,24 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.TaskEntity
+import com.planner.core.data.entity.TaskManagerWithTasksAndContributors
 import com.planner.feature.tasks.R
 import com.planner.feature.tasks.adapter.ManagerDetailRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerDetailBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.TasksViewModel
+import com.planner.library.contacts_manager.ContactListRecyclerAdapter
+import com.planner.library.contacts_manager.PickerContact
 
 class TaskManagerDetailFragment : Fragment() {
     private val arguments: TaskManagerDetailFragmentArgs by navArgs()
     private lateinit var adapter: ManagerDetailRecyclerViewAdapter
-    private lateinit var taskManagerWithTasks: ManagerWithTasks
+    private lateinit var contactsAdapter: ContactListRecyclerAdapter
+    private lateinit var taskManagerWithDetails: TaskManagerWithTasksAndContributors
 
     private var _binding: FragmentTaskManagerDetailBinding? = null
     private val binding get() = _binding!!
@@ -45,28 +49,42 @@ class TaskManagerDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val taskManagerId = arguments.taskManagerId
 
-        adapter = ManagerDetailRecyclerViewAdapter(
-            onCheckChangeListener = { isChecked, task ->
-                if (isChecked) {
-                    checkedTasks.add(task)
-                } else {
-                    checkedTasks.remove(task)
-                }
-            },
-        )
+        adapter =
+            ManagerDetailRecyclerViewAdapter(
+                onCheckChangeListener = { isChecked, task ->
+                    if (isChecked) {
+                        checkedTasks.add(task)
+                    } else {
+                        checkedTasks.remove(task)
+                    }
+                },
+            )
+        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
 
-        tasksViewModel.getTaskManager(taskManagerId).observe(viewLifecycleOwner) { manager ->
-            taskManagerWithTasks = manager
-            adapter.submitList(taskManagerWithTasks.tasks)
-            checkedTasks.addAll(taskManagerWithTasks.tasks.filter { it.isDone })
+        tasksViewModel.getTaskManagerWithContributors(taskManagerId).observe(viewLifecycleOwner) { manager ->
+            taskManagerWithDetails = manager
+            adapter.submitList(taskManagerWithDetails.tasks)
+            contactsAdapter.submitList(
+                taskManagerWithDetails.contributors.map {
+                    PickerContact(id = it.contactId, name = it.name, phone = it.phone)
+                }.sortedBy { it.name },
+            )
+
+            checkedTasks.clear()
+            checkedTasks.addAll(taskManagerWithDetails.tasks.filter { it.isDone })
+
             (activity as AppCompatActivity).supportActionBar?.title =
-                context?.getString(taskManagerWithTasks.taskManager.type.toTitleName())
+                context?.getString(taskManagerWithDetails.taskManager.type.toTitleName())
 
             binding.apply {
                 fragment = this@TaskManagerDetailFragment
                 recyclerView.adapter = adapter
-                taskTitleDetail.text = taskManagerWithTasks.taskManager.name.ifBlank {
-                    context?.getString(taskManagerWithTasks.taskManager.type.toTitleName())
+                contributorsRecyclerView.adapter = contactsAdapter
+                contributorsGroup.isVisible =
+                    taskManagerWithDetails.taskManager.type == com.planner.core.data.entity.TaskManagerType.PROJECT &&
+                        taskManagerWithDetails.contributors.isNotEmpty()
+                taskTitleDetail.text = taskManagerWithDetails.taskManager.name.ifBlank {
+                    context?.getString(taskManagerWithDetails.taskManager.type.toTitleName())
                 }
             }
         }
@@ -80,17 +98,18 @@ class TaskManagerDetailFragment : Fragment() {
     }
 
     fun openEditTaskManager() {
-        val taskManager = taskManagerWithTasks.taskManager
-        val action = TaskManagerDetailFragmentDirections
-            .actionTaskManagerDetailFragmentToAddTaskManagerFragment(
-                selectedManagerType = taskManager.type,
-                taskManagerId = taskManager.managerId,
-            )
+        val taskManager = taskManagerWithDetails.taskManager
+        val action =
+            TaskManagerDetailFragmentDirections
+                .actionTaskManagerDetailFragmentToAddTaskManagerFragment(
+                    selectedManagerType = taskManager.type,
+                    taskManagerId = taskManager.managerId,
+                )
         findNavController().navigate(action)
     }
 
     private fun deleteTaskManager() {
-        tasksViewModel.deleteTaskManager(taskManagerWithTasks.taskManager)
+        tasksViewModel.deleteTaskManager(taskManagerWithDetails.taskManager)
         delete = true
         goBackToTaskManagerList()
     }
@@ -98,7 +117,7 @@ class TaskManagerDetailFragment : Fragment() {
     private fun goBackToTaskManagerList() {
         val action =
             TaskManagerDetailFragmentDirections.actionTaskManagerDetailFragmentToTaskManagerListFragment(
-                managerType = taskManagerWithTasks.taskManager.type,
+                managerType = taskManagerWithDetails.taskManager.type,
             )
         findNavController().navigate(action)
     }
@@ -122,7 +141,7 @@ class TaskManagerDetailFragment : Fragment() {
         super.onPause()
         if (!delete) {
             tasksViewModel.updateTaskManagerWithTaskEntity(
-                taskManagerWithTasks.tasks.map {
+                taskManagerWithDetails.tasks.map {
                     it.copy(
                         isDone = it in checkedTasks,
                     )
