@@ -17,59 +17,67 @@ class TaskManagerDaoTest {
     }
 
     @Test
-    fun insertTaskManager() = runBlocking {
-        val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
-        dao.insertTaskManager(taskManagerEntity)
-        val managers = dao.getTaskManagers().first()
-        assertEquals(managers.size, 1)
-        assertEquals(managers[0].taskManager, taskManagerEntity)
-    }
+    fun insertTaskManager() =
+        runBlocking {
+            val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
+            dao.insertTaskManager(taskManagerEntity)
+            val managers = dao.getTaskManagers().first()
+            assertEquals(managers.size, 1)
+            assertEquals(managers[0].taskManager, taskManagerEntity)
+        }
 
     @Test
-    fun insertTaskManagerWithTasks() = runBlocking {
-        val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
-        val tasks = listOf(
-            Task(id = 1, description = "Task 1"),
-            Task(id = 2, description = "Task 2"),
-        )
-        dao.insertTaskManagerWithTasks(taskManagerEntity, tasks)
-        val managers = dao.getTaskManagers().first()
-        assertEquals(managers.size, 1)
-        assertEquals(managers[0].taskManager, taskManagerEntity)
-    }
+    fun insertTaskManagerWithTasks() =
+        runBlocking {
+            val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
+            val tasks =
+                listOf(
+                    Task(id = 1, description = "Task 1"),
+                    Task(id = 2, description = "Task 2"),
+                )
+            dao.insertTaskManagerWithTasks(taskManagerEntity, tasks, emptyList())
+            val managers = dao.getTaskManagers().first()
+            assertEquals(managers.size, 1)
+            assertEquals(managers[0].taskManager, taskManagerEntity)
+        }
 
     @Test
-    fun updateTaskManagerWithTasks() = runBlocking {
-        val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
-        val tasks = listOf(
-            Task(id = 1, description = "Task 1"),
-            Task(id = 2, description = "Task 2"),
-        )
-        dao.insertTaskManagerWithTasks(taskManagerEntity, tasks)
+    fun updateTaskManagerWithTasks() =
+        runBlocking {
+            val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
+            val tasks =
+                listOf(
+                    Task(id = 1, description = "Task 1"),
+                    Task(id = 2, description = "Task 2"),
+                )
+            dao.insertTaskManagerWithTasks(taskManagerEntity, tasks, emptyList())
 
-        val updatedTaskManagerEntity = TaskManagerEntity(managerId = 1, name = "Updated Manager")
-        val updatedTasks = listOf(
-            Task(id = 2, description = "Updated Task 2"),
-            Task(id = 3, description = "New Task"),
-        )
-        dao.updateTaskManagerWithTasks(updatedTaskManagerEntity, updatedTasks)
+            val updatedTaskManagerEntity = TaskManagerEntity(managerId = 1, name = "Updated Manager")
+            val updatedTasks =
+                listOf(
+                    Task(id = 2, description = "Updated Task 2"),
+                    Task(id = 3, description = "New Task"),
+                )
+            dao.updateTaskManagerWithTasks(updatedTaskManagerEntity, updatedTasks, emptyList())
 
-        val managers = dao.getTaskManagers().first()
-        assertEquals(managers.size, 1)
-        assertEquals(managers[0].taskManager, updatedTaskManagerEntity)
-    }
+            val managers = dao.getTaskManagers().first()
+            assertEquals(managers.size, 1)
+            assertEquals(managers[0].taskManager, updatedTaskManagerEntity)
+        }
 
     @Test
-    fun deleteTaskManagerWithTasks() = runBlocking {
-        val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
-        val tasks = listOf(
-            Task(id = 1, description = "Task 1"),
-            Task(id = 2, description = "Task 2"),
-        )
-        dao.insertTaskManagerWithTasks(taskManagerEntity, tasks)
-        dao.deleteTaskManagerWithTasks(taskManagerEntity)
+    fun deleteTaskManagerWithTasks() =
+        runBlocking {
+            val taskManagerEntity = TaskManagerEntity(managerId = 1, name = "Test Manager")
+            val tasks =
+                listOf(
+                    Task(id = 1, description = "Task 1"),
+                    Task(id = 2, description = "Task 2"),
+                )
+            dao.insertTaskManagerWithTasks(taskManagerEntity, tasks, emptyList())
+            dao.deleteTaskManagerWithTasks(taskManagerEntity)
 
-        val managers = dao.getTaskManagers().first()
-        assert(managers.isEmpty())
-    }
+            val managers = dao.getTaskManagers().first()
+            assert(managers.isEmpty())
+        }
 }
