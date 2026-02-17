@@ -17,22 +17,18 @@ import com.planner.core.domain.FormatDateUseCase
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentTripDetailBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
+import com.planner.library.contacts_manager.ContactListRecyclerAdapter
+import com.planner.library.contacts_manager.PickerContact
 
-/**
- * A [Fragment] subclass to display the details of a selected trip.
- */
 class TripDetailFragment : Fragment() {
-
     private val tripViewModel: TripsViewModel by activityViewModels()
 
     private var _binding: FragmentTripDetailBinding? = null
     private val binding get() = _binding!!
 
     private val arguments: TripDetailFragmentArgs by navArgs()
+    private lateinit var contactsAdapter: ContactListRecyclerAdapter
 
-    /**
-     * The [TripEntity] to be displayed.
-     */
     private lateinit var trip: TripEntity
 
     override fun onCreateView(
@@ -46,18 +42,22 @@ class TripDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
+        binding.tripMatesRecyclerView.adapter = contactsAdapter
+
         val id = arguments.tripId
-        tripViewModel.getTrip(id).observe(this.viewLifecycleOwner) { tripModel ->
-            trip = tripModel
+        tripViewModel.getTripWithMates(id).observe(this.viewLifecycleOwner) { tripWithMates ->
+            trip = tripWithMates.trip
             bind(trip)
+            contactsAdapter.submitList(
+                tripWithMates.mates
+                    .map { PickerContact(id = it.contactId, name = it.name, phone = it.phone) }
+                    .sortedBy { it.name },
+            )
+            binding.tripMatesSection.isVisible = tripWithMates.mates.isNotEmpty()
         }
     }
 
-    /**
-     * Binds the [TripEntity] data to the UI.
-     *
-     * @param trip the [TripEntity] to bind
-     */
     private fun bind(trip: TripEntity) {
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
@@ -72,25 +72,17 @@ class TripDetailFragment : Fragment() {
         }
     }
 
-    /**
-     * Deletes the [TripEntity].
-     */
     fun deleteTrip() = showConfirmationDialog()
 
-    /**
-     * Edits the [TripEntity].
-     */
     fun editTrip() {
-        val action = TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
-            title = R.string.edit_trip,
-            tripId = trip.tripId,
-        )
+        val action =
+            TripDetailFragmentDirections.actionTripDetailFragmentToAddTripFragment(
+                title = R.string.edit_trip,
+                tripId = trip.tripId,
+            )
         findNavController().navigate(action)
     }
 
-    /**
-     * Deletes the [TripEntity] after confirmation from the user.
-     */
     private fun confirmDelete() {
         val tripImage = trip.tripImageUrl
 
@@ -103,9 +95,6 @@ class TripDetailFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    /**
-     * Shows the delete confirmation dialog.
-     */
     private fun showConfirmationDialog() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(com.planner.core.ui.R.string.delete_sure))
@@ -116,8 +105,8 @@ class TripDetailFragment : Fragment() {
             .show()
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         _binding = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 }
