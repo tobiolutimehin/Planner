@@ -39,6 +39,10 @@ class AddTaskViewModel : ViewModel() {
         _taskList.value = updatedTaskList
     }
 
+    fun resetTasks(tasks: List<Task>) {
+        _taskList.value = tasks
+    }
+
     /**
      * Removes a task from the task list.
      *
