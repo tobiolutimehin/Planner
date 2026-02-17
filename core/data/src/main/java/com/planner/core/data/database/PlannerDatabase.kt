@@ -8,19 +8,23 @@ import androidx.room.TypeConverters
 import com.planner.core.data.DataConverters
 import com.planner.core.data.dao.TaskManagerDao
 import com.planner.core.data.dao.TripDao
+import com.planner.core.data.entity.ProjectContributorCrossRef
+import com.planner.core.data.entity.SavedContactEntity
 import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
 import com.planner.core.data.entity.TripEntity
+import com.planner.core.data.entity.TripMateCrossRef
 
-/**
- * The Room database for the Planner app.
- *
- * @property tripDao The Data Access Object for managing [TripEntity] instances.
- * @property taskManagerDao The Data Access Object for managing [TaskManagerEntity] instances.
- */
 @Database(
-    entities = [TripEntity::class, TaskManagerEntity::class, TaskEntity::class],
-    version = 5,
+    entities = [
+        TripEntity::class,
+        TaskManagerEntity::class,
+        TaskEntity::class,
+        SavedContactEntity::class,
+        ProjectContributorCrossRef::class,
+        TripMateCrossRef::class,
+    ],
+    version = 6,
     exportSchema = false,
 )
 @TypeConverters(DataConverters::class)
@@ -32,24 +36,19 @@ abstract class PlannerDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: PlannerDatabase? = null
 
-        /**
-         * Returns the singleton instance of [PlannerDatabase].
-         *
-         * @param context The application context.
-         * @return The singleton instance of [PlannerDatabase].
-         */
         fun getDatabase(context: Context): PlannerDatabase {
             return INSTANCE ?: synchronized(this) {
-                val instance = Room
-                    .databaseBuilder(
-                        context,
-                        PlannerDatabase::class.java,
-                        "planner_database",
-                    )
-                    .fallbackToDestructiveMigration()
-                    .build()
+                val instance =
+                    Room
+                        .databaseBuilder(
+                            context,
+                            PlannerDatabase::class.java,
+                            "planner_database",
+                        )
+                        .fallbackToDestructiveMigration()
+                        .build()
                 INSTANCE = instance
-                return instance
+                instance
             }
         }
     }
