@@ -81,7 +81,7 @@ dependencies {
     testImplementation "androidx.arch.core:core-testing:2.2.0"
 
     debugImplementation "androidx.fragment:fragment-testing:1.8.5"
-    kaptAndroidTest 'androidx.databinding:databinding-compiler:8.8.0'
+    kaptAndroidTest 'androidx.databinding:databinding-compiler:8.13.2'
 
     implementation "com.google.dagger:hilt-android:2.50"
     kapt "com.google.dagger:hilt-compiler:2.50"
