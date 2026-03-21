@@ -64,6 +64,7 @@ class AddTaskManagerFragment : Fragment() {
 
         if (managerId > 0) {
             tasksViewModel.getTaskManagerWithContributors(managerId).observe(viewLifecycleOwner) { manager ->
+                if (manager == null) return@observe
                 taskManager = manager
                 addTaskViewModel.resetTasks(manager.tasks.map { it.toTask() })
                 selectedProjectContacts.clear()
@@ -232,8 +233,10 @@ class AddTaskManagerFragment : Fragment() {
     private fun updateTaskManager() {
         addTaskViewModel.taskList.value?.let {
             val managerType = addTaskViewModel.taskManagerType.value ?: taskManager.taskManager.type
+            val updatedTaskManager =
+                taskManager.taskManager.copy(name = binding.taskManagerTitleEditText.text.toString())
             tasksViewModel.updateTaskManager(
-                taskManagerEntity = taskManager.taskManager,
+                taskManagerEntity = updatedTaskManager,
                 tasks = it,
                 contributors = selectedContributorsForType(managerType),
             )
