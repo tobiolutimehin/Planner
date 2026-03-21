@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
@@ -25,17 +24,17 @@ import com.planner.feature.tasks.databinding.FragmentAddTaskManagerBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.AddTaskViewModel
 import com.planner.feature.tasks.viewmodel.TasksViewModel
-import com.planner.library.contacts_manager.ContactListRecyclerAdapter
-import com.planner.library.contacts_manager.ContactPickerArgs
-import com.planner.library.contacts_manager.ContactSelectionResult
-import com.planner.library.contacts_manager.PickerContact
+import com.planner.library.contacts_manager.api.ContactPickerContract
+import com.planner.library.contacts_manager.api.ContactSelectionResult
+import com.planner.library.contacts_manager.api.PickerContact
+import com.planner.library.contacts_manager.ui.ContactsPickerAdapter
 
 class AddTaskManagerFragment : Fragment() {
     private val arguments: AddTaskManagerFragmentArgs by navArgs()
 
     private lateinit var taskManager: TaskManagerWithTasksAndContributors
     private lateinit var adapter: CreateTasksRecyclerViewAdapter
-    private lateinit var contactsAdapter: ContactListRecyclerAdapter
+    private lateinit var contactsAdapter: ContactsPickerAdapter
 
     private val selectedProjectContacts = mutableListOf<PickerContact>()
     private val contactsResultKey = "add_task_manager_contacts_result"
@@ -79,7 +78,7 @@ class AddTaskManagerFragment : Fragment() {
         }
 
         adapter = CreateTasksRecyclerViewAdapter(removeTask = { removeTask(it) })
-        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
+        contactsAdapter = ContactsPickerAdapter(showSelection = false)
 
         addTaskViewModel.apply {
             taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
@@ -112,10 +111,14 @@ class AddTaskManagerFragment : Fragment() {
         val navBackStackEntry = findNavController().currentBackStackEntry ?: return
         val observer =
             Observer<ContactSelectionResult> { result ->
-                selectedProjectContacts.clear()
-                selectedProjectContacts.addAll(result.contacts)
-                renderSelectedContacts()
-                navBackStackEntry.savedStateHandle.remove<ContactSelectionResult>(contactsResultKey)
+                ContactPickerContract.consumeResult(
+                    navBackStackEntry.savedStateHandle,
+                    contactsResultKey,
+                )?.let { consumedResult ->
+                    selectedProjectContacts.clear()
+                    selectedProjectContacts.addAll(consumedResult.contacts)
+                    renderSelectedContacts()
+                }
             }
 
         navBackStackEntry.savedStateHandle
@@ -124,7 +127,7 @@ class AddTaskManagerFragment : Fragment() {
     }
 
     private fun renderSelectedContacts() {
-        contactsAdapter.submitList(selectedProjectContacts.sortedBy { it.name })
+        contactsAdapter.submitContacts(selectedProjectContacts.sortedBy { it.name })
         binding.goingRecyclerView.isVisible = selectedProjectContacts.isNotEmpty()
     }
 
@@ -147,9 +150,9 @@ class AddTaskManagerFragment : Fragment() {
     private fun openContactManager() {
         findNavController().navigate(
             R.id.action_addTaskManagerFragment_to_contacts_manager_navigation_graph,
-            bundleOf(
-                ContactPickerArgs.PRESELECTED_CONTACT_IDS to selectedProjectContacts.map { it.id }.toLongArray(),
-                ContactPickerArgs.RESULT_KEY to contactsResultKey,
+            ContactPickerContract.createArgs(
+                preselectedContactIds = selectedProjectContacts.map { it.id }.toLongArray(),
+                resultKey = contactsResultKey,
             ),
         )
     }

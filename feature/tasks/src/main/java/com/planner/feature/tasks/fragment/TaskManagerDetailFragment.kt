@@ -19,13 +19,13 @@ import com.planner.feature.tasks.adapter.ManagerDetailRecyclerViewAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerDetailBinding
 import com.planner.feature.tasks.utils.Converters.toTitleName
 import com.planner.feature.tasks.viewmodel.TasksViewModel
-import com.planner.library.contacts_manager.ContactListRecyclerAdapter
-import com.planner.library.contacts_manager.PickerContact
+import com.planner.library.contacts_manager.api.PickerContact
+import com.planner.library.contacts_manager.ui.ContactsPickerAdapter
 
 class TaskManagerDetailFragment : Fragment() {
     private val arguments: TaskManagerDetailFragmentArgs by navArgs()
     private lateinit var adapter: ManagerDetailRecyclerViewAdapter
-    private lateinit var contactsAdapter: ContactListRecyclerAdapter
+    private lateinit var contactsAdapter: ContactsPickerAdapter
     private lateinit var taskManagerWithDetails: TaskManagerWithTasksAndContributors
 
     private var _binding: FragmentTaskManagerDetailBinding? = null
@@ -59,13 +59,13 @@ class TaskManagerDetailFragment : Fragment() {
                     }
                 },
             )
-        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
+        contactsAdapter = ContactsPickerAdapter(showSelection = false)
 
         tasksViewModel.getTaskManagerWithContributors(taskManagerId).observe(viewLifecycleOwner) { manager ->
             if (manager == null) return@observe
             taskManagerWithDetails = manager
             adapter.submitList(taskManagerWithDetails.tasks)
-            contactsAdapter.submitList(
+            contactsAdapter.submitContacts(
                 taskManagerWithDetails.contributors.map {
                     PickerContact(id = it.contactId, name = it.name, phone = it.phone)
                 }.sortedBy { it.name },

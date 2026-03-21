@@ -20,9 +20,10 @@
             <option value="$PROJECT_DIR$/feature/trips" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/library/contacts-manager" />
+            <option value="$PROJECT_DIR$/test" />
+            <option value="$PROJECT_DIR$/test/android" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>
