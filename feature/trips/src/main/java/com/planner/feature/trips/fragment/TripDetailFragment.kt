@@ -99,8 +99,10 @@ class TripDetailFragment : Fragment() {
             tripViewModel.deleteBitmapUsingAbsolutePath(tripImage)
         }
 
-        val action = TripDetailFragmentDirections.actionTripDetailFragmentToListTripFragment()
-        findNavController().navigate(action)
+        if (!findNavController().popBackStack()) {
+            val action = TripDetailFragmentDirections.actionTripDetailFragmentToListTripFragment()
+            findNavController().navigate(action)
+        }
     }
 
     /**
@@ -116,8 +118,8 @@ class TripDetailFragment : Fragment() {
             .show()
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         _binding = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 }

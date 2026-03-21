@@ -3,8 +3,8 @@ package com.planner.feature.tasks.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.feature.tasks.R
@@ -14,14 +14,14 @@ import com.planner.feature.tasks.utils.Converters.toTypeName
 
 class TaskManagerListAdapter(
     private val context: Context?,
-    private val openDetail: (Long) -> Unit,
-) : ListAdapter<ManagerWithTasks, TaskManagerListAdapter.ViewHolder>(DiffCallback) {
+    private val openDetail: (Long, Int, Int) -> Unit,
+) : PagingDataAdapter<ManagerWithTasks, TaskManagerListAdapter.ViewHolder>(DiffCallback) {
 
     class ViewHolder(
         private var binding: TaskManagerCardItemBinding,
         private val context: Context?,
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(manager: ManagerWithTasks, openDetail: (Long) -> Unit) {
+        fun bind(manager: ManagerWithTasks, openDetail: (Long, Int, Int) -> Unit) {
             val toComplete = manager.tasks.filterNot { it.isDone }.size
             val type = manager.taskManager.type
             val name = manager.taskManager.name
@@ -37,7 +37,11 @@ class TaskManagerListAdapter(
 
                 taskManagerCardTitle.text = name.ifBlank { context?.getString(type.toTitleName()) }
                 taskManagerType.text = context?.getString(type.toTypeName())
-                root.setOnClickListener { openDetail(manager.taskManager.managerId) }
+                root.setOnClickListener {
+                    val position = bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: 0
+                    val itemTopOffset = binding.root.top
+                    openDetail(manager.taskManager.managerId, position, itemTopOffset)
+                }
             }
         }
     }
@@ -68,7 +72,7 @@ class TaskManagerListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val manager = getItem(position)
+        val manager = getItem(position) ?: return
         holder.bind(manager = manager, openDetail = openDetail)
     }
 }

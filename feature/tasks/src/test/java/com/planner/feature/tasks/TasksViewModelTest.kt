@@ -9,9 +9,9 @@ import com.planner.feature.tasks.viewmodel.TasksViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.newSingleThreadContext
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -54,8 +54,8 @@ class TasksViewModelTest {
             ),
         )
 
-        viewModel = TasksViewModel(taskDao)
         Dispatchers.setMain(mainThreadSurrogate)
+        viewModel = TasksViewModel(taskDao)
     }
 
     @After
@@ -79,6 +79,7 @@ class TasksViewModelTest {
                 tasks = listOf(task1.toTask(), task2.toTask()),
                 taskManagerType = manager1.type,
             )
+            advanceUntilIdle()
 
             verifyBlocking(taskDao) {
                 insertTaskManagerWithTasks(
@@ -95,6 +96,7 @@ class TasksViewModelTest {
     fun `test delete task manager`() =
         runTest {
             viewModel.deleteTaskManager(manager1)
+            advanceUntilIdle()
 
             verifyBlocking(taskDao) { deleteTaskManagerWithTasks(manager1) }
         }
@@ -103,6 +105,7 @@ class TasksViewModelTest {
     fun `test update task manager`() =
         runTest {
             viewModel.updateTaskManager(manager1, listOf(task1.toTask(), task2.toTask()))
+            advanceUntilIdle()
 
             verifyBlocking(taskDao) {
                 updateTaskManagerWithTasks(
@@ -116,10 +119,10 @@ class TasksViewModelTest {
     fun `test update task`() =
         runTest {
             viewModel.updateTaskManagerWithTaskEntity(listOf(task1, task2, task3))
+            advanceUntilIdle()
 
-            verifyBlocking(taskDao) {
-                getTaskManagers().first()
-                updateTask(task1)
-            }
+            verifyBlocking(taskDao) { updateTask(task1) }
+            verifyBlocking(taskDao) { updateTask(task2) }
+            verifyBlocking(taskDao) { updateTask(task3) }
         }
 }

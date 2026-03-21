@@ -1,5 +1,6 @@
 package com.planner.core.data.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -11,6 +12,7 @@ import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
+import com.planner.core.data.entity.TaskManagerType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 
@@ -26,6 +28,10 @@ interface TaskManagerDao {
     @Transaction
     @Query("SELECT * FROM task_manager ORDER BY manager_id DESC")
     fun getTaskManagers(): Flow<List<ManagerWithTasks>>
+
+    @Transaction
+    @Query("SELECT * FROM task_manager WHERE type = :type ORDER BY manager_id DESC")
+    fun getTaskManagersPaged(type: TaskManagerType): PagingSource<Int, ManagerWithTasks>
 
     /**
      * Returns a [Flow] of a specific [TaskManagerEntity] with its associated tasks.

@@ -96,11 +96,13 @@ class TaskManagerDetailFragment : Fragment() {
     }
 
     private fun goBackToTaskManagerList() {
-        val action =
-            TaskManagerDetailFragmentDirections.actionTaskManagerDetailFragmentToTaskManagerListFragment(
-                managerType = taskManagerWithTasks.taskManager.type,
-            )
-        findNavController().navigate(action)
+        if (!findNavController().popBackStack()) {
+            val action =
+                TaskManagerDetailFragmentDirections.actionTaskManagerDetailFragmentToTaskManagerListFragment(
+                    managerType = taskManagerWithTasks.taskManager.type,
+                )
+            findNavController().navigate(action)
+        }
     }
 
     fun showConfirmationDialog() {

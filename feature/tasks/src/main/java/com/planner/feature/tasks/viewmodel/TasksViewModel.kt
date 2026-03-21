@@ -4,6 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.planner.core.data.dao.TaskManagerDao
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.Task
@@ -11,6 +15,9 @@ import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
 import com.planner.core.data.entity.TaskManagerType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,11 +28,75 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : ViewModel() {
+    private val listStates = mutableMapOf<TaskManagerType, TaskManagerListState>()
+    private var selectedTaskManagerPage: TaskManagerType? = null
+
+    val todoTaskManagers: StateFlow<PagingData<ManagerWithTasks>> =
+        Pager(
+            config = PagingConfig(pageSize = 10, prefetchDistance = 1, enablePlaceholders = true),
+            pagingSourceFactory = { dao.getTaskManagersPaged(TaskManagerType.TODO_LIST) },
+        ).flow
+            .cachedIn(viewModelScope)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = PagingData.empty(),
+            )
+
+    val projectTaskManagers: StateFlow<PagingData<ManagerWithTasks>> =
+        Pager(
+            config = PagingConfig(pageSize = 10, prefetchDistance = 1, enablePlaceholders = true),
+            pagingSourceFactory = { dao.getTaskManagersPaged(TaskManagerType.PROJECT) },
+        ).flow
+            .cachedIn(viewModelScope)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = PagingData.empty(),
+            )
 
     /**
      * LiveData object containing a list of all task managers and their associated tasks.
      */
     val tasks: LiveData<List<ManagerWithTasks>> = dao.getTaskManagers().asLiveData()
+
+    fun saveTaskManagerListState(
+        type: TaskManagerType,
+        anchorPosition: Int,
+        anchorOffset: Int,
+    ) {
+        val existing = listStates[type] ?: TaskManagerListState()
+        listStates[type] =
+            existing.copy(
+                anchorPosition = anchorPosition.coerceAtLeast(0),
+                anchorOffset = anchorOffset,
+            )
+    }
+
+    fun markTaskManagerClicked(
+        type: TaskManagerType,
+        managerId: Long,
+        adapterPosition: Int,
+        itemTopOffset: Int,
+    ) {
+        val existing = listStates[type] ?: TaskManagerListState()
+        listStates[type] =
+            existing.copy(
+                clickedItemId = managerId,
+                anchorPosition = adapterPosition.coerceAtLeast(0),
+                clickedItemOffset = itemTopOffset,
+            )
+    }
+
+    fun getTaskManagerListState(type: TaskManagerType): TaskManagerListState =
+        listStates[type] ?: TaskManagerListState()
+
+    fun saveSelectedTaskManagerPage(type: TaskManagerType) {
+        selectedTaskManagerPage = type
+    }
+
+    fun getSelectedTaskManagerPage(defaultType: TaskManagerType): TaskManagerType =
+        selectedTaskManagerPage ?: defaultType
 
     /**
      * Returns the task manager with the given ID.
@@ -65,7 +136,7 @@ class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : View
      *
      * @param taskEntity TaskEntity to update.
      */
-    private fun updateTask(taskEntity: TaskEntity) = viewModelScope.launch {
+    private suspend fun updateTask(taskEntity: TaskEntity) {
         dao.updateTask(taskEntity)
     }
 
@@ -90,3 +161,10 @@ class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : View
             tasks.forEach { updateTask(it) }
         }
 }
+
+data class TaskManagerListState(
+    val clickedItemId: Long? = null,
+    val clickedItemOffset: Int? = null,
+    val anchorPosition: Int = 0,
+    val anchorOffset: Int = 0,
+)

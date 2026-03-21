@@ -3,10 +3,10 @@ package com.planner.feature.trips.adapter
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.core.data.entity.TripEntity
 import com.planner.core.domain.DatePattern
@@ -22,8 +22,8 @@ import com.planner.feature.trips.databinding.FragmentItemTripBinding
  */
 class TripRecyclerViewAdapter(
     private var context: Context,
-    private val onTripClicked: (TripEntity) -> Unit,
-) : ListAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
+    private val onTripClicked: (TripEntity, Int, Int) -> Unit,
+) : PagingDataAdapter<TripEntity, TripRecyclerViewAdapter.ViewHolder>(DiffCallback) {
 
     /**
      * Creates a new [ViewHolder] object to represent an item view in the RecyclerView.
@@ -51,7 +51,7 @@ class TripRecyclerViewAdapter(
      * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val trip = getItem(position)
+        val trip = getItem(position) ?: return
         holder.bind(trip)
     }
 
@@ -65,7 +65,7 @@ class TripRecyclerViewAdapter(
     class ViewHolder(
         private var binding: FragmentItemTripBinding,
         private var context: Context,
-        private var onTripClicked: (TripEntity) -> Unit,
+        private var onTripClicked: (TripEntity, Int, Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
         /**
          * Binds the data of a [TripEntity] object to the views in the item view.
@@ -74,16 +74,24 @@ class TripRecyclerViewAdapter(
          */
         fun bind(trip: TripEntity) {
             binding.apply {
-                trip.tripImageUrl?.let {
+                val imageUrl = trip.tripImageUrl
+                if (imageUrl != null) {
                     tripsCardImage.isVisible = true
-                    tripsCardImage.setImageURI(it.toUri())
+                    tripsCardImage.setImageURI(imageUrl.toUri())
                     tripsCardImage.contentDescription =
                         context.getString(R.string.image_description, trip.title)
+                } else {
+                    tripsCardImage.isVisible = false
+                    tripsCardImage.setImageDrawable(null)
                 }
                 tripsCardDate.text =
                     trip.departureTime.let { FormatDateUseCase(DatePattern.LITERAL).format(it) }
                 tripsCardDestination.text = trip.destination
-                tripsCardView.setOnClickListener { onTripClicked(trip) }
+                tripsCardView.setOnClickListener {
+                    val position = bindingAdapterPosition.takeIf { it != RecyclerView.NO_POSITION } ?: 0
+                    val itemTopOffset = binding.root.top
+                    onTripClicked(trip, position, itemTopOffset)
+                }
             }
         }
     }

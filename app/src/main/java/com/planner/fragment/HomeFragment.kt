@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavDeepLinkRequest
 import androidx.navigation.fragment.findNavController
+import androidx.paging.PagingData
 import com.planner.databinding.FragmentHomeBinding
 import com.planner.feature.tasks.adapter.TaskManagerListAdapter
 import com.planner.feature.tasks.viewmodel.TasksViewModel
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = TaskManagerListAdapter(
             context = context,
-            openDetail = { openPendingTaskManagement(it) },
+            openDetail = { id, _, _ -> openPendingTaskManagement(id) },
         )
 
         binding.apply {
@@ -54,7 +55,7 @@ class HomeFragment : Fragment() {
                 val pendingTasks = managerWithTasks.filter { manager ->
                     manager.tasks.any { !it.isDone }
                 }
-                adapter.submitList(pendingTasks)
+                adapter.submitData(viewLifecycleOwner.lifecycle, PagingData.from(pendingTasks))
                 this.pendingTasks.text = resources.getQuantityString(
                     com.planner.core.ui.R.plurals.pending_x_tasks,
                     pendingTasks.size,

@@ -9,9 +9,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.planner.core.data.dao.TripDao
 import com.planner.core.data.entity.TripEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
@@ -29,11 +36,50 @@ import javax.inject.Inject
 class TripsViewModel @Inject constructor(
     private val dao: TripDao
 ) : ViewModel() {
+    private var listState = TripListState()
+
+    val pagedTrips: StateFlow<PagingData<TripEntity>> =
+        Pager(
+            config = PagingConfig(pageSize = 10, prefetchDistance = 1, enablePlaceholders = true),
+            pagingSourceFactory = { dao.getTripsPaged() },
+        ).flow
+            .cachedIn(viewModelScope)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = PagingData.empty(),
+            )
 
     /**
      * LiveData object for observing a list of all trips from the DAO.
      */
     val trips: LiveData<List<TripEntity>> = dao.getTrips().asLiveData()
+
+    fun saveTripListState(
+        anchorPosition: Int,
+        anchorOffset: Int,
+    ) {
+        listState =
+            listState.copy(
+                anchorPosition = anchorPosition.coerceAtLeast(0),
+                anchorOffset = anchorOffset,
+            )
+    }
+
+    fun markTripClicked(
+        tripId: Int,
+        adapterPosition: Int,
+        itemTopOffset: Int,
+    ) {
+        listState =
+            listState.copy(
+                clickedTripId = tripId,
+                anchorPosition = adapterPosition.coerceAtLeast(0),
+                clickedItemOffset = itemTopOffset,
+            )
+    }
+
+    fun getTripListState(): TripListState = listState
 
     /**
      * Inserts a new trip into the DAO.
@@ -155,3 +201,10 @@ class TripsViewModel @Inject constructor(
         dao.update(newTrip)
     }
 }
+
+data class TripListState(
+    val clickedTripId: Int? = null,
+    val clickedItemOffset: Int? = null,
+    val anchorPosition: Int = 0,
+    val anchorOffset: Int = 0,
+)

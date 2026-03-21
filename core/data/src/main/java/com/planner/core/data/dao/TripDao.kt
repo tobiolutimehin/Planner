@@ -1,5 +1,6 @@
 package com.planner.core.data.dao
 
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -34,6 +35,9 @@ interface TripDao {
      */
     @Query("SELECT * FROM trip ORDER BY departure_time DESC")
     fun getTrips(): Flow<List<TripEntity>>
+
+    @Query("SELECT * FROM trip ORDER BY departure_time DESC")
+    fun getTripsPaged(): PagingSource<Int, TripEntity>
 
     /**
      * Retrieves the trip with the specified id from the database.
