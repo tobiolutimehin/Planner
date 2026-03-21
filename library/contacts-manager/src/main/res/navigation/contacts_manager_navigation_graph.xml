@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/contacts_manager_navigation_graph"
-    app:startDestination="@id/chooseContactsFragment">
+    app:startDestination="@id/contactsPickerFragment">
 
     <fragment
-        android:id="@+id/chooseContactsFragment"
-        android:name="com.planner.library.contacts_manager.ChooseContactsFragment"
+        android:id="@+id/contactsPickerFragment"
+        android:name="com.planner.library.contacts_manager.ui.ContactsPickerFragment"
         android:label="fragment_choose_contacts"
-        tools:layout="@layout/fragment_choose_contacts">
+        tools:layout="@layout/fragment_contacts_picker">
         <argument
             android:name="preselectedContactIds"
             app:argType="long[]"

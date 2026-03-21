@@ -11,7 +11,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -26,16 +25,16 @@ import com.planner.core.domain.FormatDateUseCase
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentAddTripBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
-import com.planner.library.contacts_manager.ContactListRecyclerAdapter
-import com.planner.library.contacts_manager.ContactPickerArgs
-import com.planner.library.contacts_manager.ContactSelectionResult
-import com.planner.library.contacts_manager.PickerContact
+import com.planner.library.contacts_manager.api.ContactPickerContract
+import com.planner.library.contacts_manager.api.ContactSelectionResult
+import com.planner.library.contacts_manager.api.PickerContact
+import com.planner.library.contacts_manager.ui.ContactsPickerAdapter
 
 class AddTripFragment : Fragment() {
     private val arguments: AddTripFragmentArgs by navArgs()
     private val tripViewModel: TripsViewModel by activityViewModels()
 
-    private lateinit var contactsAdapter: ContactListRecyclerAdapter
+    private lateinit var contactsAdapter: ContactsPickerAdapter
 
     private var _binding: FragmentAddTripBinding? = null
     private val binding get() = _binding!!
@@ -92,7 +91,7 @@ class AddTripFragment : Fragment() {
             }
         }
 
-        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
+        contactsAdapter = ContactsPickerAdapter(showSelection = false)
 
         (activity as? AppCompatActivity)?.supportActionBar?.title = getString(arguments.title)
         binding.apply {
@@ -111,10 +110,14 @@ class AddTripFragment : Fragment() {
         val navBackStackEntry = findNavController().currentBackStackEntry ?: return
         val observer =
             Observer<ContactSelectionResult> { result ->
-                selectedTripMates.clear()
-                selectedTripMates.addAll(result.contacts)
-                renderSelectedContacts()
-                navBackStackEntry.savedStateHandle.remove<ContactSelectionResult>(contactsResultKey)
+                ContactPickerContract.consumeResult(
+                    navBackStackEntry.savedStateHandle,
+                    contactsResultKey,
+                )?.let { consumedResult ->
+                    selectedTripMates.clear()
+                    selectedTripMates.addAll(consumedResult.contacts)
+                    renderSelectedContacts()
+                }
             }
 
         navBackStackEntry.savedStateHandle
@@ -123,7 +126,7 @@ class AddTripFragment : Fragment() {
     }
 
     private fun renderSelectedContacts() {
-        contactsAdapter.submitList(selectedTripMates.sortedBy { it.name })
+        contactsAdapter.submitContacts(selectedTripMates.sortedBy { it.name })
     }
 
     private fun bind(trip: TripEntity) {
@@ -146,9 +149,9 @@ class AddTripFragment : Fragment() {
     fun openContactManager() {
         findNavController().navigate(
             R.id.action_addTripFragment_to_contacts_manager_navigation_graph,
-            bundleOf(
-                ContactPickerArgs.PRESELECTED_CONTACT_IDS to selectedTripMates.map { it.id }.toLongArray(),
-                ContactPickerArgs.RESULT_KEY to contactsResultKey,
+            ContactPickerContract.createArgs(
+                preselectedContactIds = selectedTripMates.map { it.id }.toLongArray(),
+                resultKey = contactsResultKey,
             ),
         )
     }

@@ -3,5 +3,11 @@
     <string name="choose_contacts">Choose Contacts</string>
     <string name="done">Done</string>
     <string name="done_with_count">Done (%1$d)</string>
-    <string name="no_contacts_available">No contacts available or permission not granted.</string>
+    <string name="no_contacts_available">No contacts available.</string>
+    <string name="contacts_permission_rationale">Allow contacts access to choose people from your device.</string>
+    <string name="contacts_permission_open_settings">Contacts access is blocked. Open system settings to enable it.</string>
+    <string name="contacts_load_failed">Unable to load contacts right now.</string>
+    <string name="grant_contacts_permission">Grant Access</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="retry">Retry</string>
 </resources>

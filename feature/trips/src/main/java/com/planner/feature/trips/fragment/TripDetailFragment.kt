@@ -17,8 +17,8 @@ import com.planner.core.domain.FormatDateUseCase
 import com.planner.feature.trips.R
 import com.planner.feature.trips.databinding.FragmentTripDetailBinding
 import com.planner.feature.trips.viewmodel.TripsViewModel
-import com.planner.library.contacts_manager.ContactListRecyclerAdapter
-import com.planner.library.contacts_manager.PickerContact
+import com.planner.library.contacts_manager.api.PickerContact
+import com.planner.library.contacts_manager.ui.ContactsPickerAdapter
 
 class TripDetailFragment : Fragment() {
     private val tripViewModel: TripsViewModel by activityViewModels()
@@ -27,7 +27,7 @@ class TripDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val arguments: TripDetailFragmentArgs by navArgs()
-    private lateinit var contactsAdapter: ContactListRecyclerAdapter
+    private lateinit var contactsAdapter: ContactsPickerAdapter
 
     private lateinit var trip: TripEntity
 
@@ -42,7 +42,7 @@ class TripDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
+        contactsAdapter = ContactsPickerAdapter(showSelection = false)
         binding.tripMatesRecyclerView.adapter = contactsAdapter
 
         val id = arguments.tripId
@@ -50,7 +50,7 @@ class TripDetailFragment : Fragment() {
             if (tripWithMates == null) return@observe
             trip = tripWithMates.trip
             bind(trip)
-            contactsAdapter.submitList(
+            contactsAdapter.submitContacts(
                 tripWithMates.mates
                     .map { PickerContact(id = it.contactId, name = it.name, phone = it.phone) }
                     .sortedBy { it.name },
