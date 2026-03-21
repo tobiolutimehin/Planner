@@ -47,6 +47,7 @@ class TripDetailFragment : Fragment() {
 
         val id = arguments.tripId
         tripViewModel.getTripWithMates(id).observe(this.viewLifecycleOwner) { tripWithMates ->
+            if (tripWithMates == null) return@observe
             trip = tripWithMates.trip
             bind(trip)
             contactsAdapter.submitList(

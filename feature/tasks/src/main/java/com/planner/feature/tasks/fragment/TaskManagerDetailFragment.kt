@@ -62,6 +62,7 @@ class TaskManagerDetailFragment : Fragment() {
         contactsAdapter = ContactListRecyclerAdapter(showSelection = false)
 
         tasksViewModel.getTaskManagerWithContributors(taskManagerId).observe(viewLifecycleOwner) { manager ->
+            if (manager == null) return@observe
             taskManagerWithDetails = manager
             adapter.submitList(taskManagerWithDetails.tasks)
             contactsAdapter.submitList(
@@ -72,7 +73,6 @@ class TaskManagerDetailFragment : Fragment() {
 
             checkedTasks.clear()
             checkedTasks.addAll(taskManagerWithDetails.tasks.filter { it.isDone })
-
             (activity as AppCompatActivity).supportActionBar?.title =
                 context?.getString(taskManagerWithDetails.taskManager.type.toTitleName())
 
