@@ -1,6 +1,5 @@
 package com.planner.feature.trips
 
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -25,7 +24,7 @@ import com.planner.feature.trips.fragment.AddTripFragmentArgs
 import com.planner.feature.trips.fragment.ListTripFragment
 import com.planner.feature.trips.fragment.TripDetailFragment
 import com.planner.feature.trips.fragment.TripDetailFragmentArgs
-import com.planner.test.android.createTestNavController
+import com.planner.test.android.createNavController
 import com.planner.test.android.launchFragmentInHiltContainer
 import com.planner.test.android.waitUntil
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -275,13 +274,4 @@ class TripFragmentsInstrumentedTest {
     private fun seedTrip(trip: TripEntity) = runBlocking {
         tripDao.insert(trip)
     }
-
-    private fun createNavController(
-        graphId: Int,
-        currentDestination: Int,
-    ) = createTestNavController(
-        context = ApplicationProvider.getApplicationContext(),
-        graphId = graphId,
-        currentDestination = currentDestination,
-    )
 }

@@ -1,8 +1,6 @@
 package com.planner.feature.tasks
 
-import android.content.Context
 import androidx.lifecycle.Lifecycle
-import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -17,7 +15,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.viewpager2.widget.ViewPager2
 import com.planner.core.data.dao.TaskManagerDao
 import com.planner.core.data.database.PlannerDatabase
@@ -31,9 +28,11 @@ import com.planner.feature.tasks.fragment.TaskManagerDetailFragmentArgs
 import com.planner.feature.tasks.fragment.TaskManagerListFragment
 import com.planner.feature.tasks.fragment.TaskManagerPageFragment
 import com.planner.feature.tasks.fragment.TaskManagerPageFragmentArgs
+import com.planner.test.android.createNavController
+import com.planner.test.android.launchFragmentInHiltContainer
+import com.planner.test.android.waitUntil
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -43,9 +42,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.planner.test.android.createTestNavController
-import com.planner.test.android.launchFragmentInHiltContainer
-import com.planner.test.android.waitUntil
+import javax.inject.Inject
 
 @HiltAndroidTest
 @RunWith(AndroidJUnit4::class)
@@ -339,13 +336,4 @@ class TaskFragmentsInstrumentedTest {
         taskManagerDao.insertTasks(tasks.map { it.toTaskEntity(managerId) })
         managerId
     }
-
-    private fun createNavController(
-        graphId: Int,
-        currentDestination: Int,
-    ) = createTestNavController(
-        context = ApplicationProvider.getApplicationContext<Context>(),
-        graphId = graphId,
-        currentDestination = currentDestination,
-    )
 }

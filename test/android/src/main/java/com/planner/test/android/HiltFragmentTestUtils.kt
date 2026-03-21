@@ -73,3 +73,12 @@ fun waitUntil(
 
     throw AssertionError("Condition was not met within $timeoutMillis ms")
 }
+
+fun createNavController(
+    graphId: Int,
+    currentDestination: Int,
+) = createTestNavController(
+    context = ApplicationProvider.getApplicationContext(),
+    graphId = graphId,
+    currentDestination = currentDestination,
+)
