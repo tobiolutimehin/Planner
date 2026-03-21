@@ -1,5 +1,7 @@
 package com.planner.feature.tasks
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.planner.core.data.dao.TaskManagerDao
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.TaskEntity
@@ -16,7 +18,9 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
@@ -41,6 +45,9 @@ class TasksViewModelTest {
     @OptIn(DelicateCoroutinesApi::class)
     private val mainThreadSurrogate = newSingleThreadContext("test thread")
 
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
     @Before
     fun setup() {
         taskDao = mock(TaskManagerDao::class.java)
@@ -53,7 +60,7 @@ class TasksViewModelTest {
             ),
         )
 
-        viewModel = TasksViewModel(taskDao)
+        viewModel = TasksViewModel(taskDao, SavedStateHandle())
         Dispatchers.setMain(mainThreadSurrogate)
     }
 
@@ -124,4 +131,14 @@ class TasksViewModelTest {
             verifyBlocking(taskDao) { updateTask(task2) }
             verifyBlocking(taskDao) { updateTask(task3) }
         }
+
+    @Test
+    fun `selected manager type is retained in saved state handle`() {
+        viewModel.initializeSelectedManagerType(TaskManagerType.TODO_LIST)
+        assertEquals(TaskManagerType.TODO_LIST, viewModel.selectedManagerType.value)
+
+        viewModel.setSelectedManagerType(TaskManagerType.PROJECT)
+
+        assertEquals(TaskManagerType.PROJECT, viewModel.selectedManagerType.value)
+    }
 }

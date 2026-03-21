@@ -3,13 +3,11 @@ package com.planner.library.contacts_manager.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.planner.library.contacts_manager.api.PickerContact
 import com.planner.library.contacts_manager.databinding.ContactListItemBinding
 
-data class ContactsPickerItemUiModel(
+internal data class ContactsPickerItemUiModel(
     val contact: PickerContact,
     val isSelected: Boolean,
 )
@@ -17,7 +15,9 @@ data class ContactsPickerItemUiModel(
 class ContactsPickerAdapter(
     private val showSelection: Boolean = true,
     private val onSelectionChanged: ((Long, Boolean) -> Unit)? = null,
-) : ListAdapter<ContactsPickerItemUiModel, ContactsPickerAdapter.ViewHolder>(DiffCallback) {
+) : RecyclerView.Adapter<ContactsPickerAdapter.ViewHolder>() {
+    private var items: List<ContactsPickerItemUiModel> = emptyList()
+
     init {
         setHasStableIds(true)
     }
@@ -26,57 +26,19 @@ class ContactsPickerAdapter(
         contacts: List<PickerContact>,
         selectedIds: Set<Long> = emptySet(),
     ) {
-        submitList(
+        items =
             contacts.map { contact ->
                 ContactsPickerItemUiModel(
                     contact = contact,
                     isSelected = contact.id in selectedIds,
                 )
-            },
-        )
+            }
+        notifyDataSetChanged()
     }
 
-    override fun getItemId(position: Int): Long = getItem(position).contact.id
+    override fun getItemCount(): Int = items.size
 
-    class ViewHolder(
-        private val binding: ContactListItemBinding,
-        private val showSelection: Boolean,
-        private val onSelectionChanged: ((Long, Boolean) -> Unit)?,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: ContactsPickerItemUiModel) {
-            binding.contactName.text = item.contact.name
-            binding.contactNumber.text = item.contact.phone
-
-            if (!showSelection) {
-                binding.button.visibility = View.GONE
-                binding.root.setOnClickListener(null)
-                return
-            }
-
-            binding.button.visibility = View.VISIBLE
-            binding.button.setOnCheckedChangeListener(null)
-            binding.button.isChecked = item.isSelected
-            binding.button.setOnCheckedChangeListener { _, isChecked ->
-                onSelectionChanged?.invoke(item.contact.id, isChecked)
-            }
-
-            binding.root.setOnClickListener {
-                binding.button.performClick()
-            }
-        }
-    }
-
-    private companion object DiffCallback : DiffUtil.ItemCallback<ContactsPickerItemUiModel>() {
-        override fun areItemsTheSame(
-            oldItem: ContactsPickerItemUiModel,
-            newItem: ContactsPickerItemUiModel,
-        ): Boolean = oldItem.contact.id == newItem.contact.id
-
-        override fun areContentsTheSame(
-            oldItem: ContactsPickerItemUiModel,
-            newItem: ContactsPickerItemUiModel,
-        ): Boolean = oldItem == newItem
-    }
+    override fun getItemId(position: Int): Long = items[position].contact.id
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -90,6 +52,41 @@ class ContactsPickerAdapter(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val item = items[position]
+        holder.bind(
+            contact = item.contact,
+            isSelected = item.isSelected,
+        )
+    }
+
+    class ViewHolder(
+        private val binding: ContactListItemBinding,
+        private val showSelection: Boolean,
+        private val onSelectionChanged: ((Long, Boolean) -> Unit)?,
+    ) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            contact: PickerContact,
+            isSelected: Boolean,
+        ) {
+            binding.contactName.text = contact.name
+            binding.contactNumber.text = contact.phone
+
+            if (!showSelection) {
+                binding.button.visibility = View.GONE
+                binding.root.setOnClickListener(null)
+                return
+            }
+
+            binding.button.visibility = View.VISIBLE
+            binding.button.setOnCheckedChangeListener(null)
+            binding.button.isChecked = isSelected
+            binding.button.setOnCheckedChangeListener { _, isChecked ->
+                onSelectionChanged?.invoke(contact.id, isChecked)
+            }
+
+            binding.root.setOnClickListener {
+                binding.button.performClick()
+            }
+        }
     }
 }

@@ -10,30 +10,92 @@ internal enum class ContactsPermissionState {
     UNKNOWN,
     GRANTED,
     REQUEST_REQUIRED,
-    DENIED,
+    SHOW_RATIONALE,
+    OPEN_SETTINGS,
 }
 
-internal class ContactsPermissionManager @Inject constructor() {
-    fun permissionState(context: Context): ContactsPermissionState =
+internal interface ContactsPermissionManager {
+    fun permissionState(
+        context: Context,
+        shouldShowRationale: Boolean,
+    ): ContactsPermissionState
+
+    fun permissionState(
+        isGranted: Boolean,
+        shouldShowRationale: Boolean,
+    ): ContactsPermissionState
+
+    fun permissionStateFromRequestResult(
+        granted: Boolean,
+        shouldShowRationale: Boolean,
+    ): ContactsPermissionState
+
+    fun markPermissionRequested()
+}
+
+internal class DefaultContactsPermissionManager @Inject constructor(
+    private val permissionRequestStore: PermissionRequestStore,
+) : ContactsPermissionManager {
+    override fun permissionState(
+        context: Context,
+        shouldShowRationale: Boolean,
+    ): ContactsPermissionState =
         permissionState(
             isGranted =
                 ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_CONTACTS,
                 ) == PackageManager.PERMISSION_GRANTED,
+            shouldShowRationale = shouldShowRationale,
         )
 
-    fun permissionState(isGranted: Boolean): ContactsPermissionState =
-        if (isGranted) {
-            ContactsPermissionState.GRANTED
-        } else {
-            ContactsPermissionState.REQUEST_REQUIRED
+    override fun permissionState(
+        isGranted: Boolean,
+        shouldShowRationale: Boolean,
+    ): ContactsPermissionState =
+        when {
+            isGranted -> ContactsPermissionState.GRANTED
+            shouldShowRationale -> ContactsPermissionState.SHOW_RATIONALE
+            permissionRequestStore.hasRequestedContactsPermission() -> ContactsPermissionState.OPEN_SETTINGS
+            else -> ContactsPermissionState.REQUEST_REQUIRED
         }
 
-    fun permissionStateFromRequestResult(granted: Boolean): ContactsPermissionState =
-        if (granted) {
-            ContactsPermissionState.GRANTED
-        } else {
-            ContactsPermissionState.DENIED
+    override fun permissionStateFromRequestResult(
+        granted: Boolean,
+        shouldShowRationale: Boolean,
+    ): ContactsPermissionState =
+        when {
+            granted -> ContactsPermissionState.GRANTED
+            shouldShowRationale -> ContactsPermissionState.SHOW_RATIONALE
+            else -> ContactsPermissionState.OPEN_SETTINGS
         }
+
+    override fun markPermissionRequested() {
+        permissionRequestStore.markContactsPermissionRequested()
+    }
+}
+
+internal interface PermissionRequestStore {
+    fun hasRequestedContactsPermission(): Boolean
+
+    fun markContactsPermissionRequested()
+}
+
+internal class SharedPreferencesPermissionRequestStore(
+    private val context: Context,
+) : PermissionRequestStore {
+    override fun hasRequestedContactsPermission(): Boolean =
+        preferences.getBoolean(KEY_CONTACTS_PERMISSION_REQUESTED, false)
+
+    override fun markContactsPermissionRequested() {
+        preferences.edit().putBoolean(KEY_CONTACTS_PERMISSION_REQUESTED, true).apply()
+    }
+
+    private val preferences
+        get() = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_PRIVATE)
+
+    private companion object {
+        const val PREFERENCES_NAME = "contacts_picker_permission_store"
+        const val KEY_CONTACTS_PERMISSION_REQUESTED = "contacts_permission_requested"
+    }
 }

@@ -99,6 +99,7 @@ class TaskManagerDetailFragment : Fragment() {
 
     fun openEditTaskManager() {
         val taskManager = taskManagerWithDetails.taskManager
+        tasksViewModel.setSelectedManagerType(taskManager.type)
         val action =
             TaskManagerDetailFragmentDirections
                 .actionTaskManagerDetailFragmentToAddTaskManagerFragment(
@@ -115,6 +116,7 @@ class TaskManagerDetailFragment : Fragment() {
     }
 
     private fun goBackToTaskManagerList() {
+        tasksViewModel.setSelectedManagerType(taskManagerWithDetails.taskManager.type)
         val action =
             TaskManagerDetailFragmentDirections.actionTaskManagerDetailFragmentToTaskManagerListFragment(
                 managerType = taskManagerWithDetails.taskManager.type,

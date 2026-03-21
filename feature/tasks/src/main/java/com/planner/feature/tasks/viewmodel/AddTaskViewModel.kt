@@ -2,6 +2,7 @@ package com.planner.feature.tasks.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
@@ -9,12 +10,17 @@ import com.planner.core.data.entity.TaskManagerType
 /**
  * The AddTaskViewModel class is responsible for managing the list of tasks and the current task management type.
  */
-class AddTaskViewModel : ViewModel() {
+class AddTaskViewModel(
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    private companion object {
+        const val TASK_MANAGER_TYPE_KEY = "task_manager_type"
+    }
 
     private var _taskList = MutableLiveData<List<Task>>()
     val taskList: LiveData<List<Task>> = _taskList
 
-    private var _taskManagementType = MutableLiveData<TaskManagerType>()
+    private val _taskManagementType = savedStateHandle.getLiveData<TaskManagerType>(TASK_MANAGER_TYPE_KEY)
     val taskManagerType: LiveData<TaskManagerType> = _taskManagementType
 
     /**
@@ -54,12 +60,18 @@ class AddTaskViewModel : ViewModel() {
         _taskList.value = updatedTaskList
     }
 
+    fun initializeTaskManagementType(taskManagerType: TaskManagerType) {
+        if (_taskManagementType.value == null) {
+            setTaskManagementType(taskManagerType)
+        }
+    }
+
     /**
      * Sets the current task management type.
      *
      * @param taskManagerType The task management type to be set.
      */
     fun setTaskManagementType(taskManagerType: TaskManagerType) {
-        _taskManagementType.value = taskManagerType
+        savedStateHandle[TASK_MANAGER_TYPE_KEY] = taskManagerType
     }
 }

@@ -8,12 +8,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
-import kotlinx.coroutines.test.advanceUntilIdle
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -51,18 +52,67 @@ class ContactsPickerViewModelTest {
 
         assertEquals(2, viewModel.uiState.value.contacts.size)
         assertEquals(setOf(2L), viewModel.uiState.value.selectedIds)
+        assertEquals(ContactsPickerStatus.NONE, viewModel.uiState.value.status)
         assertTrue(viewModel.uiState.value.isDoneEnabled)
     }
 
     @Test
-    fun deniedPermission_updatesStateWithoutLoading() = runTest(dispatcher) {
+    fun missingPermission_keepsPickerInRequestRequiredStateWithoutLoading() = runTest(dispatcher) {
         val repository = FakeContactsRepository()
         val viewModel = ContactsPickerViewModel(repository)
 
-        viewModel.onAction(ContactsPickerAction.PermissionUpdated(ContactsPermissionState.DENIED))
+        viewModel.onAction(
+            ContactsPickerAction.PermissionUpdated(ContactsPermissionState.REQUEST_REQUIRED),
+        )
         advanceUntilIdle()
 
-        assertEquals(ContactsPermissionState.DENIED, viewModel.uiState.value.permissionState)
+        assertEquals(
+            ContactsPermissionState.REQUEST_REQUIRED,
+            viewModel.uiState.value.permissionState,
+        )
+        assertEquals(ContactsPickerStatus.NONE, viewModel.uiState.value.status)
+        assertEquals(0, repository.loadCount)
+    }
+
+    @Test
+    fun rationalePermission_updatesStatusAndActionWithoutLoading() = runTest(dispatcher) {
+        val repository = FakeContactsRepository()
+        val viewModel = ContactsPickerViewModel(repository)
+
+        viewModel.onAction(
+            ContactsPickerAction.PermissionUpdated(ContactsPermissionState.SHOW_RATIONALE),
+        )
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsPickerStatus.SHOW_RATIONALE,
+            viewModel.uiState.value.status,
+        )
+        assertEquals(
+            ContactsPickerPrimaryAction.REQUEST_PERMISSION,
+            viewModel.uiState.value.primaryAction,
+        )
+        assertEquals(0, repository.loadCount)
+    }
+
+    @Test
+    fun openSettingsPermission_updatesStatusAndActionWithoutLoading() = runTest(dispatcher) {
+        val repository = FakeContactsRepository()
+        val viewModel = ContactsPickerViewModel(repository)
+
+        viewModel.onAction(
+            ContactsPickerAction.PermissionUpdated(ContactsPermissionState.OPEN_SETTINGS),
+        )
+        advanceUntilIdle()
+
+        assertEquals(
+            ContactsPickerStatus.OPEN_SETTINGS,
+            viewModel.uiState.value.status,
+        )
+        assertEquals(
+            ContactsPickerPrimaryAction.OPEN_SETTINGS,
+            viewModel.uiState.value.primaryAction,
+        )
         assertEquals(0, repository.loadCount)
     }
 
@@ -105,7 +155,7 @@ class ContactsPickerViewModelTest {
     }
 
     @Test
-    fun repositoryFailure_setsErrorState() = runTest(dispatcher) {
+    fun repositoryFailure_setsLoadFailedState() = runTest(dispatcher) {
         val viewModel =
             ContactsPickerViewModel(
                 FakeContactsRepository(throwable = IllegalStateException("boom")),
@@ -114,8 +164,23 @@ class ContactsPickerViewModelTest {
         viewModel.onAction(ContactsPickerAction.PermissionUpdated(ContactsPermissionState.GRANTED))
         advanceUntilIdle()
 
-        assertEquals("boom", viewModel.uiState.value.errorMessage)
-        assertTrue(!viewModel.uiState.value.isDoneEnabled)
+        assertEquals(ContactsPickerStatus.LOAD_FAILED, viewModel.uiState.value.status)
+        assertEquals(
+            ContactsPickerPrimaryAction.RETRY_LOAD,
+            viewModel.uiState.value.primaryAction,
+        )
+        assertFalse(viewModel.uiState.value.isDoneEnabled)
+    }
+
+    @Test
+    fun emptyContacts_setsEmptyStatus() = runTest(dispatcher) {
+        val viewModel = ContactsPickerViewModel(FakeContactsRepository())
+
+        viewModel.onAction(ContactsPickerAction.PermissionUpdated(ContactsPermissionState.GRANTED))
+        advanceUntilIdle()
+
+        assertEquals(ContactsPickerStatus.EMPTY, viewModel.uiState.value.status)
+        assertTrue(viewModel.uiState.value.hasLoadedContacts)
     }
 }
 

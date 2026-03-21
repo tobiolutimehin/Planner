@@ -5,15 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.adapter.TaskManagerTabsAdapter
 import com.planner.feature.tasks.databinding.FragmentTaskManagerPageBinding
 import com.planner.feature.tasks.utils.Converters.toInt
 import com.planner.feature.tasks.utils.Converters.toTaskManagerType
+import com.planner.feature.tasks.viewmodel.TasksViewModel
 
 class TaskManagerPageFragment : Fragment() {
     private val arguments: TaskManagerPageFragmentArgs by navArgs()
@@ -22,10 +23,8 @@ class TaskManagerPageFragment : Fragment() {
     private val binding
         get() = _binding!!
 
-    private var currentPosition = 0
-    private var selectedManagerType = TaskManagerType.TODO_LIST
-    private lateinit var taskManagerType: TaskManagerType
     private lateinit var tabsAdapter: TaskManagerTabsAdapter
+    private val tasksViewModel: TasksViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,13 +37,16 @@ class TaskManagerPageFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        taskManagerType = arguments.managerType
+        if (savedInstanceState == null) {
+            tasksViewModel.setSelectedManagerType(arguments.managerType)
+        } else {
+            tasksViewModel.initializeSelectedManagerType(arguments.managerType)
+        }
         tabsAdapter = TaskManagerTabsAdapter(this@TaskManagerPageFragment)
 
         binding.apply {
             viewPager.adapter = tabsAdapter
             fab.setOnClickListener { openAddTaskFragment() }
-            viewPager.setCurrentItem(taskManagerType.toInt(), false)
 
             TabLayoutMediator(tabLayout, viewPager) { tab, position ->
                 tab.text = tabsAdapter.getPageTitle(position)
@@ -53,8 +55,7 @@ class TaskManagerPageFragment : Fragment() {
             tabLayout.addOnTabSelectedListener(
                 object : TabLayout.OnTabSelectedListener {
                     override fun onTabSelected(tab: TabLayout.Tab) {
-                        currentPosition = tab.position
-                        selectedManagerType = currentPosition.toTaskManagerType()
+                        tasksViewModel.setSelectedManagerType(tab.position.toTaskManagerType())
                     }
 
                     override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -62,6 +63,13 @@ class TaskManagerPageFragment : Fragment() {
                     override fun onTabReselected(tab: TabLayout.Tab) {}
                 },
             )
+        }
+
+        tasksViewModel.selectedManagerType.observe(viewLifecycleOwner) { type ->
+            val targetPosition = type.toInt()
+            if (binding.viewPager.currentItem != targetPosition) {
+                binding.viewPager.setCurrentItem(targetPosition, false)
+            }
         }
     }
 
@@ -73,7 +81,8 @@ class TaskManagerPageFragment : Fragment() {
     private fun openAddTaskFragment() {
         val action =
             TaskManagerPageFragmentDirections.actionTaskManagerListFragmentToAddTaskManagerFragment(
-                selectedManagerType = selectedManagerType,
+                selectedManagerType =
+                    tasksViewModel.selectedManagerType.value ?: binding.viewPager.currentItem.toTaskManagerType(),
             )
         findNavController().navigate(action)
     }

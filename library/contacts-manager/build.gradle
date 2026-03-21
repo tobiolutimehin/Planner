@@ -13,9 +13,9 @@ android {
     compileSdk 35
 
     defaultConfig {
-        minSdk 24
+        minSdk 33
 
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.planner.test.android.PlannerHiltTestRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
 
@@ -49,12 +49,20 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7"
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2'
+    debugImplementation project(path: ':test:android')
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    androidTestImplementation project(path: ':test:android')
+    kaptAndroidTest 'androidx.databinding:databinding-compiler:8.8.0'
+    kaptAndroidTest "com.google.dagger:hilt-compiler:2.50"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.6'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.6'
 
 
     implementation "com.google.dagger:hilt-android:2.50"
     kapt "com.google.dagger:hilt-compiler:2.50"
+}
+
+kapt {
+    correctErrorTypes true
 }

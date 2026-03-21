@@ -1,6 +1,7 @@
 package com.planner.feature.tasks
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.viewmodel.AddTaskViewModel
@@ -13,7 +14,7 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class AddTaskViewModelTest {
-    private val viewModel = AddTaskViewModel()
+    private val viewModel = AddTaskViewModel(SavedStateHandle())
     private val task1 = Task(id = 1L, description = "Complete math homework", contributor = "Alice")
     private val task2 = Task(id = 2L, description = "Buy groceries", isDone = true)
     private val task3 = Task(id = 3L, description = "Call mom", contributor = "Bob", isDone = true)

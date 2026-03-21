@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -56,7 +57,7 @@ class AddTaskManagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeContactsSelectionResult()
+        view.post { observeContactsSelectionResult() }
 
         val selectedType = arguments.selectedManagerType
         val managerId = arguments.taskManagerId
@@ -82,8 +83,9 @@ class AddTaskManagerFragment : Fragment() {
 
         addTaskViewModel.apply {
             taskList.observe(viewLifecycleOwner) { adapter.submitList(it) }
-            setTaskManagementType(selectedType)
+            initializeTaskManagementType(selectedType)
             taskManagerType.observe(viewLifecycleOwner) { type ->
+                tasksViewModel.setSelectedManagerType(type)
                 binding.contactLayout.isGone = type != TaskManagerType.PROJECT
             }
         }
@@ -108,7 +110,17 @@ class AddTaskManagerFragment : Fragment() {
     }
 
     private fun observeContactsSelectionResult() {
-        val navBackStackEntry = findNavController().currentBackStackEntry ?: return
+        val navController =
+            view?.let { currentView ->
+                runCatching { Navigation.findNavController(currentView) }.getOrNull()
+            }
+
+        if (navController == null) {
+            view?.post { observeContactsSelectionResult() }
+            return
+        }
+
+        val navBackStackEntry = navController.currentBackStackEntry ?: return
         val observer =
             Observer<ContactSelectionResult> { result ->
                 ContactPickerContract.consumeResult(
@@ -172,7 +184,10 @@ class AddTaskManagerFragment : Fragment() {
     }
 
     fun saveTaskManager() {
-        val presentManagerType = addTaskViewModel.taskManagerType.value ?: TaskManagerType.TODO_LIST
+        val presentManagerType =
+            addTaskViewModel.taskManagerType.value
+                ?: tasksViewModel.selectedManagerType.value
+                ?: arguments.selectedManagerType
         addTaskViewModel.taskList.value?.let {
             val title = binding.taskManagerTitleEditText.text
             tasksViewModel.saveTaskManager(
@@ -183,6 +198,7 @@ class AddTaskManagerFragment : Fragment() {
             )
         }
 
+        tasksViewModel.setSelectedManagerType(presentManagerType)
         goToTaskManagerList(presentManagerType)
     }
 
@@ -226,8 +242,10 @@ class AddTaskManagerFragment : Fragment() {
         }
     }
 
-    fun setTaskManagementType(taskManagerType: TaskManagerType) =
+    fun setTaskManagementType(taskManagerType: TaskManagerType) {
         addTaskViewModel.setTaskManagementType(taskManagerType)
+        tasksViewModel.setSelectedManagerType(taskManagerType)
+    }
 
     fun close() {
         if (!findNavController().popBackStack()) activity?.finish()
@@ -235,7 +253,10 @@ class AddTaskManagerFragment : Fragment() {
 
     private fun updateTaskManager() {
         addTaskViewModel.taskList.value?.let {
-            val managerType = addTaskViewModel.taskManagerType.value ?: taskManager.taskManager.type
+            val managerType =
+                addTaskViewModel.taskManagerType.value
+                    ?: tasksViewModel.selectedManagerType.value
+                    ?: taskManager.taskManager.type
             val updatedTaskManager =
                 taskManager.taskManager.copy(name = binding.taskManagerTitleEditText.text.toString())
             tasksViewModel.updateTaskManager(
@@ -243,6 +264,7 @@ class AddTaskManagerFragment : Fragment() {
                 tasks = it,
                 contributors = selectedContributorsForType(managerType),
             )
+            tasksViewModel.setSelectedManagerType(managerType)
             goToTaskManagerDetail()
         }
     }

@@ -37,7 +37,7 @@ object BindingAdapters {
     fun setToggleIcon(
         button: MaterialButton,
         managerType: TaskManagerType,
-        presentManagerType: TaskManagerType,
+        presentManagerType: TaskManagerType?,
     ) {
         if (presentManagerType == managerType) {
             button.setIconResource(R.drawable.ic_check)

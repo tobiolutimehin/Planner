@@ -1,5 +1,7 @@
 package com.planner.feature.tasks
 
+import androidx.navigation.Navigation
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
@@ -15,9 +17,12 @@ import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskManagerType
 import com.planner.feature.tasks.fragment.AddTaskManagerFragment
 import com.planner.feature.tasks.fragment.AddTaskManagerFragmentArgs
+import com.planner.feature.tasks.fragment.TaskManagerPageFragmentArgs
 import com.planner.feature.tasks.testing.BaseTaskFragmentTest
 import com.planner.feature.tasks.testing.seedTaskManager
 import com.planner.feature.tasks.testing.taskNavController
+import com.planner.library.contacts_manager.api.ContactSelectionResult
+import com.planner.library.contacts_manager.api.PickerContact
 import com.planner.test.android.launchFragmentInHiltContainer
 import com.planner.test.android.waitUntil
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -108,6 +113,163 @@ class AddTaskManagerFragmentTest : BaseTaskFragmentTest() {
             manager.taskManager.name == "Updated Launch Prep" &&
                 manager.tasks.map { it.description }.toSet() ==
                 setOf("Draft wireframes", "Book venue")
+        }
+
+        scenario.close()
+    }
+
+    @Test
+    fun returningFromContactsPicker_preservesProjectTypeOnSave() {
+        val navController = taskNavController(
+            currentDestination = R.id.addTaskManagerFragment,
+        )
+
+        val scenario = launchFragmentInHiltContainer<AddTaskManagerFragment>(
+            fragmentArgs = AddTaskManagerFragmentArgs(
+                selectedManagerType = TaskManagerType.PROJECT,
+                taskManagerId = -1L,
+            ).toBundle(),
+            navController = navController,
+        )
+
+        onView(withId(R.id.task_manager_title_edit_text))
+            .perform(replaceText("Launch Plan"), closeSoftKeyboard())
+        onView(withId(R.id.add_to_list_button)).perform(scrollTo(), click())
+        onView(withId(R.id.task_title_edit_text))
+            .perform(replaceText("Invite collaborators"), closeSoftKeyboard())
+        onView(withId(R.id.add_task)).perform(scrollTo(), click())
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set(
+                    "add_task_manager_contacts_result",
+                    ContactSelectionResult(
+                        arrayListOf(
+                            PickerContact(
+                                id = 7L,
+                                name = "Avery",
+                                phone = "1234567890",
+                            ),
+                        ),
+                    ),
+                )
+        }
+
+        onView(withId(R.id.save_button)).perform(scrollTo(), click())
+
+        waitUntil {
+            val managers = runBlocking { taskManagerDao.getTaskManagers().first() }
+            val savedManager =
+                managers.firstOrNull { manager ->
+                    manager.taskManager.name == "Launch Plan" &&
+                        manager.taskManager.type == TaskManagerType.PROJECT
+                }
+            val contributors =
+                savedManager?.let { manager ->
+                    runBlocking {
+                        taskManagerDao.getTaskManagerWithContributors(manager.taskManager.managerId)
+                            .first()
+                            .contributors
+                    }
+                }.orEmpty()
+            val currentDestination = navController.currentDestination?.id
+            val currentArgs =
+                navController.currentBackStackEntry?.arguments?.let {
+                    TaskManagerPageFragmentArgs.fromBundle(it)
+                }
+
+            savedManager != null &&
+                contributors.any { contributor -> contributor.name == "Avery" } &&
+                currentDestination == R.id.taskManagerListFragment &&
+                currentArgs?.managerType == TaskManagerType.PROJECT
+        }
+
+        scenario.close()
+    }
+
+    @Test
+    fun selectedProjectType_survivesRecreation_andSavesAsProject() {
+        val navController = taskNavController(
+            currentDestination = R.id.addTaskManagerFragment,
+        )
+
+        val scenario = launchFragmentInHiltContainer<AddTaskManagerFragment>(
+            fragmentArgs = AddTaskManagerFragmentArgs(
+                selectedManagerType = TaskManagerType.TODO_LIST,
+                taskManagerId = -1L,
+            ).toBundle(),
+            navController = navController,
+        )
+
+        onView(withId(R.id.project_button)).perform(click())
+        onView(withId(R.id.task_manager_title_edit_text))
+            .perform(replaceText("Project Relaunch"), closeSoftKeyboard())
+        onView(withId(R.id.add_to_list_button)).perform(scrollTo(), click())
+        onView(withId(R.id.task_title_edit_text))
+            .perform(replaceText("Confirm stakeholders"), closeSoftKeyboard())
+        onView(withId(R.id.add_task)).perform(scrollTo(), click())
+
+        scenario.recreate()
+
+        waitUntil {
+            var attached = false
+            scenario.onActivity { activity ->
+                val fragment =
+                    activity.supportFragmentManager.findFragmentById(android.R.id.content)
+                        as? AddTaskManagerFragment
+                if (fragment?.view != null) {
+                    Navigation.setViewNavController(fragment.requireView(), navController)
+                    attached = true
+                }
+            }
+            attached
+        }
+
+        InstrumentationRegistry.getInstrumentation().runOnMainSync {
+            navController.currentBackStackEntry
+                ?.savedStateHandle
+                ?.set(
+                    "add_task_manager_contacts_result",
+                    ContactSelectionResult(
+                        arrayListOf(
+                            PickerContact(
+                                id = 8L,
+                                name = "Jordan",
+                                phone = "5550001111",
+                            ),
+                        ),
+                    ),
+                )
+        }
+
+        onView(withId(R.id.save_button)).perform(scrollTo(), click())
+
+        waitUntil {
+            val managers = runBlocking { taskManagerDao.getTaskManagers().first() }
+            val savedManager =
+                managers.firstOrNull { manager ->
+                    manager.taskManager.name == "Project Relaunch" &&
+                        manager.taskManager.type == TaskManagerType.PROJECT
+                }
+            val contributors =
+                savedManager?.let { manager ->
+                    runBlocking {
+                        taskManagerDao.getTaskManagerWithContributors(manager.taskManager.managerId)
+                            .first()
+                            .contributors
+                    }
+                }.orEmpty()
+            val currentDestination = navController.currentDestination?.id
+            val currentArgs =
+                navController.currentBackStackEntry?.arguments?.let {
+                    TaskManagerPageFragmentArgs.fromBundle(it)
+                }
+
+            savedManager != null &&
+                contributors.any { contributor -> contributor.name == "Jordan" } &&
+                currentDestination == R.id.taskManagerListFragment &&
+                currentArgs?.managerType == TaskManagerType.PROJECT
         }
 
         scenario.close()

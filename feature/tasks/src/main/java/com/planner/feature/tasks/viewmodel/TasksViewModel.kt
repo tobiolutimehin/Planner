@@ -1,6 +1,7 @@
 package com.planner.feature.tasks.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -17,8 +18,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : ViewModel() {
+class TasksViewModel @Inject constructor(
+    private val dao: TaskManagerDao,
+    private val savedStateHandle: SavedStateHandle,
+) : ViewModel() {
+    private companion object {
+        const val SELECTED_MANAGER_TYPE_KEY = "selected_manager_type"
+    }
+
     val tasks: LiveData<List<ManagerWithTasks>> = dao.getTaskManagers().asLiveData()
+    val selectedManagerType: LiveData<TaskManagerType> =
+        savedStateHandle.getLiveData(SELECTED_MANAGER_TYPE_KEY)
 
     fun getTaskManager(id: Long): LiveData<ManagerWithTasks> = dao.getTaskManager(id).asLiveData()
 
@@ -63,4 +73,14 @@ class TasksViewModel @Inject constructor(private val dao: TaskManagerDao) : View
         viewModelScope.launch {
             tasks.forEach { updateTask(it) }
         }
+
+    fun initializeSelectedManagerType(taskManagerType: TaskManagerType) {
+        if (selectedManagerType.value == null) {
+            setSelectedManagerType(taskManagerType)
+        }
+    }
+
+    fun setSelectedManagerType(taskManagerType: TaskManagerType) {
+        savedStateHandle[SELECTED_MANAGER_TYPE_KEY] = taskManagerType
+    }
 }
