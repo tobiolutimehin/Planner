@@ -42,28 +42,15 @@ internal class AndroidDeviceContactsDataSource @Inject constructor(
                             continue
                         }
 
-                        contentResolver.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
-                            arrayOf(id.toString()),
-                            null,
-                        )?.use { phoneCursor ->
-                            if (phoneCursor.moveToFirst()) {
-                                val number =
-                                    phoneCursor.getString(
-                                        phoneCursor.getColumnIndexOrThrow(
-                                            ContactsContract.CommonDataKinds.Phone.NUMBER,
-                                        ),
-                                    )
-                                contacts.add(
-                                    PickerContact(
-                                        id = id,
-                                        name = name,
-                                        phone = number,
-                                    ),
-                                )
-                            }
+                        val number = getPhoneNumber(id)
+                        if (number != null) {
+                            contacts.add(
+                                PickerContact(
+                                    id = id,
+                                    name = name,
+                                    phone = number,
+                                ),
+                            )
                         }
                     }
                 }
@@ -73,6 +60,26 @@ internal class AndroidDeviceContactsDataSource @Inject constructor(
 
             contacts
         }
+
+    private fun getPhoneNumber(contactId: Long): String? {
+        return contentResolver.query(
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            "${ContactsContract.CommonDataKinds.Phone.CONTACT_ID} = ?",
+            arrayOf(contactId.toString()),
+            null,
+        )?.use { phoneCursor ->
+            if (phoneCursor.moveToFirst()) {
+                phoneCursor.getString(
+                    phoneCursor.getColumnIndexOrThrow(
+                        ContactsContract.CommonDataKinds.Phone.NUMBER,
+                    ),
+                )
+            } else {
+                null
+            }
+        }
+    }
 
     private companion object {
         const val TAG = "AndroidDeviceContactsDataSource"
