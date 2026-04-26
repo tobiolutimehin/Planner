@@ -3,7 +3,6 @@ package com.planner.core.data.dao
 import com.planner.core.data.entity.ManagerWithTasks
 import com.planner.core.data.entity.ProjectContributorCrossRef
 import com.planner.core.data.entity.SavedContactEntity
-import com.planner.core.data.entity.Task
 import com.planner.core.data.entity.TaskEntity
 import com.planner.core.data.entity.TaskManagerEntity
 import com.planner.core.data.entity.TaskManagerWithTasksAndContributors
