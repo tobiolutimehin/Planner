@@ -56,7 +56,7 @@ dependencies {
     kaptAndroidTest 'androidx.databinding:databinding-compiler:8.8.0'
     kaptAndroidTest "com.google.dagger:hilt-compiler:2.50"
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.6'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.8.6'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.10.0'
 
 
     implementation "com.google.dagger:hilt-android:2.50"
